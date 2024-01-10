@@ -11,7 +11,7 @@ namespace LWM.Api.LessonService.IOServices
             _context = context;
         }
 
-        public GetDocumentsById(int id)
+       // public GetDocumentsById(int id)
 
     }
 }
