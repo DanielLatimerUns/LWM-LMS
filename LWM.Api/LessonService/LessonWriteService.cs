@@ -19,7 +19,8 @@ namespace LWM.Api.LessonService
         {
             var model = new Data.Models.Lesson
             {
-                Name = lesson.Name
+                Name = lesson.Name,
+                LessonNo = lesson.LessonNo,
             };
 
             _context.Lessons.Add(model);
@@ -47,6 +48,7 @@ namespace LWM.Api.LessonService
             this.Validate(exisintLesson);
 
             exisintLesson.Name = lesson.Name;
+            exisintLesson.LessonNo = lesson.LessonNo;
 
             await _context.SaveChangesAsync();
         }

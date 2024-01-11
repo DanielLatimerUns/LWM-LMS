@@ -12,6 +12,6 @@ namespace LWM.Data.Models
 
         public string Name { get; set; }
 
-        public object DocumentPath { get; set; }
+        public string DocumentPath { get; set; }
     } 
 }

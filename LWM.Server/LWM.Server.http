@@ -1,6 +1,3 @@
-@LWM.Server_HostAddress = http://localhost:5276
-
-GET {{LWM.Server_HostAddress}}/weatherforecast/
-Accept: application/json
+@LWM.Server_HostAddress = https://localhost:5276
 
 ###

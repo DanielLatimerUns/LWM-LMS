@@ -12,6 +12,8 @@ namespace LWM.Data.Models
 
         public string Name { get; set;}
 
+        public int LessonNo { get; set;}
+
         public IEnumerable<LessonDocument> LessonDocuments { get; set;}
     }
 }

@@ -1,0 +1,9 @@
+.panelOuterContainer {
+    display: grid;
+    grid-template-rows: 200px auto 100px;
+    min-height: 100%;
+}
+
+.userContainer h1 {
+    font-size: 25px;
+}

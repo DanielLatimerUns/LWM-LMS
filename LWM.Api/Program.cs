@@ -1,8 +1,12 @@
 using LWM.Api.LessonService;
 using LWM.Api.LessonService.Contracts;
 using LWM.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 // Add services to the container.
 
@@ -15,7 +19,8 @@ builder.Services.AddTransient<ILessonReadService, LessonReadService>();
 builder.Services.AddTransient<ILessonWriteService, LessonWriteService>();
 
 // need to add con string...
-builder.Services.AddDbContext<CoreContext>();
+builder.Services.AddDbContext<CoreContext>(
+    options => options.UseSqlServer(configuration.GetConnectionString("LWM"), c => c.MigrationsAssembly("LWM.Api")));
 
 var app = builder.Build();
 

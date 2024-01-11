@@ -1,0 +1,13 @@
+.container {
+    padding: 10px;
+}
+
+.optionContainer {
+    background: lightgray;
+    display: flex;
+
+}
+
+.option {
+    padding: 10px;
+}

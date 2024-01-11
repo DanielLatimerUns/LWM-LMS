@@ -13,8 +13,6 @@ namespace LWM.Data.Contexts
     {
         public DbSet<Group> Groups { get; set; }
 
-        public DbSet<GroupStudent> GroupStudents { get; set; }
-
         public DbSet<Lesson> Lessons { get; set; }
 
         public DbSet<LessonDocument> Documents { get; set; }
@@ -29,8 +27,19 @@ namespace LWM.Data.Contexts
 
         public DbSet<Configuration> Configurations { get; set; }
 
+        public CoreContext(DbContextOptions<CoreContext> options)
+        : base(options)
+        { }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             base.OnModelCreating(modelBuilder);
         }
     }

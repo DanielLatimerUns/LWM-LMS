@@ -1,0 +1,12 @@
+.appOuterContainer {
+    display: grid;
+    grid-template-columns: 300px auto;
+    padding: 10px;
+    min-height: 98vh;
+}
+
+.sideBarContainer {
+    border: solid 2px white;
+    border-radius: 20px;
+    padding: 10px;
+}

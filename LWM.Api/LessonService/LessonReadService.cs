@@ -22,7 +22,7 @@ namespace LWM.Api.LessonService
 
         public async Task<IEnumerable<Lesson>> GetLessons()
         {
-            return await _context.Lessons.Select(x => new Lesson { Id = x.Id, Name = x.Name, }).ToListAsync();
+            return await _context.Lessons.Select(x => new Lesson { Id = x.Id, Name = x.Name, LessonNo = x.LessonNo }).ToListAsync();
         }
     }
 }
