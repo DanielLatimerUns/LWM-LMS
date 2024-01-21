@@ -39,6 +39,32 @@ namespace LWM.Api.Migrations
                     b.ToTable("Configurations");
                 });
 
+            modelBuilder.Entity("LWM.Data.Models.Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DocumentPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("Documents");
+                });
+
             modelBuilder.Entity("LWM.Data.Models.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -75,32 +101,6 @@ namespace LWM.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Lessons");
-                });
-
-            modelBuilder.Entity("LWM.Data.Models.LessonDocument", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DocumentPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LessonId");
-
-                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("LWM.Data.Models.LessonInstance", b =>
@@ -165,7 +165,7 @@ namespace LWM.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ForeName")
+                    b.Property<string>("Forename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -173,7 +173,7 @@ namespace LWM.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SureName")
+                    b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -190,10 +190,10 @@ namespace LWM.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GroupId")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int?>("PersonId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -223,6 +223,17 @@ namespace LWM.Api.Migrations
                     b.ToTable("Teacher");
                 });
 
+            modelBuilder.Entity("LWM.Data.Models.Document", b =>
+                {
+                    b.HasOne("LWM.Data.Models.Lesson", "Lesson")
+                        .WithMany("Documents")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+                });
+
             modelBuilder.Entity("LWM.Data.Models.Group", b =>
                 {
                     b.HasOne("LWM.Data.Models.Teacher", "Teacher")
@@ -232,13 +243,6 @@ namespace LWM.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("LWM.Data.Models.LessonDocument", b =>
-                {
-                    b.HasOne("LWM.Data.Models.Lesson", null)
-                        .WithMany("LessonDocuments")
-                        .HasForeignKey("LessonId");
                 });
 
             modelBuilder.Entity("LWM.Data.Models.LessonInstance", b =>
@@ -275,15 +279,11 @@ namespace LWM.Api.Migrations
                 {
                     b.HasOne("LWM.Data.Models.Group", "Group")
                         .WithMany("Students")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GroupId");
 
                     b.HasOne("LWM.Data.Models.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PersonId");
 
                     b.Navigation("Group");
 
@@ -308,7 +308,7 @@ namespace LWM.Api.Migrations
 
             modelBuilder.Entity("LWM.Data.Models.Lesson", b =>
                 {
-                    b.Navigation("LessonDocuments");
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

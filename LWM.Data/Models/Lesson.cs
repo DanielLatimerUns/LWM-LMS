@@ -14,6 +14,6 @@ namespace LWM.Data.Models
 
         public int LessonNo { get; set;}
 
-        public IEnumerable<LessonDocument> LessonDocuments { get; set;}
+        public ICollection<Document> Documents { get; set;} = new List<Document>();
     }
 }

@@ -1,6 +1,6 @@
 @LWM.Api_HostAddress = http://localhost:5186
 
-GET {{LWM.Api_HostAddress}}/weatherforecast/
+GET {{LWM.Api_HostAddress}}/lesson
 Accept: application/json
 
 ###

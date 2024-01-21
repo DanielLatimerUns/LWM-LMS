@@ -1,12 +1,11 @@
 .appOuterContainer {
     display: grid;
-    grid-template-columns: 300px auto;
-    padding: 10px;
-    min-height: 98vh;
+    grid-template-columns: 150px auto;
+    height: 100vh;
+    background: rgb(51, 51, 51);
 }
 
-.sideBarContainer {
-    border: solid 2px white;
-    border-radius: 20px;
-    padding: 10px;
+.moduleLoaderContainer {
+    height: 100%;
+    overflow: auto;
 }

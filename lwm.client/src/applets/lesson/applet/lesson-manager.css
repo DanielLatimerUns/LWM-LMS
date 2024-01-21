@@ -1,0 +1,32 @@
+.lessonManagerContainer {
+    height: 100%;
+}
+
+.lessonManagerActionSectionOptionContainer {
+    padding-bottom: 0px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    padding-right: 50px;
+}
+
+.lessonManagerActionSectionOptionContainer > div {
+    display: flex;
+    gap: 10px;
+}
+
+.lessonManagerActionSectionContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.lessonManagerActionSectionApplet,
+.lessonManagerGridContainer {
+    padding: 10px;
+    overflow: auto;
+}
+
+.lessonManagerActionSectionOption > div {
+    width: 200px;
+}

@@ -1,0 +1,8 @@
+.formField {
+    display: flex;
+    padding: 10px;
+}
+
+.formField label {
+    width: 150px;
+}

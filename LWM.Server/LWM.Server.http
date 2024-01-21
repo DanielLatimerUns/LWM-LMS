@@ -1,3 +1,4 @@
 @LWM.Server_HostAddress = https://localhost:5276
-
+GET {{LWM.Server_HostAddress}}/lesson/
+Accept: application/json
 ###

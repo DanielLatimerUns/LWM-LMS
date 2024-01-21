@@ -1,57 +1,40 @@
-import { useEffect, useState } from 'react';
-import ControlOption from '../types/option';
 import './control-center.css'
 import React from 'react';
+import ControlCenterAppletHost from '../framework/control-center-applet-host';
+import ControlCenterOptions from '../applets/controlCenterOptions/applet/control-center-options';
 
 interface IProps {
 }
 
 interface IState {
-  options: ControlOption[];
+  selectedApplet: string | JSX.Element;
 }
 
 export default class ControlCenter extends React.Component<IProps, IState> {
 
     constructor(props: any) {
         super(props);
-
-        const options: ControlOption[] = [];
-
-        options.push({
-            name: 'Test Applet',
-            applet: 'test'
-        });
-
-        options.push({
-            name: 'Lessons',
-            applet: 'lessons'
-        });
-
-        this.state = {options: options};  
-        this.handleControlOptionClick = this.handleControlOptionClick.bind(this);
+        this.state = 
+            {selectedApplet: <ControlCenterOptions appletChange={this.handleAppletChange.bind(this)}>
+            </ControlCenterOptions>}
     }
     
     render() {
         return (
             <div className="container">
-                <div className='optionContainer'>
-                    {this.buildOptions()}
+                <div className='appletHostContainer'>
+                    <ControlCenterAppletHost>
+                        {this.state.selectedApplet}
+                    </ControlCenterAppletHost>
                 </div>
             </div>
         )
     }
-    
-    private handleControlOptionClick(option: ControlOption) {
 
+    private handleAppletChange(selectedApplet: string) {
+        this.setState(() => {
+            return { selectedApplet: selectedApplet }
+          });
     }
- 
-    private buildOptions() {
-        return this.state.options.map(option => 
-            <div className='option'>
-                <button onClick={() =>this.handleControlOptionClick(option)}>
-                    {option.name}
-                </button>
-            </div>
-        );;
-    }
+
 }

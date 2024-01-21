@@ -1,9 +1,72 @@
 .panelOuterContainer {
     display: grid;
-    grid-template-rows: 200px auto 100px;
+    grid-template-rows: 150px auto 100px;
     min-height: 100%;
+    background: rgb(242, 242, 242);
+    border-radius: 10px;
 }
 
 .userContainer h1 {
     font-size: 25px;
+}
+
+.option {
+    font-size: 20px;
+    text-align: center;
+    cursor: default;
+    color: black;
+    padding: 20px;
+}
+
+.option:hover {
+    background: rgb(51, 51, 51);
+    border-radius: 1px;
+    color: rgb(187, 187, 187);
+}
+
+.option-selected {
+    font-size: 20px;
+    text-align: center;
+    cursor: default;
+    color: white;
+    padding: 20px;
+    background: rgb(51, 51, 51);
+}
+
+.userContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.userContainer > div {
+    padding: 10px;
+}
+
+.panelFooterContainer {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footerOption {
+    width: fit-content; 
+}
+
+.footerOption:hover {
+    border-bottom: solid 1px lightblue;
+}
+
+.userIcon {
+    width: 100px;
+}
+
+.userIcon > img {
+    max-width: 100%;
+}
+
+.panelContentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
 }

@@ -1,8 +1,8 @@
-import React, { ReactComponentElement } from 'react'
-import ControlCenter from '../../../applets/controlCenter/applet/control-center';
+import React from 'react'
+import './module-loader.css'
 
 interface Props {
-    appletToRender: string
+    children: string | JSX.Element | JSX.Element[];
 }
  
 interface State {
@@ -17,17 +17,9 @@ export default class ModuleLoader extends React.Component<Props, State> {
 
     render() { 
         return ( 
-            <div className='container'>
-                {this.renderApplet()}
+            <div className='moduleContainer'>
+                {this.props.children}
             </div>
          );
-    }
-
-    private renderApplet() {
-        switch(this.props.appletToRender) {
-            case 'control_center':
-                return <ControlCenter></ControlCenter>
-            default: return <div></div>
-        }
     }
 }

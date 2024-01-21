@@ -1,0 +1,40 @@
+.gridHeader {
+    display: grid;
+    grid-auto-columns: 300px auto;
+    border-bottom: 5px solid lightblue;
+    
+}
+
+.gridHeaderColumn {
+    padding: 10px;
+    grid-row: 2;
+}
+
+.gridContent {
+    padding: 5px 0 5px 0;
+    border-bottom: 0px;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.gridContentRow {
+    background: rgb(242, 242, 242);
+    padding: 10px;
+    display: grid;
+    grid-auto-columns: 300px auto;
+    border-bottom: 1px solid rgb(51, 51, 51);
+    border-radius: 5px;
+}
+
+.gridContentColumn {
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gridContentColumn .lwmButton {
+    padding: 10px;
+}

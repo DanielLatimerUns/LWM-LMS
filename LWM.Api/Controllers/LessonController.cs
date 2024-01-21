@@ -1,5 +1,6 @@
-﻿using LWM.Api.Dtos;
-using LWM.Api.LessonService.Contracts;
+﻿using LWM.Api.DomainServices.LessonService.Contracts;
+using LWM.Api.Dtos;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LWM.Api.Controllers
@@ -38,7 +39,7 @@ namespace LWM.Api.Controllers
             await _lessonWriteService.UpdateAsync(lesson);
         }
 
-        [HttpDelete("{id: int}")]
+        [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
             await _lessonWriteService.DeleteAsync(id);

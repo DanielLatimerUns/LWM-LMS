@@ -1,0 +1,21 @@
+.lwmButton {
+    text-align: center;
+    border-bottom: solid 1px #add8e6;    border-bottom: solid 1px #add8e6;
+    cursor: default;
+    padding: 30px;
+
+}
+
+.lwmButton-selected {
+    border-bottom: solid 1px #6fe873;
+    text-align: center;
+    cursor: default;
+    padding: 30px;
+}
+
+
+.lwmButton:hover {
+    background: lightblue;
+    border-radius: 1px;
+    color: black;
+}

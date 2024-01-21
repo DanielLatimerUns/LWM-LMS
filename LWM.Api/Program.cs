@@ -1,8 +1,8 @@
-using LWM.Api.LessonService;
-using LWM.Api.LessonService.Contracts;
+using LWM.Api.Framework.Services;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<ILessonReadService, LessonReadService>();
-builder.Services.AddTransient<ILessonWriteService, LessonWriteService>();
+ServiceBuilder.BuildServices(builder.Services);
 
 // need to add con string...
 builder.Services.AddDbContext<CoreContext>(
@@ -36,5 +35,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors(cors => cors.AllowAnyOrigin().
+                        AllowAnyHeader().
+                        AllowAnyMethod().SetIsOriginAllowed(origin => true));
 
 app.Run();
