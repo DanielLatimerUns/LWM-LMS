@@ -1,5 +1,7 @@
 ﻿using LWM.Api.DomainServices.LessonService.Contracts;
 using LWM.Api.DomainServices.PersonService.Contracts;
+using LWM.Api.DomainServices.StudentService;
+using LWM.Api.DomainServices.StudentService.Contracts;
 using LWM.Api.Dtos;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
@@ -9,11 +11,15 @@ namespace LWM.Api.DomainServices.PersonService
 {
     public class PersonWriteService : IPersonWriteService
     {
-        private CoreContext _context { get; set; }
+        private CoreContext _context;
 
-        public PersonWriteService(CoreContext context)
+        private IStudentWriteService _studentWriteService;
+
+        public PersonWriteService(CoreContext context, 
+            IStudentWriteService studentWriteService)
         {
             _context = context;
+            _studentWriteService = studentWriteService;
         }
 
         public async Task<int> CreateAsync(Dtos.Person person)
@@ -24,11 +30,15 @@ namespace LWM.Api.DomainServices.PersonService
                 Surname = person.Surname,
                 EmailAddress1 = person.EmailAddress1,
                 PhoneNo = person.PhoneNo,
+                PersonType = person.PersonType
             };
 
             _context.Persons.Add(model);
 
             await _context.SaveChangesAsync();
+
+            if (person.PersonType is 1)
+                await _studentWriteService.CreateAsync(new Dtos.Student { GroupId = null, PersonId = model.Id });
 
             return model.Id;
         }
@@ -39,6 +49,9 @@ namespace LWM.Api.DomainServices.PersonService
 
             Validate(model);
 
+            var studentModel = _context.Students.FirstOrDefault(x => x.Person.Id == personId);
+            if (studentModel is not null)
+                _context.Students.Remove(studentModel);
             _context.Persons.Remove(model);
 
             await _context.SaveChangesAsync();

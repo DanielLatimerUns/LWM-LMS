@@ -1,8 +1,22 @@
+.formFieldContainer {
+    width: 400px;
+}
+
 .formField {
     display: flex;
+    justify-content: space-between;
     padding: 10px;
 }
 
 .formField label {
-    width: 150px;
+    font-size: 18px;
+}
+
+.formFieldInput {
+    width: 200px;
+}
+
+.formFieldInput > input,
+.formFieldInput > select {
+    width: 100%;
 }

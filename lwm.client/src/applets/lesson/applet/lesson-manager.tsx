@@ -4,7 +4,9 @@ import RestService from "../../../services/network/RestService";
 import './lesson-manager.css';
 import LessonWizard from "../applets/lesson-wizard/applet/lesson-wizard";
 import LwmButton from "../../../framework/components/button/lwm-button";
-import LessonManagerGrid from "../applets/lesson-manager-grid/applet/lesson-manager-grid";
+import Module from "../../../framework/components/module/module";
+import GridColumn from "../../../framework/types/gridColumn";
+import GridRow from "../../../framework/types/gridRow";
 
 export interface Props {
     
@@ -22,7 +24,7 @@ export default class LessonManager extends React.Component<Props, State> {
         this.state = {
             lessons: [], 
             selectedLesson: undefined, 
-            activeActionApplet: <div></div>
+            activeActionApplet: undefined
         }
     }
 
@@ -31,56 +33,60 @@ export default class LessonManager extends React.Component<Props, State> {
     }
 
     render() { 
-        return ( 
-            <div className="lessonManagerContainer">
-                <div className="lessonManagerActionSectionContainer">
-                    {this.renderActionOptionsSection()}
-                    {this.renderGrid()}
-                    <div className="lessonManagerActionSectionApplet">
-                        {this.state.activeActionApplet}
-                    </div>
-                </div>
-            </div>);
+        return (
+            <Module 
+                gridConfig={this.buildGridConfig()}
+                moduleName="Lesson Center"
+                moduleEntityName="Lesson"
+                handleCloseClicked={this.handleAppletCancel.bind(this)}
+                handleSaveCloseClicked={this.handleAppletSave.bind(this)}
+                options={this.buildActionOptions()}
+                >
+                {this.state.activeActionApplet}
+            </Module>);
     }
 
-    private renderActionOptionsSection() {
-        return(
-            <div className="lessonManagerActionSectionOptionContainer">
-                <div>
-                    <LwmButton 
-                        isSelected={this.state.activeActionApplet === undefined} 
-                        onClick={() => this.setState({activeActionApplet: undefined, selectedLesson: undefined})} 
-                        name="Lesson Center">
-                    </LwmButton>
-                    <LwmButton 
-                        isSelected={this.state.activeActionApplet?.type === LessonWizard}  
-                        onClick={this.handleAddClicked.bind(this)} 
-                        name={this.state.selectedLesson ? "Edit Lesson: " + this.state.selectedLesson.name : "Lesson Creation"}>    
-                    </LwmButton>
-                </div>
-                {this.renderSaveClose()}
-            </div>
-        );
+    private buildActionOptions() {
+        const options: JSX.Element[] = [
+            (
+                <LwmButton 
+                    isSelected={this.state.activeActionApplet === undefined} 
+                    onClick={() => this.setState({activeActionApplet: undefined, selectedLesson: undefined})} 
+                    name="Lesson Center">
+                </LwmButton>
+            ),
+            (
+                <LwmButton 
+                    isSelected={this.state.activeActionApplet?.type === LessonWizard}  
+                    onClick={this.handleAddClicked.bind(this)} 
+                    name={(this.state.selectedLesson === undefined || 
+                        this.state.selectedLesson?.id === 0) ? "Lesson Creation" : 
+                        "Edit Lesson: " + this.state.selectedLesson?.name}>    
+                </LwmButton>
+            )
+        ];
+
+        return options;
     }
 
-    private renderGrid() {
-        if ( this.state.activeActionApplet !== undefined)
-            return;
+    private buildGridConfig() {
+        const columns: GridColumn[] = [
+            {lable: "Lesson Name", name: "name"},
+            {lable: "Lesson No", name: "lessonNo"}
+        ];
 
-        return <LessonManagerGrid 
-        lessons={this.state?.lessons} 
-        handleEditLesson={this.handleEditClicked.bind(this)} 
-        handleDeleteLesson={this.handleDeleteClicked.bind(this)}/>;
-    }
+        const rows: GridRow[] = 
+        this.state.lessons.map(lesson => ({columnData: lesson, id: lesson.id}));
 
-    private renderSaveClose() {
-        if (this.state.activeActionApplet?.type === LessonManagerGrid || this.state.activeActionApplet === undefined)
-            return;
 
-        return <div>
-                <LwmButton name="Save & Close" onClick={this.handleAppletSave.bind(this)} isSelected={false}></LwmButton>
-                <LwmButton name="Cancel & Close" onClick={this.handleAppletCancel.bind(this)} isSelected={false}></LwmButton>
-              </div>;
+        const gridConfig = {
+                columns: columns,
+                rows: rows,
+                handleEditClicked: this.handleEditClicked.bind(this),
+                handleDeleteClicked: this.handleDeleteClicked.bind(this),
+            };
+
+        return gridConfig;
     }
 
     private getLessons() {        

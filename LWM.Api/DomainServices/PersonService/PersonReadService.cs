@@ -1,5 +1,6 @@
 ﻿using LWM.Api.DomainServices.PersonService.Contracts;
 using LWM.Api.Dtos;
+using LWM.Api.Enums;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,7 @@ namespace LWM.Api.DomainServices.PersonService
                     Surname = x.Surname,
                     EmailAddress1 = x.EmailAddress1,
                     PhoneNo = x.PhoneNo,
+                    PersonType = x.PersonType,
                 }).ToListAsync();
         }
     }

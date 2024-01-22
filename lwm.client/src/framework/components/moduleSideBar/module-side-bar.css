@@ -2,8 +2,8 @@
     display: grid;
     grid-template-rows: 150px auto 100px;
     min-height: 100%;
-    background: rgb(242, 242, 242);
-    border-radius: 10px;
+    background: rgb(242 242 242 / 5%);
+
 }
 
 .userContainer h1 {
@@ -14,21 +14,21 @@
     font-size: 20px;
     text-align: center;
     cursor: default;
-    color: black;
+    color: white;
     padding: 20px;
 }
 
 .option:hover {
     background: rgb(51, 51, 51);
     border-radius: 1px;
-    color: rgb(187, 187, 187);
+    color: white;
 }
 
 .option-selected {
     font-size: 20px;
     text-align: center;
     cursor: default;
-    color: white;
+    color: lightblue;
     padding: 20px;
     background: rgb(51, 51, 51);
 }

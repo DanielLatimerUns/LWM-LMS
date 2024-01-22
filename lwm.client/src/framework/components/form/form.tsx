@@ -19,7 +19,8 @@ export default class Form extends React.Component<Props, State> {
             <div className="formFieldContainer">
                 {this.props.children.map(field => 
                     <div className="formField">
-                        <label>{field.key}</label> <div>{field}</div>
+                        <label>{field.key}</label> 
+                        <div className="formFieldInput">{field}</div>
                     </div>)}
             </div>
          );

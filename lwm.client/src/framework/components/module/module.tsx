@@ -1,49 +1,43 @@
-import React from "react";
-import Lesson from "../types/Lesson";
-import RestService from "../../../services/network/RestService";
-import './lesson-manager.css';
-import LessonWizard from "../applets/lesson-wizard/applet/lesson-wizard";
+import React, { Fragment } from "react";
+import './module.css';
 import LwmButton from "../../../framework/components/button/lwm-button";
-import LessonManagerGrid from "../applets/lesson-manager-grid/applet/lesson-manager-grid";
-import GridColumns from "../../types/gridColumns";
+import GridColumn from "../../types/gridColumn";
 import GridRow from "../../types/gridRow";
+import Grid from "../grid/grid";
 
 export interface Props {
-    moduleName: string
-    moduleEntityName: string
+    moduleName: string;
+    moduleEntityName: string;
     gridConfig: {
-        columns: GridColumns[],
+        columns: GridColumn[],
         rows: GridRow[],
         handleEditClicked: Function,
         handleDeleteClicked: Function,
-
-
-    }
+    };
+    handleSaveCloseClicked: Function;
+    handleCloseClicked: Function;
     options: JSX.Element[];
+    children: JSX.Element | JSX.Element[] | undefined;
 }
  
 export interface State {
-    activeActionApplet: JSX.Element | undefined
 }
  
-export default class LessonManager extends React.Component<Props, State> {
+export default class Module extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-            
-        this.state = {
-            activeActionApplet: undefined
-        }
     }
 
     render() { 
         return ( 
             <div className="moduleContainer">
+                <div className="moduleHeader">
+                    <div className="moduleHeaderTitle">{this.props.moduleName}</div>
+                </div>
                 <div className="moduleActionSectionContainer">
                     {this.renderOptionsSection()}
                     {this.renderGrid()}
-                    <div className="moduleActionSectionApplet">
-                        {this.state.activeActionApplet}
-                    </div>
+                    {this.props.children}                 
                 </div>
             </div>);
     }
@@ -51,46 +45,43 @@ export default class LessonManager extends React.Component<Props, State> {
     private renderOptionsSection() {
         return(
             <div className="moduleActionSectionOptionContainer">
-                <div>
-                    {this.props.options}
-                </div>
+                {this.props.options}
                 {this.renderSaveClose()}
             </div>
         );
     }
 
     private renderGrid() {
-        if ( this.state.activeActionApplet !== undefined)
+        if ( this.props.children !== undefined)
             return;
 
         if (this.props?.gridConfig.columns === undefined)
             return;
 
-        const columns: GridColumns[] = [];
-
-        columns.push({lable: "Lesson Name", name: "name"});
-        columns.push({lable: "Lesson No", name: "lessonNo"});
-
         return (
-        <div className="lessonManagerGridContainer">
+        <div className="moduleGridContainer">
             <Grid
-                editClicked={this.props.handleEditLesson}
-                deletClicked={this.props.handleDeleteLesson}
+                editClicked={this.props.gridConfig.handleEditClicked}
+                deletClicked={this.props.gridConfig.handleDeleteClicked}
                 columns={this.props.gridConfig.columns} 
-                rows={this.props.lessons.map(lesson => ({columnData: lesson, id: lesson.id}))}>
+                rows={this.props.gridConfig.rows}>
             </Grid>
         </div>);
     }
 
     private renderSaveClose() {
-        if (this.state.activeActionApplet?.type === LessonManagerGrid || this.state.activeActionApplet === undefined)
+        if (!this.props.children)
             return;
 
-        return <div>
-                <LwmButton name="Save & Close" onClick={this.handleAppletSave.bind(this)} isSelected={false}></LwmButton>
-                <LwmButton name="Cancel & Close" onClick={this.handleAppletCancel.bind(this)} isSelected={false}></LwmButton>
-              </div>;
+        return <Fragment>
+                    <LwmButton 
+                        name="Save & Close" 
+                        onClick={this.props.handleSaveCloseClicked.bind(this)} 
+                        isSelected={false}/>
+                    <LwmButton 
+                        name="Cancel & Close" 
+                        onClick={this.props.handleCloseClicked.bind(this)} 
+                        isSelected={false}/>
+                </Fragment>;
     }
-
-    
 }

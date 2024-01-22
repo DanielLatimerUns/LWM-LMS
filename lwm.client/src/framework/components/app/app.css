@@ -4,8 +4,3 @@
     height: 100vh;
     background: rgb(51, 51, 51);
 }
-
-.moduleLoaderContainer {
-    height: 100%;
-    overflow: auto;
-}

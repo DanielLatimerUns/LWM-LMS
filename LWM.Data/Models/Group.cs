@@ -10,6 +10,10 @@ namespace LWM.Data.Models
     {
         public int Id { get; set; }
 
+        public string Name { get; set; }
+
+        public int CompletedLessonNo { get; set; }
+
         public Teacher Teacher { get; set; }
 
         public ICollection<Student> Students { get; set; }

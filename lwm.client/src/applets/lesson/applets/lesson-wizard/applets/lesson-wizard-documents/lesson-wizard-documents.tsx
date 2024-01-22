@@ -1,5 +1,5 @@
 import React from "react";
-import GridColumns from "../../../../../../framework/types/gridColumns";
+import GridColumn from "../../../../../../framework/types/gridColumn";
 import Grid from "../../../../../../framework/components/grid/grid";
 import LessonDocument from "../../../../types/LessonDocument";
 import './lesson-wizard-documents.css'
@@ -27,7 +27,7 @@ export default class LessonWizardDocuments extends React.Component<Props, State>
     }
 
     private renderDocumentGrid() {
-        const columns: GridColumns[] = [];
+        const columns: GridColumn[] = [];
         columns.push({name: "name", lable: "Document Name"});
         columns.push({name: "path", lable: "Document Path"});
         

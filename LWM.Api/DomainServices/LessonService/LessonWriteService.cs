@@ -8,7 +8,7 @@ namespace LWM.Api.DomainServices.LessonService
 {
     public class LessonWriteService : ILessonWriteService
     {
-        private CoreContext _context { get; set; }
+        private CoreContext _context;
 
         public LessonWriteService(CoreContext context)
         {

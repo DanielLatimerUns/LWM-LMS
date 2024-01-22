@@ -1,0 +1,50 @@
+.moduleContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+.moduleActionSectionOptionContainer {
+    padding-bottom: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.moduleActionSectionOptionContainer > div {
+    display: flex;
+}
+
+.moduleActionSectionContainer {
+    display: grid;  
+    grid-template-columns: 150px auto;
+    height: 100%;
+    overflow: hidden;
+}
+
+.moduleActionSectionApplet,
+.moduleGridContainer {
+    overflow: auto;
+    width: 500px;
+}
+
+.moduleActionSectionOption > div {
+    width: 200px;
+}
+
+.moduleGridContainer {
+    width: 100%;
+}
+
+.moduleHeader {
+    display: flex;
+    justify-content: center;
+    background: rgb(242 242 242 / 5%);
+    padding: 10px;
+}
+
+.moduleHeaderTitle {
+    font-size: 15px;
+}

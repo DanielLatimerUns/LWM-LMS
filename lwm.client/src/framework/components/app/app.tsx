@@ -18,14 +18,13 @@ export default class App extends React.Component<Props, State> {
     render() { 
         return ( 
         <div className="appOuterContainer">
-            <div className="sideBarContainer">
-                <ModuleSideBar onOptionSelectionChanged={this.onModuleSecetionChanged.bind(this)} userName="Kristina Unsworth"></ModuleSideBar>
-            </div>
-            <div className="moduleLoaderContainer">
+                <ModuleSideBar 
+                    onOptionSelectionChanged={this.onModuleSecetionChanged.bind(this)} 
+                    userName="Kristina Unsworth">
+                </ModuleSideBar>
                 <ModuleLoader>
                     {this.state.activeModule}
                 </ModuleLoader>
-            </div>
         </div>);
     }
 

@@ -18,5 +18,7 @@ namespace LWM.Data.Models
 
         public string PhoneNo { get; set; }
 
+        public int? PersonType { get; set; }
+
     }
 }

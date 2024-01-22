@@ -17,7 +17,7 @@ export default class ModuleLoader extends React.Component<Props, State> {
 
     render() { 
         return ( 
-            <div className='moduleContainer'>
+            <div className="moduleLoaderContainer">
                 {this.props.children}
             </div>
          );

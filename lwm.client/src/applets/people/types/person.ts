@@ -4,4 +4,5 @@ export interface Person {
     surname: string;
     emailAddress1: string;
     phoneNo: string;
+    personType: number | undefined
 }

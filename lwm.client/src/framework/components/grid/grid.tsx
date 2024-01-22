@@ -1,11 +1,11 @@
 import React from "react";
-import GridColumns from "../../types/gridColumns";
+import GridColumn from "../../types/gridColumns";
 import GridRow from "../../types/gridRow";
 import './grid.css';
 import LwmButton from "../button/lwm-button";
 
 export interface Props {
-    columns: GridColumns[];
+    columns: GridColumn[];
     rows: GridRow[];
     editClicked: Function;
     deletClicked: Function;
@@ -30,20 +30,34 @@ export default class Grid extends React.Component<Props, State> {
         
         return(
         <div className="gridOuterContainer">
-            <div className="gridHeader">
-                { this.props.columns.map(column => 
-                    <div className="gridHeaderColumn">
-                        {column.lable}
-                    </div>
-                )}
-            </div>
             <div className="gridContent">
-            {this.props.rows.map(row => 
+                <div className="gridContentHeader">
+                    {this.generateHeaderRow()}
+                </div>
+                {this.props.rows.map(row => 
                 <div className="gridContentRow">
                     {this.generateRow(row.columnData, row.id)}
                 </div>)}
             </div>
         </div>);
+    }
+
+    private generateHeaderRow() {
+        const columns: JSX.Element[] = [];
+         
+            this.props.columns.forEach(column => {
+                columns.push(
+                    <div className="gridHeaderColumn">
+                        {column.lable}
+                    </div>);
+                });
+
+                columns.push(
+                    <div className="gridHeaderColumn">                  
+                    </div>
+                )
+
+        return columns;
     }
 
     private generateRow(columnData: any, rowId: number) {
