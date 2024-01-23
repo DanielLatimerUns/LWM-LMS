@@ -1,10 +1,11 @@
 import React from "react";
 import Form from "../../../../../../framework/components/form/form";
-import { Person } from "../../../../types/person";
+import { Person } from "../../../../../../entities/domainModels/person";
 
 interface Props {
     person: Person;
-    handleFormChange: Function
+    handleFormChange: Function;
+
 }
  
 interface State {
@@ -54,7 +55,24 @@ export default class PeopleWizardForm extends React.Component<Props, State> {
                         value={this.props.person.phoneNo}
                         onChange={this.props.handleFormChange.bind(this)}/>
                 </Form>
+                {this.renderStudentForm()}
             </div>
         );
+    }
+
+    private renderStudentForm() {
+        if (this.props.person.personType !== 1) { return; }
+
+        return(<Form>{[
+                    <select 
+                            key="Group" 
+                            id="GroupId"
+                            value={this.props.person.student?.groupId}
+                            onChange={this.props.handleFormChange.bind(this)}>
+                                <option value={undefined}>Basic</option>
+                                <option value={1}>Student</option>
+                                <option value={2}>Teacher</option>
+                    </select>]}
+                </Form>);
     }
 }

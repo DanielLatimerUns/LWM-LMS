@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import './module.css';
 import LwmButton from "../../../framework/components/button/lwm-button";
-import GridColumn from "../../types/gridColumn";
-import GridRow from "../../types/gridRow";
+import GridColumn from "../../../entities/framework/gridColumn";
+import GridRow from "../../../entities/framework/gridRow";
 import Grid from "../grid/grid";
 
 export interface Props {

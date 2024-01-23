@@ -10,6 +10,6 @@ namespace LWM.Data.Models
     {
         public int Id { get; set; }
 
-        public Person Person { get; set; }
+        public Person? Person { get; set; }
     }
 }

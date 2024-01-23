@@ -1,6 +1,6 @@
 import React from "react";
 import GridColumn from "../../types/gridColumns";
-import GridRow from "../../types/gridRow";
+import GridRow from "../../../entities/framework/gridRow";
 import './grid.css';
 import LwmButton from "../button/lwm-button";
 

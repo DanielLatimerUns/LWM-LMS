@@ -1,10 +1,11 @@
 import React from 'react';
-import SideBarOption from '../../types/sideBarOption';
+import SideBarOption from '../../../entities/framework/sideBarOption';
 import './module-side-bar.css';
-import LessonManager from '../../../applets/lesson/applet/lesson-manager';
-import ControlCenter from '../../../applets/controlCenter/applet/control-center';
+import LessonManager from '../../../applets/lesson/lesson-manager';
+import ControlCenter from '../../../applets/controlCenter/control-center';
 import userImage from '../../../assets/user1.png';
-import PersonManager from '../../../applets/people/applet/people-manager';
+import PersonManager from '../../../applets/people/people-manager';
+import GroupManager from '../../../applets/group/group-manager';
 
 interface Props {
     userName: string
@@ -33,8 +34,8 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         });
 
         options.push({
-            name: 'Schedualing',
-            module: <div></div>,
+            name: 'Groups',
+            module: <GroupManager></GroupManager>,
             active: false
         });
 

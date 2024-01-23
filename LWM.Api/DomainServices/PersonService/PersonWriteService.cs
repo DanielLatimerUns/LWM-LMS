@@ -2,6 +2,7 @@
 using LWM.Api.DomainServices.PersonService.Contracts;
 using LWM.Api.DomainServices.StudentService;
 using LWM.Api.DomainServices.StudentService.Contracts;
+using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Dtos;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
@@ -15,11 +16,15 @@ namespace LWM.Api.DomainServices.PersonService
 
         private IStudentWriteService _studentWriteService;
 
+        private ITeacherWriteService _teacherWriteService;
+
         public PersonWriteService(CoreContext context, 
-            IStudentWriteService studentWriteService)
+            IStudentWriteService studentWriteService,
+            ITeacherWriteService teacherWriteService)
         {
             _context = context;
             _studentWriteService = studentWriteService;
+            _teacherWriteService = teacherWriteService;
         }
 
         public async Task<int> CreateAsync(Dtos.Person person)
@@ -39,6 +44,8 @@ namespace LWM.Api.DomainServices.PersonService
 
             if (person.PersonType is 1)
                 await _studentWriteService.CreateAsync(new Dtos.Student { GroupId = null, PersonId = model.Id });
+            if (person.PersonType is 2)
+                await _teacherWriteService.CreateAsync(new Dtos.Teacher { PersonId  = model.Id });
 
             return model.Id;
         }

@@ -1,5 +1,5 @@
 import React from "react";
-import Lesson from "../../../../types/Lesson";
+import Lesson from "../../../../../../entities/domainModels/Lesson";
 import Form from "../../../../../../framework/components/form/form";
 
 interface Props {

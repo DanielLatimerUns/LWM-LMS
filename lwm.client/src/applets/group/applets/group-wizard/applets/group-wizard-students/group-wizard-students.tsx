@@ -1,40 +1,39 @@
 import React from "react";
 import GridColumn from "../../../../../../entities/framework/gridColumn";
 import Grid from "../../../../../../framework/components/grid/grid";
-import LessonDocument from "../../../../../../entities/framework/LessonDocument";
-import './lesson-wizard-documents.css'
+import './group-wizard-students.css'
+import Student from "../../../../../../entities/domainModels/student";
 
 interface Props {
-    documents: LessonDocument[];
+    students: Student[];
 }
  
 interface State {
 }
  
-export default class LessonWizardDocuments extends React.Component<Props, State> {
+export default class GroupWizardStudents extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
     }
     render() { 
         return ( 
-            <div className="lessonWizardFormDocuments">
+            <div className="groupWizardFormStudents">
             <div>
-                Lesson Documents
+                Assigned Students
             </div>                   
-            {this.renderDocumentGrid()}
+            {this.renderGrid()}
         </div>
          );
     }
 
-    private renderDocumentGrid() {
+    private renderGrid() {
         const columns: GridColumn[] = [];
-        columns.push({name: "name", lable: "Document Name"});
-        columns.push({name: "path", lable: "Document Path"});
+        columns.push({name: "name", lable: "Name"});
         
         return (
         <Grid 
             columns={columns} 
-            rows={this.props.documents.map(doc => ({columnData: doc, id: doc.id}))}
+            rows={this.props.students.map(student => ({columnData: student, id: student.id}))}
             editClicked={() => {return;}}
             deletClicked={() => {return;}}>
         </Grid>)

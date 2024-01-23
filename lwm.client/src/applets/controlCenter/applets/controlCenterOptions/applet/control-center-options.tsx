@@ -1,6 +1,5 @@
 import React from "react";
-import ControlOption from "../types/option";
-import LessonManager from "../../lesson/applet/lesson-manager";
+import ControlOption from "../../../../../entities/framework/option";
 
 interface Props {
     appletChange: Function;
