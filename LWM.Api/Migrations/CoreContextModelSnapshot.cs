@@ -150,14 +150,17 @@ namespace LWM.Api.Migrations
                     b.Property<int>("SchedualedDayOfWeek")
                         .HasColumnType("int");
 
-                    b.Property<TimeOnly>("SchedualedTime")
+                    b.Property<TimeOnly>("SchedualedEndTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeOnly>("SchedualedStartTime")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Schedules");
+                    b.ToTable("LessonSchedule");
                 });
 
             modelBuilder.Entity("LWM.Data.Models.Person", b =>

@@ -15,6 +15,8 @@ namespace LWM.Data.Contexts
 
         public DbSet<Lesson> Lessons { get; set; }
 
+        public DbSet<LessonSchedule> LessonSchedules { get; set; }
+
         public DbSet<Document> Documents { get; set; }
 
         public DbSet<LessonInstance> Instances { get; set; }

@@ -18,6 +18,8 @@ export interface Props {
     handleCloseClicked: Function;
     options: JSX.Element[];
     children: JSX.Element | JSX.Element[] | undefined;
+    error?: string;
+    hasError: boolean;
 }
  
 export interface State {
@@ -34,27 +36,54 @@ export default class Module extends React.Component<Props, State> {
                 <div className="moduleHeader">
                     <div className="moduleHeaderTitle">{this.props.moduleName}</div>
                 </div>
+                {this.renderOptionsSection()}
                 <div className="moduleActionSectionContainer">
-                    {this.renderOptionsSection()}
                     {this.renderGrid()}
-                    {this.props.children}                 
+                    {this.renderApplet()}
+                    {this.buildError()}
                 </div>
             </div>);
+    }
+
+    private renderApplet() {
+        if (!this.props.children) { return;}
+        return (
+            <div className="moduleActionSectionApplet">
+                <div className="moduleActionSectionAppletHeader">{this.props.moduleEntityName}</div>
+                {this.props.children}
+            </div>)
+    }
+
+    private buildError() {
+        if (this.props.hasError) {
+            return(
+                <div className="moduleError">
+                    <h2>
+                        Operation Failed With the Below Error:
+                    </h2>
+
+                    {this.props.error}
+                </div>
+            )
+        }
+
+        return "";
     }
 
     private renderOptionsSection() {
         return(
             <div className="moduleActionSectionOptionContainer">
-                {this.props.options}
-                {this.renderSaveClose()}
+                <div>
+                    {this.props.options}
+                </div>
+                <div>
+                    {this.renderSaveClose()}
+                </div>
             </div>
         );
     }
 
     private renderGrid() {
-        if ( this.props.children !== undefined)
-            return;
-
         if (this.props?.gridConfig.columns === undefined)
             return;
 

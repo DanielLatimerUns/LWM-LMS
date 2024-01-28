@@ -1,5 +1,5 @@
 ﻿using LWM.Api.DomainServices.DocumentService.Contracts;
-using LWM.Api.Dtos;
+using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LWM.Api.Controllers

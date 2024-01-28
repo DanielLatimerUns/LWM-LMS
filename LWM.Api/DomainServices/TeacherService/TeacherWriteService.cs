@@ -1,5 +1,4 @@
-﻿using LWM.Api.DomainServices.StudentService.Contracts;
-using LWM.Api.DomainServices.TeacherService.Contracts;
+﻿using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
@@ -15,7 +14,7 @@ namespace LWM.Api.DomainServices.TeacherService
             _context = context;
         }
 
-        public async Task<Teacher> CreateAsync(Dtos.Teacher teacher)
+        public async Task<Teacher> CreateAsync(Dtos.DomainEntities.Teacher teacher)
         {
             var model = new Teacher
             {
@@ -29,10 +28,21 @@ namespace LWM.Api.DomainServices.TeacherService
             return model;
         }
 
-        public async Task UpdateeAsync(Dtos.Teacher teacher)
+        public async Task UpdateeAsync(Dtos.DomainEntities.Teacher teacher)
         {
             var model = _context.Teachers.FirstOrDefault(s => s.Id == teacher.Id);
             Validate(model);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int teacherId)
+        {
+            var model = _context.Teachers.FirstOrDefault(x => x.Id == teacherId);
+
+            Validate(model);
+
+            _context.Teachers.Remove(model);
 
             await _context.SaveChangesAsync();
         }

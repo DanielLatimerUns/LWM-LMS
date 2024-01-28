@@ -6,6 +6,8 @@ import ControlCenter from '../../../applets/controlCenter/control-center';
 import userImage from '../../../assets/user1.png';
 import PersonManager from '../../../applets/people/people-manager';
 import GroupManager from '../../../applets/group/group-manager';
+import ScheduleManager from '../../../applets/schedule/schedule-manager';
+import LwmButton from '../button/lwm-button';
 
 interface Props {
     userName: string
@@ -36,6 +38,12 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         options.push({
             name: 'Groups',
             module: <GroupManager></GroupManager>,
+            active: false
+        });
+
+        options.push({
+            name: 'Schedules',
+            module: <ScheduleManager></ScheduleManager>,
             active: false
         });
 
@@ -75,9 +83,8 @@ export default class ModuleSideBar extends React.Component<Props, State> {
     private renderContent() {
         return (
             this.state.options.map(option => 
-            <div className={option.active ? 'option-selected' : 'option'} onClick={this.handleModuleSelectionClick.bind(this, option)}>
-                <div>{option.name}</div>
-            </div>)
+            <LwmButton isSelected={option.active} onClick={this.handleModuleSelectionClick.bind(this, option)} name={option.name}>
+            </LwmButton>)
         );
     }
 
@@ -96,7 +103,6 @@ export default class ModuleSideBar extends React.Component<Props, State> {
             active: true
         });
 
-
         return (
             <div>
                 <div>
@@ -109,6 +115,11 @@ export default class ModuleSideBar extends React.Component<Props, State> {
     }
 
     private handleModuleSelectionClick(option: SideBarOption) {
+        if (option.name === "Log Out") {
+            dispatchEvent(new Event("app-logout"));
+            return;
+        }
+
         const updatedOptions = this.state.options;
 
         updatedOptions.forEach(x => x.active = x.name === option.name);

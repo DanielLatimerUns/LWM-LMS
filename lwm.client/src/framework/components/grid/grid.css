@@ -4,7 +4,7 @@
     color: black;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     overflow: auto;
 }
 
@@ -12,17 +12,22 @@
     display: grid; 
     grid-template-columns: 300px;
     grid-auto-columns: minmax(150px, 1fr);
-    border-bottom: 5px solid lightblue;
 }
 
 .gridContentRow {
-    background: rgba(255 255 255 / 95%);
+   
+    color: white;
     height: 50px;
     display: grid;
     grid-template-columns: 300px;
     grid-auto-columns: minmax(150px, 1fr);
-    border-radius: 3px;
 
+}
+
+.gridContentRow:nth-child(even) {
+    border-bottom: 3px solid rgb(111 232 115 / 5%);
+    border-left: 0;
+    background: rgb(62 62 62 / 90%);
 }
 
 .gridHeaderColumn {
@@ -33,6 +38,11 @@
     color: white;
     padding-bottom: 10px;
     padding-left: 10px;
+    font-weight: 600;
+}
+
+.gridHeaderColumn:last-child {
+    border-bottom: 0;
 }
 
 .gridContentColumn:nth-last-of-type(1) {
@@ -46,6 +56,7 @@
     align-items: center;
     gap: 10px;
     padding-left: 10px;
+  
 }
 
 .gridContentColumn .lwmButton {

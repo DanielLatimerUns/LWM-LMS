@@ -1,4 +1,4 @@
-﻿namespace LWM.Api.Dtos
+﻿namespace LWM.Api.Dtos.DomainEntities
 {
     public class Teacher
     {
@@ -6,6 +6,6 @@
 
         public int? PersonId { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

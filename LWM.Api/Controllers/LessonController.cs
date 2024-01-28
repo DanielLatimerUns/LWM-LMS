@@ -1,5 +1,6 @@
 ﻿using LWM.Api.DomainServices.LessonService.Contracts;
-using LWM.Api.Dtos;
+using LWM.Api.Dtos.DomainEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace LWM.Api.Controllers
 {
     [ApiController]
     [Route("lesson")]
+    [Authorize]
     public class LessonController : Controller
     {
         private readonly ILessonWriteService _lessonWriteService;

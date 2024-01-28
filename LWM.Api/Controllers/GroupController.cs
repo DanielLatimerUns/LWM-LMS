@@ -1,6 +1,6 @@
 ﻿using LWM.Api.DomainServices.GroupService.Contracts;
 using LWM.Api.DomainServices.StudentService.Contracts;
-using LWM.Api.Dtos;
+using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LWM.Api.Controllers
@@ -31,7 +31,7 @@ namespace LWM.Api.Controllers
             return await _groupReadService.GetGroups();
         }
 
-        [HttpGet("/{groupId:int}/students")]
+        [HttpGet("{groupId}/students")]
         public async Task<IEnumerable<Student>> GetByGroupId(int groupId)
         {
             return await _studentReadService.GetByGroupId(groupId);

@@ -1,5 +1,5 @@
 ﻿using LWM.Api.DomainServices.PersonService.Contracts;
-using LWM.Api.Dtos;
+using LWM.Api.Dtos.DomainEntities;
 using LWM.Api.Enums;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;

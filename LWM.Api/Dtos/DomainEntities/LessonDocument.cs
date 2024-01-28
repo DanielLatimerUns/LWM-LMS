@@ -1,4 +1,4 @@
-﻿namespace LWM.Api.Dtos
+﻿namespace LWM.Api.Dtos.DomainEntities
 {
     public class LessonDocument
     {

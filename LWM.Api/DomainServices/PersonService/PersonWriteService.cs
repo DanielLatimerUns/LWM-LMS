@@ -3,31 +3,15 @@ using LWM.Api.DomainServices.PersonService.Contracts;
 using LWM.Api.DomainServices.StudentService;
 using LWM.Api.DomainServices.StudentService.Contracts;
 using LWM.Api.DomainServices.TeacherService.Contracts;
-using LWM.Api.Dtos;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
 
 namespace LWM.Api.DomainServices.PersonService
 {
-    public class PersonWriteService : IPersonWriteService
+    public class PersonWriteService(CoreContext context) : IPersonWriteService
     {
-        private CoreContext _context;
-
-        private IStudentWriteService _studentWriteService;
-
-        private ITeacherWriteService _teacherWriteService;
-
-        public PersonWriteService(CoreContext context, 
-            IStudentWriteService studentWriteService,
-            ITeacherWriteService teacherWriteService)
-        {
-            _context = context;
-            _studentWriteService = studentWriteService;
-            _teacherWriteService = teacherWriteService;
-        }
-
-        public async Task<int> CreateAsync(Dtos.Person person)
+        public async Task<int> CreateAsync(Dtos.DomainEntities.Person person)
         {
             var model = new Data.Models.Person
             {
@@ -38,35 +22,27 @@ namespace LWM.Api.DomainServices.PersonService
                 PersonType = person.PersonType
             };
 
-            _context.Persons.Add(model);
+            context.Persons.Add(model);
 
-            await _context.SaveChangesAsync();
-
-            if (person.PersonType is 1)
-                await _studentWriteService.CreateAsync(new Dtos.Student { GroupId = null, PersonId = model.Id });
-            if (person.PersonType is 2)
-                await _teacherWriteService.CreateAsync(new Dtos.Teacher { PersonId  = model.Id });
+            await context.SaveChangesAsync();
 
             return model.Id;
         }
 
         public async Task DeleteAsync(int personId)
         {
-            var model = _context.Persons.FirstOrDefault(x => x.Id == personId);
+            var model = context.Persons.FirstOrDefault(x => x.Id == personId);
 
             Validate(model);
 
-            var studentModel = _context.Students.FirstOrDefault(x => x.Person.Id == personId);
-            if (studentModel is not null)
-                _context.Students.Remove(studentModel);
-            _context.Persons.Remove(model);
+            context.Persons.Remove(model);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Dtos.Person person)
+        public async Task UpdateAsync(Dtos.DomainEntities.Person person)
         {
-            var model = _context.Persons.FirstOrDefault(x => x.Id == person.Id);
+            var model = context.Persons.FirstOrDefault(x => x.Id == person.Id);
 
             Validate(model);
 
@@ -75,7 +51,7 @@ namespace LWM.Api.DomainServices.PersonService
             model.EmailAddress1 = person.EmailAddress1;
             model.PhoneNo = person.PhoneNo;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         private void Validate(Data.Models.Person model)

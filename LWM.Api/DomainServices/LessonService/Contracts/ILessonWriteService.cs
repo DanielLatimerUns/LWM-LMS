@@ -1,4 +1,4 @@
-﻿using LWM.Api.Dtos;
+﻿using LWM.Api.Dtos.DomainEntities;
 
 namespace LWM.Api.DomainServices.LessonService.Contracts
 {

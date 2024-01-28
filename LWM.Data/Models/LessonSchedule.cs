@@ -12,7 +12,9 @@ namespace LWM.Data.Models
 
         public int SchedualedDayOfWeek { get; set; }
 
-        public TimeOnly SchedualedTime { get; set; }
+        public TimeOnly SchedualedStartTime { get; set; }
+
+        public TimeOnly SchedualedEndTime { get; set; }
 
         public Group Group { get; set; }
     }

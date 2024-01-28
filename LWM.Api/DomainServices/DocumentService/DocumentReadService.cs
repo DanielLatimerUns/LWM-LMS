@@ -1,5 +1,5 @@
 ﻿using LWM.Api.DomainServices.DocumentService.Contracts;
-using LWM.Api.Dtos;
+using LWM.Api.Dtos.DomainEntities;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
 using Microsoft.EntityFrameworkCore;

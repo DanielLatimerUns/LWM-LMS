@@ -20,8 +20,7 @@ export interface State {
  
 export default class PersonManager extends React.Component<Props, State> {
     constructor(props: Props) {
-        super(props);
-            
+        super(props);           
         this.state = {
             persons: [], 
             selectedPerson: undefined, 

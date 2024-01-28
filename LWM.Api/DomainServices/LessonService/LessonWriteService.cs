@@ -1,5 +1,4 @@
 ﻿using LWM.Api.DomainServices.LessonService.Contracts;
-using LWM.Api.Dtos;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
@@ -15,7 +14,7 @@ namespace LWM.Api.DomainServices.LessonService
             _context = context;
         }
 
-        public async Task<int> CreateAsync(Dtos.Lesson lesson)
+        public async Task<int> CreateAsync(Dtos.DomainEntities.Lesson lesson)
         {
             var model = new Data.Models.Lesson
             {
@@ -41,7 +40,7 @@ namespace LWM.Api.DomainServices.LessonService
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Dtos.Lesson lesson)
+        public async Task UpdateAsync(Dtos.DomainEntities.Lesson lesson)
         {
             var exisintLesson = _context.Lessons.FirstOrDefault(x => x.Id == lesson.Id);
 

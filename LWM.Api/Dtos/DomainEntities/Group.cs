@@ -1,10 +1,10 @@
-﻿namespace LWM.Api.Dtos
+﻿namespace LWM.Api.Dtos.DomainEntities
 {
     public class Group
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public int TeacherId { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using LWM.Api.Dtos;
+﻿using LWM.Api.Dtos.DomainEntities;
 using LWM.Data.Models;
 
 namespace LWM.Api.DomainServices.DocumentService.Contracts

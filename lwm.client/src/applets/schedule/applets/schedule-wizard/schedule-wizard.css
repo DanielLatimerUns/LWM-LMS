@@ -1,0 +1,24 @@
+.personWizardContainer {  
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 800px;
+}
+
+.personWizardContainer > div {
+    padding: 10px;
+    height: auto;
+}
+
+.personWizardFooter {
+    display: flex;
+    justify-self: end;
+    gap: 10px;
+}
+
+.personWizardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}

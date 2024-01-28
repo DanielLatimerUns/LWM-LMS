@@ -1,7 +1,8 @@
 .moduleContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-rows: 40px auto;
+    grid-template-columns: 200px auto;
+    gap: 10px;
     height: 100%;
 }
 
@@ -9,19 +10,21 @@
     padding-bottom: 0px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 40px;
     padding: 10px;
+    justify-content: space-between;
+    border-right: 2px solid rgb(242 242 242 / 5%);
 }
 
 .moduleActionSectionOptionContainer > div {
     display: flex;
+    flex-direction: column;
 }
 
 .moduleActionSectionContainer {
-    display: grid;  
-    grid-template-columns: 150px auto;
+    display: flex;  
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .moduleActionSectionApplet,
@@ -43,8 +46,39 @@
     justify-content: center;
     background: rgb(242 242 242 / 5%);
     padding: 10px;
+    grid-column: span 2;
 }
 
 .moduleHeaderTitle {
     font-size: 15px;
 }
+
+.moduleError {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: red;
+    padding: 10px;
+    width: 100%;
+    grid-column: 2;
+    overflow: auto;
+}
+
+.moduleActionSectionApplet {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    z-index: 1000;
+    background: rgb(51 51 51 / 40%);
+    backdrop-filter: blur(1px);
+}
+
+.moduleActionSectionApplet > div {
+    background: rgb(62, 62, 62);
+    padding: 0 20px 0 20px;
+    border-radius: 4px;
+    width: fit-content;
+}
+

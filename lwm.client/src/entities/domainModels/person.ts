@@ -1,4 +1,5 @@
-import Student from "../applets/people/types/student";
+import Student from "./student";
+import Teacher from "./teacher";
 
 export interface Person {
     id: number;   
@@ -7,5 +8,6 @@ export interface Person {
     emailAddress1: string;
     phoneNo: string;
     personType: number | undefined;
-    student?: Student
+    student?: Student;
+    teacher?: Teacher;
 }

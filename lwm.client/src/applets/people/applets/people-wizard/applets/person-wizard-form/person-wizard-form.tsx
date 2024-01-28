@@ -1,11 +1,12 @@
 import React from "react";
 import Form from "../../../../../../framework/components/form/form";
 import { Person } from "../../../../../../entities/domainModels/person";
+import Group from "../../../../../../entities/domainModels/group";
 
 interface Props {
     person: Person;
     handleFormChange: Function;
-
+    groups: Group[];
 }
  
 interface State {
@@ -66,12 +67,14 @@ export default class PeopleWizardForm extends React.Component<Props, State> {
         return(<Form>{[
                     <select 
                             key="Group" 
-                            id="GroupId"
+                            id="groupId"
                             value={this.props.person.student?.groupId}
                             onChange={this.props.handleFormChange.bind(this)}>
-                                <option value={undefined}>Basic</option>
-                                <option value={1}>Student</option>
-                                <option value={2}>Teacher</option>
+                                <option value={undefined}>Select a Group</option>
+                                {this.props.groups.map(group => 
+                                    <option value={group.id
+                                    }>{group.name}</option>
+                                )}
                     </select>]}
                 </Form>);
     }
