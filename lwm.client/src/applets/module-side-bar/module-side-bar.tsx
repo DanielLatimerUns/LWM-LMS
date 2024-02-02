@@ -1,13 +1,14 @@
 import React from 'react';
-import SideBarOption from '../../../entities/framework/sideBarOption';
+import SideBarOption from '../../entities/framework/sideBarOption';
 import './module-side-bar.css';
-import LessonManager from '../../../applets/lesson/lesson-manager';
-import ControlCenter from '../../../applets/controlCenter/control-center';
-import userImage from '../../../assets/user1.png';
-import PersonManager from '../../../applets/people/people-manager';
-import GroupManager from '../../../applets/group/group-manager';
-import ScheduleManager from '../../../applets/schedule/schedule-manager';
-import LwmButton from '../button/lwm-button';
+import LessonManager from '../lesson/lesson-manager';
+import ControlCenter from '../controlCenter/control-center';
+import userImage from '../../assets/user1.png'
+import PersonManager from '../people/people-manager';
+import GroupManager from '../group/group-manager';
+import ScheduleManager from '../schedule/schedule-manager';
+import LwmButton from '../../framework/components/button/lwm-button';
+import LessonFeed from '../lesson-feed/lesson-feed';
 
 interface Props {
     userName: string
@@ -24,9 +25,15 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         const options: SideBarOption[] = [];
 
         options.push({
+            name: 'Feed',
+            module: <LessonFeed></LessonFeed>,
+            active: true
+        });
+
+        options.push({
             name: 'Lessons',
             module: <LessonManager></LessonManager>,
-            active: true
+            active: false
         });
 
         options.push({

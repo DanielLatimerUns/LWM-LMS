@@ -2,7 +2,7 @@ import AuthService from './authentication/authService';
 
 export default class RestService {
 
-    private static get BaseApiUrl() : string { return 'https://localhost:7120/'}
+    private static get BaseApiUrl() : string { return 'https://7techsolutions.net/api/'}
 
     public static Get(requestUrl: string) : Promise<Response> {
         return fetch(this.BaseApiUrl + requestUrl, {
@@ -30,15 +30,15 @@ export default class RestService {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                authHeader
+                "Authorization": "Bearer " + authHeader
             },
             body: payload ? JSON.stringify(payload) : ""
         });
     }
 
     public static Delete(requestUrl: string) : Promise<Response> {
-        const authHeader = this.BuildAuthHeader();  
-        return fetch(this.BaseApiUrl + requestUrl, { method: "delete", headers: authHeader});
+        const authHeader = this.BuildAuthHeader().Authorization;  
+        return fetch(this.BaseApiUrl + requestUrl, { method: "delete", headers: {"Authorization": "Bearer " + authHeader}});
     }
 
     private static BuildAuthHeader() {

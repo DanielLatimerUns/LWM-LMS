@@ -66,19 +66,30 @@
 
 .moduleActionSectionApplet {
     display: flex;
-    flex-direction: column;
     position: absolute;
     width: -webkit-fill-available;
     height: -webkit-fill-available;
     z-index: 1000;
-    background: rgb(51 51 51 / 40%);
-    backdrop-filter: blur(1px);
+    background: rgb(51 51 51 / 70%);
+    backdrop-filter: blur(5px);
 }
 
-.moduleActionSectionApplet > div {
-    background: rgb(62, 62, 62);
+.moduleActionSectionAppletContent {
+    background: rgb(62 62 62 / 100%);
     padding: 0 20px 0 20px;
     border-radius: 4px;
-    width: fit-content;
+
 }
 
+.moduleActionSectionAppletHeader {
+    display: flex;
+    gap: 20px;
+    padding-top: 10px;
+
+    justify-content: center;
+}
+
+.fieldSetHeader  {
+    border-bottom: 1px solid rgba(247 242 242 / 10%);
+    padding: 10px;
+}

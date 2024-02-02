@@ -1,0 +1,5 @@
+.lessonFeed {
+    display: flex;
+    flex-direction: column;
+    
+}

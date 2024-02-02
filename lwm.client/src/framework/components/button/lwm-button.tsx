@@ -8,7 +8,6 @@ interface Props {
 }
  
 interface State {
-    
 }
  
 export default class LwmButton extends React.Component<Props, State> {

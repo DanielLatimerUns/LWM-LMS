@@ -15,7 +15,9 @@ export interface Props {
 export interface State {
     groups: Group[]
     selectedGroup?: Group,
-    activeActionApplet: JSX.Element | undefined
+    activeActionApplet: JSX.Element | undefined,
+    hasError: boolean,
+    error?: string
 }
  
 export default class GroupManager extends React.Component<Props, State> {
@@ -25,7 +27,9 @@ export default class GroupManager extends React.Component<Props, State> {
         this.state = {
             groups: [], 
             selectedGroup: undefined, 
-            activeActionApplet: undefined
+            activeActionApplet: undefined,
+            hasError: false,
+            error: 'All fields required'
         }
     }
 
@@ -42,7 +46,8 @@ export default class GroupManager extends React.Component<Props, State> {
                 handleCloseClicked={this.handleAppletCancel.bind(this)}
                 handleSaveCloseClicked={this.handleAppletSave.bind(this)}
                 options={this.buildActionOptions()}
-                >
+                hasError={this.state.hasError}
+                error={this.state.error}>
                 {this.state.activeActionApplet}
             </Module>
         );
@@ -85,7 +90,6 @@ export default class GroupManager extends React.Component<Props, State> {
                 </LwmButton>
             )
         ];
-
         return options;
     }
 
@@ -110,6 +114,7 @@ export default class GroupManager extends React.Component<Props, State> {
 
         const applet = 
                 <GroupWizard
+                    onValidationChanged={this.handleValidationChanged.bind(this)}
                     group={group}>
                 </GroupWizard>;
 
@@ -120,6 +125,7 @@ export default class GroupManager extends React.Component<Props, State> {
         this.setState({selectedGroup: group});
 
         const applet = <GroupWizard 
+                            onValidationChanged={this.handleValidationChanged.bind(this)}
                             group={group}>
                         </GroupWizard>;
 
@@ -140,6 +146,11 @@ export default class GroupManager extends React.Component<Props, State> {
     }
 
     private handleAppletSave() {
+        if (this.state.hasError) {
+            this.setState({hasError: true, error: "Required fields not set"});
+            return;
+        }
+
         if (this.state.selectedGroup?.id === 0) {
             RestService.Post('group', this.state.selectedGroup).then( data =>
                 data.json().then(this.handleGroupChange.bind(this))
@@ -154,5 +165,9 @@ export default class GroupManager extends React.Component<Props, State> {
         ).catch( error =>
             console.error(error)
         )
+    }
+
+    private handleValidationChanged(isValid: boolean) {
+        this.setState({hasError: !isValid});
     }
 }

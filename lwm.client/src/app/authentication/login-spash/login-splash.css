@@ -1,16 +1,36 @@
 .loginSpashContainer {
     display: flex;
     flex-direction: column;
-    gap: 40px;
-    padding: 100px;
-    background: rgba(243 241 241 / 30% );
-    backdrop-filter: blur(6px);
-    border-radius: 5px;
-    color: black;
+    gap: 50px;
+    padding: 40px;
+    background: rgba(243 241 241 / 40% );
+    backdrop-filter: blur(7px);
+    border-radius: 10px;
+    color: white;
+    width: 300px;
+    height: 350px;
+    border: 1px solid white;
 }
 
 .loginSplashHeader {
     display: flex;
     justify-content: center;
-    color: black;
+    color: white;
+}
+
+.loginSpashErrorMessage {
+    color: red;
+    display: flex;
+    justify-content: center;
+}
+
+.loginSpashFormContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+}
+
+.loginSpashFormContainer > input {
+    padding: 15px;
 }

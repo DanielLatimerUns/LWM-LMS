@@ -9,7 +9,7 @@ namespace LWM.Api.ApplicationServices.SchedualingServices.WriteServices
     {
         public async Task Execute(int lessonScheduleId)
         {
-            await scheduleWriteService.DeleteAsync(lessonScheduleId);
+            await scheduleWriteService.DeleteAsync(lessonScheduleId);         
         }
     }
 }

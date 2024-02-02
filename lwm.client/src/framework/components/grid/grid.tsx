@@ -7,8 +7,8 @@ import GridColumn from "../../../entities/framework/gridColumn";
 export interface Props {
     columns: GridColumn[];
     rows: GridRow[];
-    editClicked: Function;
-    deletClicked: Function;
+    editClicked: Function | undefined;
+    deletClicked: Function | undefined;
 }
  
 export interface State {
@@ -26,8 +26,7 @@ export default class Grid extends React.Component<Props, State> {
     }
 
     private renderGrid() {
-        console.log(Object.values(this.props.rows));
-        
+       
         return(
         <div className="gridOuterContainer">
             <div className="gridContent">
@@ -75,21 +74,35 @@ export default class Grid extends React.Component<Props, State> {
 
             columns.push(
                 <div className="gridContentColumn">
-                    <LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name="Edit"></LwmButton>
-                    <LwmButton isSelected={false} onClick={this.handleDeleteClicked.bind(this, rowId)} name="Delete"></LwmButton>
+                    {this.generateGridButtons(rowId)}
                 </div>
             )
             
-
             return columns;
     }
 
+    private generateGridButtons(rowId: number) {
+            const buttons: JSX.Element[] = [];
+
+            if (this.props.editClicked) {
+                buttons.push(<LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name="Edit"></LwmButton>)
+            }
+
+            if (this.props.deletClicked) {
+                buttons.push(<LwmButton isSelected={false} onClick={this.handleDeleteClicked.bind(this, rowId)} name="Delete"></LwmButton>)
+            }
+
+            return buttons;
+    }
+
     private handleEditClicked(rowId: number) {
+        if (!this.props.editClicked) { return; }
         const rowClicked = this.props.rows.find(row => row.id == rowId);
         this.props.editClicked(rowClicked?.columnData);
     }
 
     private handleDeleteClicked(rowId: number) {
+        if (!this.props.deletClicked) { return; }
         const rowClicked = this.props.rows.find(row => row.id == rowId);
         this.props.deletClicked(rowClicked?.columnData);
     }

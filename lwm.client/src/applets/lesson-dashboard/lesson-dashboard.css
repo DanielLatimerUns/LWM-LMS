@@ -1,0 +1,47 @@
+.lessonDashboardContainer {
+    display: grid;
+    grid-template-rows: 100px auto;
+    padding: 20px;
+    border: 1px solid rgb(62 62 62 / 100%);
+    border-radius: 5px;
+    gap: 20px;
+}
+
+.lessonDashboard-selected {
+    border: green 1px solid;
+}
+
+.lessonDashboardHeader {
+    display: flex;
+    justify-content: space-around;
+    border-radius: 5px;
+    background: rgb(62 62 62 / 100%);
+    align-items: center;
+    font-size: 20px;
+}
+
+.lessonDashboardContent {
+    display: flex;
+    gap: 20px;
+}
+
+.lessonDashboard {
+    display: flex;
+    justify-content: center;
+    min-width: 1000px;
+    padding: 20px;
+}
+
+.lessonDashboardContainerLabel {
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.lessonDashboradStudents, 
+.lessonDashboardDocuments
+ {
+    border: 1px solid rgb(62 62 62 / 100%);
+    padding: 10px;
+    border-radius: 5px;
+}

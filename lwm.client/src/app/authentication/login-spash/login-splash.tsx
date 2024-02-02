@@ -1,45 +1,48 @@
 import React from "react";
 import './login-splash.css';
-import Form from "../../../framework/components/form/form";
 import LoginModel from "../../../entities/app/loginModel";
 import LwmButton from "../../../framework/components/button/lwm-button";
 import AuthService from "../../../services/network/authentication/authService";
 
 interface Props {
-    onLoginSuccsess: Function
+    onLoginSuccsess: Function;
 }
  
 interface State {
-    loginModel: LoginModel
+    loginModel: LoginModel;
+    error: string;
 }
  
 export default class LoginSpash extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { loginModel: {username: "", password: ""}  };
+        this.state = { loginModel: {username: "", password: ""}, error: "" };
     }
     
     render() { 
         return ( 
         <div className="loginSpashContainer">
             <div className="loginSplashHeader">
-                <h2>Learn With Me</h2>
+                Learn With Me
             </div>
             <div className="loginSpashFormContainer">
-                <Form>
                     <input 
-                            key="User Name" 
+                            key="Username" 
                             type="text"
                             id="username" 
                             value={this.state.loginModel.username}
-                            onChange={this.handleFormChange.bind(this)}/>
+                            onChange={this.handleFormChange.bind(this)}
+                            placeholder="Username"/>
                     <input 
                             key="Password" 
                             type="password"
-                            id="password" 
+                            id="password"
+                            placeholder="Password"
                             value={this.state.loginModel.password}
                             onChange={this.handleFormChange.bind(this)}/>
-                </Form>
+            </div>
+            <div className="loginSpashErrorMessage">
+                {this.state.error}
             </div>
             <div className="loginSpashActionButtonsContainer">
                 <LwmButton 
@@ -66,8 +69,11 @@ export default class LoginSpash extends React.Component<Props, State> {
 
     private async handleLoginClicked() {
         const didAuth = await AuthService.Login(this.state.loginModel);
-       if (didAuth) {
-        this.props.onLoginSuccsess();
-       }
+        if (didAuth) {
+            this.props.onLoginSuccsess();
+            return;
+        }
+
+        this.setState({error: "Login Attempt Failed Invalid Credentials"});
     }
 }

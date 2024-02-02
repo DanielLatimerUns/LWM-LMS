@@ -1,14 +1,16 @@
-import React from "react";
+import React, { Fragment } from "react";
 import './group-wizard.css';
-import GroupWizardForm from "./applets/group-wizard-form/group-wizard-form";
 import Teacher from "../../../../entities/domainModels/teacher";
 import RestService from "../../../../services/network/RestService";
 import Group from "../../../../entities/domainModels/group";
 import Student from "../../../../entities/domainModels/student";
 import GroupWizardStudents from "./applets/group-wizard-students/group-wizard-students";
+import FormField from "../../../../entities/framework/formField";
+import Form from "../../../../framework/components/form/form";
 
 export interface Props {
     group: Group;
+    onValidationChanged?: Function;
 }
  
 export interface State {
@@ -32,15 +34,50 @@ export default class GroupWizard extends React.Component<Props, State> {
         return ( 
         <div className="groupWizardContainer">
             <div className="groupWizardBody">
-                <GroupWizardForm 
-                    group={this.state.group} 
-                    teachers={this.state.teachers}
-                    handleFormChange={this.handleFormChange.bind(this)}/>
+                {this.renderForms()}
                 <GroupWizardStudents
                     students={this.state.assignedStudents}>
                 </GroupWizardStudents>
             </div>
         </div>);
+    }
+
+    private renderForms() {
+        const teachers: JSX.Element[] = [
+            <option value={undefined}>Select a Teacher</option>
+        ];
+
+        this.state.teachers.map(teachher => teachers.push(
+        <option value={teachher.id}>{teachher.name}</option>))
+
+        const fields: FormField[] = [
+            {
+                label: "Name" ,
+                id: "name",
+                value: this.props.group.name,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "text",
+                selectOptions: undefined
+            },
+            {
+                label: "Teacher",
+                id: "teacherId",
+                value: this.props.group.teacherId,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "select",
+                selectOptions: teachers
+            }
+        ];
+
+        return(            
+        <Fragment>
+            <div className="fieldSetHeader">Group Record</div>
+            <Form onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)} fields={fields}/>
+        </Fragment>)
     }
 
     private handleFormChange(e: any) {
@@ -55,8 +92,13 @@ export default class GroupWizard extends React.Component<Props, State> {
 
         changedgroup.teacherId = (changedgroup.teacherId as number);
 
-        if (e.target === null) return;
         this.setState({group: changedgroup})
+    }
+
+    private handleFieldValidationChanged(isValid: boolean) {
+        if (this.props.onValidationChanged) {
+            this.props.onValidationChanged(isValid);
+        }
     }
 
     private getTeachers() {

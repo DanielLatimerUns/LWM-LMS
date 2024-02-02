@@ -7,9 +7,5 @@ namespace LWM.Api.Dtos.ViewModels
     public class LoginResponseViewModel
     {
         public JTWResponseToken Token { get; set; }
-
-        public Person Person { get; set; }
-
-        public UserViewModel User { get; set; }
     }
 }

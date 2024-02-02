@@ -1,13 +1,15 @@
-import React from "react";
+import React, { Fragment } from "react";
 import './lesson-wizard.css';
 import Lesson from "../../../../entities/domainModels/Lesson";
 import RestService from "../../../../services/network/RestService";
 import LessonDocument from "../../../../entities/framework/LessonDocument";
 import LessonWizardDocuments from "./applets/lesson-wizard-documents/lesson-wizard-documents";
-import LessonWizardForm from "./applets/lesson-wizard-form/lesson-wizard-form";
+import FormField from "../../../../entities/framework/formField";
+import Form from "../../../../framework/components/form/form";
 
 export interface Props {
     lesson: Lesson;
+    onValidationChanged?: Function;
 }
  
 export interface State {
@@ -29,7 +31,7 @@ export default class LessonWizard extends React.Component<Props, State> {
         return ( 
         <div className="lessonWizardContainer">
             <div className="lessonWizardBody">
-                <LessonWizardForm lesson={this.state.lessonState} handleFormChange={this.handleFormChange.bind(this)}/>
+                {this.buildForm()}
                 {this.renderDoocuments()} 
             </div>
         </div>);
@@ -48,9 +50,40 @@ export default class LessonWizard extends React.Component<Props, State> {
         ).catch(error => console.error(error));
     }
 
+    private buildForm() {
+        const fields: FormField[] = [
+            {
+                label: "Name" ,
+                type: "text",
+                id: "name" ,
+                value: this.props.lesson.name,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                required: true,
+                validationPattern: undefined,
+                selectOptions: undefined
+            },
+            {
+                label: "Lesson Number" ,
+                type: "text",
+                id: "lessonNo" ,
+                value: this.props.lesson.lessonNo,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                required: true,
+                validationPattern: "[0-9]+",
+                selectOptions: undefined
+            }
+        ];
+
+        return (
+            <Fragment>
+                <div className="fieldSetHeader">Lesson Record</div>
+                <Form onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)} fields={fields}/>
+            </Fragment>)
+    }
+
     private handleFormChange(e: any) {
         const changedLesson: Lesson = Object.assign(this.state.lessonState);
-        const targetField: string = e.target.value;
+        const targetField: any = e.target.value;
 
         for (const field in changedLesson) {
             if (field === e.target.id) {
@@ -58,8 +91,12 @@ export default class LessonWizard extends React.Component<Props, State> {
             }
         }
 
-        if (e.target === null) return;
-
         this.setState({lessonState: changedLesson})
+    }
+
+    private handleFieldValidationChanged(isValid: boolean) {
+        if (this.props.onValidationChanged) {
+            this.props.onValidationChanged(isValid);
+        }
     }
 }

@@ -19,7 +19,8 @@ namespace LWM.Authentication
         public async Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {
             var claims = new[]
-         {
+            {
+                 new Claim(ClaimTypes.NameIdentifier, identity.FindFirst(ClaimTypes.NameIdentifier).Value),
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
@@ -47,7 +48,7 @@ namespace LWM.Authentication
             {
                 new Claim("id", id),
                 new Claim("rol", "api_access"),
-                new Claim(ClaimTypes.NameIdentifier,id)
+                new Claim(ClaimTypes.NameIdentifier, id)
             });
         }
 

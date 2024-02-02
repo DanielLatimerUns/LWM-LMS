@@ -1,22 +1,35 @@
 .formFieldContainer {
-    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px;
 }
 
 .formField {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    gap: 60px;
+    align-items: end;
+    padding-bottom: 10px;
 }
 
 .formField label {
     font-size: 18px;
-}
-
-.formFieldInput {
-    width: 200px;
+   
 }
 
 .formFieldInput > input,
 .formFieldInput > select {
-    width: 100%;
+    width: 200px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid rgba(247 242 242 / 10%);
+}
+
+.formFieldInput > select {
+    width: 215px;
+}
+
+.invalid-input {
+    border: red 1px solid !important;
 }

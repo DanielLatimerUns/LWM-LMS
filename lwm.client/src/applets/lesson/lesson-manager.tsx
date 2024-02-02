@@ -8,14 +8,15 @@ import Module from "../../framework/components/module/module";
 import GridColumn from "../../entities/framework/gridColumn";
 import GridRow from "../../entities/framework/gridRow";
 
-export interface Props {
-    
+export interface Props {   
 }
  
 export interface State {
     lessons: Lesson[]
     selectedLesson?: Lesson,
-    activeActionApplet?: JSX.Element 
+    activeActionApplet?: JSX.Element,
+    hasError: boolean,
+    error?: string
 }
  
 export default class LessonManager extends React.Component<Props, State> {
@@ -24,7 +25,9 @@ export default class LessonManager extends React.Component<Props, State> {
         this.state = {
             lessons: [], 
             selectedLesson: undefined, 
-            activeActionApplet: undefined
+            activeActionApplet: undefined,
+            hasError: false,
+            error: 'All fields required'
         }
     }
 
@@ -41,7 +44,8 @@ export default class LessonManager extends React.Component<Props, State> {
                 handleCloseClicked={this.handleAppletCancel.bind(this)}
                 handleSaveCloseClicked={this.handleAppletSave.bind(this)}
                 options={this.buildActionOptions()}
-                >
+                hasError={this.state.hasError}
+                error={this.state.error}>
                 {this.state.activeActionApplet}
             </Module>);
     }
@@ -89,6 +93,14 @@ export default class LessonManager extends React.Component<Props, State> {
         return gridConfig;
     }
 
+    private buildWizard(lesson: Lesson) {
+        return(
+        <LessonWizard 
+            onValidationChanged={this.handleValidationChanged.bind(this)}
+            lesson={lesson}>
+        </LessonWizard>);
+    }
+
     private getLessons() {        
         RestService.Get('lesson').then(
             resoponse => resoponse.json().then(
@@ -105,23 +117,11 @@ export default class LessonManager extends React.Component<Props, State> {
 
     private handleAddClicked() {
         const lesson: Lesson = {lessonNo: "", name: "", id: 0};
-
-        this.setState({selectedLesson: lesson});
-        const applet = <LessonWizard 
-                    lesson={lesson}>
-                </LessonWizard>;
-
-        this.setState({activeActionApplet: applet });
+        this.setState({selectedLesson: lesson, activeActionApplet: this.buildWizard(lesson)});
     }
 
     private handleEditClicked(lesson: Lesson) {
-        this.setState({selectedLesson: lesson});
-
-        const applet = <LessonWizard 
-                    lesson={lesson}>
-                </LessonWizard>;
-
-        this.setState({activeActionApplet: applet });
+        this.setState({selectedLesson: lesson ,activeActionApplet: this.buildWizard(lesson) });
     }
 
     private handleDeleteClicked(lesson: Lesson) {
@@ -129,11 +129,15 @@ export default class LessonManager extends React.Component<Props, State> {
     }
 
     private handleAppletCancel() {
-        this.setState({activeActionApplet: undefined, selectedLesson: undefined});
+        this.setState({activeActionApplet: undefined, selectedLesson: undefined, hasError: false});
+        this.setState({hasError: false});
     }
 
     private handleAppletSave() {
-        this.setState({lessons: []});
+        if (this.state.hasError) {
+            this.setState({hasError: true, error: "Required fields not set"});
+            return;
+        }
 
         if (this.state.selectedLesson?.id === 0) {
             RestService.Post('lesson', this.state.selectedLesson).then(() => this.getLessons());
@@ -141,5 +145,9 @@ export default class LessonManager extends React.Component<Props, State> {
         }
 
         RestService.Put('lesson',this.state.selectedLesson).then(() => this.getLessons());
+    }
+
+    private handleValidationChanged(isValid: boolean) {
+        this.setState({hasError: !isValid});
     }
 }

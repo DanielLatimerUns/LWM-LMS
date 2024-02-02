@@ -40,7 +40,6 @@ export default class Module extends React.Component<Props, State> {
                 <div className="moduleActionSectionContainer">
                     {this.renderGrid()}
                     {this.renderApplet()}
-                    {this.buildError()}
                 </div>
             </div>);
     }
@@ -49,8 +48,13 @@ export default class Module extends React.Component<Props, State> {
         if (!this.props.children) { return;}
         return (
             <div className="moduleActionSectionApplet">
-                <div className="moduleActionSectionAppletHeader">{this.props.moduleEntityName}</div>
-                {this.props.children}
+                <div className="moduleActionSectionAppletContent">
+                    <div className="moduleActionSectionAppletHeader">
+                        {this.renderSaveClose()}
+                    </div>
+                    {this.props.children}
+                    {this.buildError()}
+                </div>
             </div>)
     }
 
@@ -58,10 +62,6 @@ export default class Module extends React.Component<Props, State> {
         if (this.props.hasError) {
             return(
                 <div className="moduleError">
-                    <h2>
-                        Operation Failed With the Below Error:
-                    </h2>
-
                     {this.props.error}
                 </div>
             )
@@ -75,9 +75,6 @@ export default class Module extends React.Component<Props, State> {
             <div className="moduleActionSectionOptionContainer">
                 <div>
                     {this.props.options}
-                </div>
-                <div>
-                    {this.renderSaveClose()}
                 </div>
             </div>
         );

@@ -15,8 +15,12 @@ namespace LWM.Api.ApplicationServices.SchedualingServices
             if (lessonSchedule.SchedualedDayOfWeek is null)
                 return false;
 
+
             var parsedStartTime = TimeOnly.Parse(lessonSchedule.SchedualedStartTime);
             var parsedEndTime = TimeOnly.Parse(lessonSchedule.SchedualedEndTime);
+
+            if (parsedEndTime < parsedStartTime)
+                return false;
 
             var potentialClashes =
             await lessonScheduleReadService.GetLessonSchedules(
@@ -24,13 +28,14 @@ namespace LWM.Api.ApplicationServices.SchedualingServices
 
             foreach(var potentialClash in potentialClashes)
             {
+                
                 var clashTimeStart = TimeOnly.Parse(potentialClash.SchedualedStartTime);
                 var clashTimeEnd = TimeOnly.Parse(potentialClash.SchedualedEndTime);
 
-                if (parsedStartTime < clashTimeStart & parsedEndTime < clashTimeEnd) // start time before - end time within
+                if (parsedStartTime < clashTimeStart & (parsedEndTime < clashTimeEnd & parsedEndTime > clashTimeStart)) // start time before - end time within
                     return true;
 
-                if (parsedStartTime > clashTimeStart & parsedEndTime > clashTimeEnd) // start time within - end time after
+                if ((parsedStartTime < clashTimeStart & parsedStartTime < clashTimeEnd) & parsedEndTime > clashTimeEnd) // start time within - end time after
                     return true;
 
                 if (parsedStartTime < clashTimeStart & parsedEndTime > clashTimeEnd) // start time before - end time after

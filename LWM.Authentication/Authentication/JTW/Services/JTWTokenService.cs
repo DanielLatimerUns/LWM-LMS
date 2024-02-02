@@ -2,12 +2,12 @@
 
 namespace LWM.Authentication
 {
-    public class JTWToken
+    public class JTWTokenService(
+        IJwtFactory IJwtFactory) : IJTWTokenService
     {
-        public async static Task<JTWResponseToken> GenerateToken(
-            ClaimsIdentity claimsIdentity, 
-            IJwtFactory IJwtFactory, 
-            string userName, 
+        public async Task<JTWResponseToken> GenerateToken(
+            ClaimsIdentity claimsIdentity,
+            string userName,
             JwtIssuerOptions jwtIssuerOptions)
         {
             var reponse = new JTWResponseToken();

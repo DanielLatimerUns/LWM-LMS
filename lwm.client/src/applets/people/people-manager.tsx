@@ -15,7 +15,9 @@ export interface Props {
 export interface State {
     persons: Person[]
     selectedPerson?: Person,
-    activeActionApplet: JSX.Element | undefined
+    activeActionApplet: JSX.Element | undefined,
+    hasError: boolean,
+    error?: string
 }
  
 export default class PersonManager extends React.Component<Props, State> {
@@ -24,7 +26,9 @@ export default class PersonManager extends React.Component<Props, State> {
         this.state = {
             persons: [], 
             selectedPerson: undefined, 
-            activeActionApplet: undefined
+            activeActionApplet: undefined,
+            hasError: false,
+            error: 'All fields required'
         }
     }
 
@@ -41,7 +45,8 @@ export default class PersonManager extends React.Component<Props, State> {
                 handleCloseClicked={this.handleAppletCancel.bind(this)}
                 handleSaveCloseClicked={this.handleAppletSave.bind(this)}
                 options={this.buildActionOptions()}
-                >
+                hasError={this.state.hasError}
+                error={this.state.error}>
                 {this.state.activeActionApplet}
             </Module>
         );
@@ -113,6 +118,7 @@ export default class PersonManager extends React.Component<Props, State> {
 
         const applet = 
                 <PeopleWizard 
+                    onValidationChanged={this.handleValidationChanged.bind(this)}
                     person={person}>
                 </PeopleWizard>;
 
@@ -122,7 +128,9 @@ export default class PersonManager extends React.Component<Props, State> {
     private handleEditPerson(person: Person) {
         this.setState({selectedPerson: person});
 
-        const applet = <PeopleWizard 
+        const applet = 
+                <PeopleWizard 
+                    onValidationChanged={this.handleValidationChanged.bind(this)}
                     person={person}>
                 </PeopleWizard>;
 
@@ -143,6 +151,11 @@ export default class PersonManager extends React.Component<Props, State> {
     }
 
     private handleAppletSave() {
+        if (this.state.hasError) {
+            this.setState({hasError: true, error: "Required fields not set"});
+            return;
+        }
+
         if (this.state.selectedPerson?.id === 0) {
             RestService.Post('person', this.state.selectedPerson).then( data =>
                 data.json().then(this.handleLessonChange.bind(this))
@@ -157,5 +170,9 @@ export default class PersonManager extends React.Component<Props, State> {
         ).catch( error =>
             console.error(error)
         )
+    }
+
+    private handleValidationChanged(isValid: boolean) {
+        this.setState({hasError: !isValid});
     }
 }

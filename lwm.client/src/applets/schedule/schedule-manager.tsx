@@ -27,7 +27,7 @@ export default class ScheduleManager extends React.Component<Props, State> {
             selectedSchedule: undefined, 
             activeActionApplet: undefined,
             hasError: false,
-            error: undefined
+            error: 'All fields required'
         }
     }
 
@@ -116,8 +116,7 @@ export default class ScheduleManager extends React.Component<Props, State> {
 
         const applet = 
                 <ScheduleWizard
-                    hasError={this.state.hasError}
-                    error={this.state.error}
+                    onValidationChanged={this.handleValidationChanged.bind(this)}
                     schedule={schedule}>
                 </ScheduleWizard>;
 
@@ -129,8 +128,7 @@ export default class ScheduleManager extends React.Component<Props, State> {
 
         const applet = 
                 <ScheduleWizard 
-                    hasError={this.state.hasError}
-                    error={this.state.error}
+                    onValidationChanged={this.handleValidationChanged.bind(this)}
                     schedule={schedule}>
                 </ScheduleWizard>;
 
@@ -153,13 +151,18 @@ export default class ScheduleManager extends React.Component<Props, State> {
     }
 
     private handleAppletSave() {
+        if (this.state.hasError) {
+            this.setState({hasError: true, error: "Required fields not set"});
+            return;
+        }
+
         if (this.state.selectedSchedule?.id === 0) {
             RestService.Post('lessonschedule', this.state.selectedSchedule).then(data =>
                 {
                     if (data.ok) {
                         data.json().then(this.handleLessonChange.bind(this))
                     } else {
-                        data.text().then(this.addError.bind(this));
+                        data.text().then(this.handleValidationChanged.bind(this, false));
                     }
                 },
                 error => this.setState({error: error.message, hasError: true})
@@ -172,7 +175,7 @@ export default class ScheduleManager extends React.Component<Props, State> {
             error => this.setState({error: error.message, hasError: true}))
     }
 
-    private addError(error: string) {
-        this.setState({error: error, hasError: true});
+    private handleValidationChanged(isValid: boolean) {
+        this.setState({hasError: !isValid});
     }
 }

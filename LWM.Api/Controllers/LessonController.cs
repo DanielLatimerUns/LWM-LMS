@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LWM.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("lesson")]
     [Authorize]
     public class LessonController : Controller

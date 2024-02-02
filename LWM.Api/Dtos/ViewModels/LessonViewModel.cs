@@ -2,7 +2,7 @@
 
 namespace LWM.Api.Dtos.ViewModels
 {
-    public class CurrentLessonViewModel
+    public class LessonViewModel
     {
         public Lesson Lesson { get; set; }
 

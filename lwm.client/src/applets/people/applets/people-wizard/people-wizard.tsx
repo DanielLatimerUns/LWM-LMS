@@ -1,13 +1,15 @@
-import React from "react";
+import React, { Fragment } from "react";
 import './people-wizard.css';
 import { Person } from "../../../../entities/domainModels/person";
-import PersonWizardForm from "./applets/person-wizard-form/person-wizard-form";
 import Group from "../../../../entities/domainModels/group";
 import RestService from "../../../../services/network/RestService";
 import Student from "../../../../entities/domainModels/student";
+import FormField from "../../../../entities/framework/formField";
+import Form from "../../../../framework/components/form/form";
 
 export interface Props {
     person: Person;
+    onValidationChanged?: Function;
 }
  
 export interface State {
@@ -32,12 +34,104 @@ export default class PeopleWizard extends React.Component<Props, State> {
         return ( 
         <div className="personWizardContainer">
             <div className="personWizardBody">
-                <PersonWizardForm 
-                person={this.state.person}
-                groups={this.state.groups}
-                handleFormChange={this.handleFormChange.bind(this)}/>
+                {this.renderForms()}
             </div>
         </div>);
+    }
+
+    private renderForms() {
+        const fields: FormField[] = [
+            {
+                label: "Person Type" ,
+                id: "personType",
+                value: this.props.person.personType,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "select",
+                selectOptions: [
+                    <option value={3}>Basic</option>,
+                    <option value={1}>Student</option>,
+                    <option value={2}>Teacher</option>,
+                ]
+            },
+            {
+                label: "Forename" ,
+                id: "forename",
+                value: this.props.person.forename,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "text",
+                selectOptions: undefined
+            },
+            {
+                label: "Surname" ,
+                id: "surname",
+                value: this.props.person.surname,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "text",
+                selectOptions: undefined
+            },
+            {
+                label: "Email" ,
+                id: "emailAddress1",
+                value: this.props.person.emailAddress1,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "text",
+                selectOptions: undefined
+            },
+            {
+                label: "Phone" ,
+                id: "phoneNo",
+                value: this.props.person.phoneNo,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: "[0-9]+",
+                required: false,
+                type: "text",
+                selectOptions: undefined
+            }
+        ];
+
+        if (this.props.person.personType !== 1) {
+            return (
+            <Fragment>
+                <div className="fieldSetHeader">Person Record</div>
+                <Form fields={fields} onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)}/>
+            </Fragment>);
+        }
+
+        const groups: JSX.Element[] = [
+            <option value={0}>Select a Group</option>
+        ];
+
+        this.state.groups.map(group => groups.push(
+        <option value={group.id}>{group.name}</option>))
+
+        const studentFields: FormField[] = [
+            {
+                label: "Group",
+                id: "groupId",
+                value: this.props.person.student?.groupId,
+                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                validationPattern: undefined,
+                required: true,
+                type: "select",
+                selectOptions: groups
+            }
+        ]
+
+        return (
+        <Fragment>
+            <div className="fieldSetHeader">Person Record</div>
+            <Form fields={fields} onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)}/>
+            <div className="fieldSetHeader">Student Record</div>
+            <Form fields={studentFields} onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)}/>
+        </Fragment>)
     }
 
     private getGroups() {
@@ -86,7 +180,12 @@ export default class PeopleWizard extends React.Component<Props, State> {
 
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
 
-        if (e.target === null) return;
         this.setState({person: changedPerson})
+    }
+
+    private handleFieldValidationChanged(isValid: boolean) {
+        if (this.props.onValidationChanged) {
+            this.props.onValidationChanged(isValid);
+        }
     }
 }

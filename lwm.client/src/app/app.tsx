@@ -1,12 +1,11 @@
 import React from "react";
-import ModuleSideBar from "../framework/components/moduleSideBar/module-side-bar";
+import ModuleSideBar from "../applets/module-side-bar/module-side-bar";
 import ModuleLoader from "../framework/components/modulePanel/module-loader";
 import './app.css';
 import SideBarOption from "../entities/framework/sideBarOption";
-import LessonManager from "../applets/lesson/lesson-manager";
 import LoginSpash from "./authentication/login-spash/login-splash";
-import LoginModel from "../entities/app/loginModel";
 import AuthService from "../services/network/authentication/authService";
+import LessonFeed from "../applets/lesson-feed/lesson-feed";
 
 interface Props {
     
@@ -20,7 +19,7 @@ interface State {
 export default class App extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { activeModule: <LessonManager></LessonManager>, isAuthenticated: false}
+        this.state = { activeModule: <LessonFeed></LessonFeed>, isAuthenticated: false}
 
         addEventListener("app-logout", this.handleLogout.bind(this), true);
     }
@@ -48,9 +47,9 @@ export default class App extends React.Component<Props, State> {
         }
 
         return (
-        <div className="appOuterContainer-login-spalsh">
-            <LoginSpash onLoginSuccsess={this.onLoginComplete.bind(this)}></LoginSpash>
-        </div>)
+            <div className="appOuterContainer-login-spalsh">
+                <LoginSpash onLoginSuccsess={this.onLoginComplete.bind(this)}></LoginSpash>
+            </div>)
     }
 
     private onModuleSecetionChanged = (option: SideBarOption) => {
@@ -62,6 +61,7 @@ export default class App extends React.Component<Props, State> {
     }
 
     private handleLogout() {
+        AuthService.Logout();
         this.setState({isAuthenticated: false});
     }
 }
