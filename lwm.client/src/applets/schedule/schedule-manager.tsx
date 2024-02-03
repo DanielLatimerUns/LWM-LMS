@@ -77,7 +77,7 @@ export default class ScheduleManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedSchedule: undefined})} 
-                    name="Schedule Center">
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -85,8 +85,8 @@ export default class ScheduleManager extends React.Component<Props, State> {
                     isSelected={this.state.activeActionApplet?.type === ScheduleWizard}  
                     onClick={this.handleAddNewSchedule.bind(this)} 
                     name={(this.state.selectedSchedule === undefined || 
-                        this.state.selectedSchedule?.id === 0) ? "Schedule Creation" : 
-                        "Edit Schedule: " + this.state.selectedSchedule?.schedualedStartTime}>    
+                        this.state.selectedSchedule?.id === 0) ? "Add" : 
+                        "Edit: " + this.state.selectedSchedule?.schedualedStartTime}>    
                 </LwmButton>
             )
         ];

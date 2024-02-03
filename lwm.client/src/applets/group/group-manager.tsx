@@ -77,7 +77,7 @@ export default class GroupManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedGroup: undefined})} 
-                    name="Group Center">
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -85,8 +85,8 @@ export default class GroupManager extends React.Component<Props, State> {
                     isSelected={this.state.activeActionApplet?.type === GroupWizard}  
                     onClick={this.handleAddNewGroup.bind(this)} 
                     name={(this.state.selectedGroup === undefined || 
-                        this.state.selectedGroup?.id === 0) ? "Group Creation" : 
-                        "Edit Group: " + this.state.selectedGroup?.name}>    
+                        this.state.selectedGroup?.id === 0) ? "Add" : 
+                        "Edit : " + this.state.selectedGroup?.name}>    
                 </LwmButton>
             )
         ];

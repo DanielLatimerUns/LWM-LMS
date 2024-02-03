@@ -79,7 +79,7 @@ export default class PersonManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedPerson: undefined})} 
-                    name="People Center">
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -87,8 +87,8 @@ export default class PersonManager extends React.Component<Props, State> {
                     isSelected={this.state.activeActionApplet?.type === PeopleWizard}  
                     onClick={this.handleAddNewPerson.bind(this)} 
                     name={(this.state.selectedPerson === undefined || 
-                        this.state.selectedPerson?.id === 0) ? "Person Creation" : 
-                        "Edit Person: " + this.state.selectedPerson?.forename}>    
+                        this.state.selectedPerson?.id === 0) ? "Add" : 
+                        "Edit: " + this.state.selectedPerson?.forename}>    
                 </LwmButton>
             )
         ];

@@ -1,6 +1,6 @@
 .appOuterContainer {
     display: grid;
-    grid-template-columns: 150px auto;
+    grid-template-columns: 100px auto;
     height: 100vh;
     background: rgb(51, 51, 51);
 }

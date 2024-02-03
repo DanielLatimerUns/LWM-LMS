@@ -56,7 +56,7 @@ export default class LessonManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedLesson: undefined})} 
-                    name="Lesson Center">
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -64,8 +64,8 @@ export default class LessonManager extends React.Component<Props, State> {
                     isSelected={this.state.activeActionApplet?.type === LessonWizard}  
                     onClick={this.handleAddClicked.bind(this)} 
                     name={(this.state.selectedLesson === undefined || 
-                        this.state.selectedLesson?.id === 0) ? "Lesson Creation" : 
-                        "Edit Lesson: " + this.state.selectedLesson?.name}>    
+                        this.state.selectedLesson?.id === 0) ? "Add" : 
+                        "Edit: " + this.state.selectedLesson?.name}>    
                 </LwmButton>
             )
         ];

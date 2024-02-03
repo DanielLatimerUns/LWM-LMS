@@ -71,11 +71,7 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         return(
             <div className='panelOuterContainer'>
                 <div className='panelHeaderContainer'>
-                    <div className='userContainer'>
-                        <div className='userIcon'>
-                            <img src={userImage}></img>
-                        </div>
-                    </div>
+                    <img src="src\assets\lwm_logo.jpg"></img>
                 </div>
                 <div className='panelContentContainer'>
                     {this.renderContent()}

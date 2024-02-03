@@ -1,7 +1,7 @@
 .moduleContainer {
     display: grid;
     grid-template-rows: 40px auto;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 100px auto;
     gap: 10px;
     height: 100%;
 }
