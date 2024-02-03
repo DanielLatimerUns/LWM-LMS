@@ -1,4 +1,4 @@
-import React from "react";
+    import React from "react";
 import RestService from "../../services/network/RestService";
 import './lesson-feed.css';
 import LessonFeedModel from "../../entities/app/lessonFeed";
@@ -22,7 +22,18 @@ export default class LessonFeed extends React.Component<LessonFeedProps, LessonF
     }
     
     render() { 
-         return (
+         return this.buildFeed();
+    }
+
+    private buildFeed() {
+        if (this.state.feed.lessons.length === 0) {
+            return(
+            <div className="noLessonContainer">
+                <div>You have no lesson left today!</div>
+            </div>);
+        }
+
+        return (
             <div className="lessonFeed">
                 {this.state.feed.lessons.map(lesson => <LessonDashboard dashboardModel={lesson}></LessonDashboard>)}
             </div> 
@@ -38,5 +49,7 @@ export default class LessonFeed extends React.Component<LessonFeedProps, LessonF
             ).catch( error => console.error(error))
         );
     }
+
+
 }
  

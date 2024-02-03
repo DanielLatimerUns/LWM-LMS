@@ -23,7 +23,7 @@ export default class LoginSpash extends React.Component<Props, State> {
         return ( 
         <div className="loginSpashContainer">
             <div className="loginSplashHeader">
-                Learn With Me
+                LWM Learning Platform
             </div>
             <div className="loginSpashFormContainer">
                     <input 
@@ -41,14 +41,14 @@ export default class LoginSpash extends React.Component<Props, State> {
                             value={this.state.loginModel.password}
                             onChange={this.handleFormChange.bind(this)}/>
             </div>
-            <div className="loginSpashErrorMessage">
-                {this.state.error}
-            </div>
             <div className="loginSpashActionButtonsContainer">
                 <LwmButton 
                 name="Login" 
                 onClick={this.handleLoginClicked.bind(this)} 
                 isSelected={false}></LwmButton>
+            </div>
+            <div className="loginSpashErrorMessage">
+                {this.state.error}
             </div>
         </div> );
     }

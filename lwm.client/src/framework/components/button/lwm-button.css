@@ -1,18 +1,15 @@
-.lwmButton {
+.lwmButton, 
+.lwmButton-selected {
     text-align: center;
     cursor: default;
     display: flex;
     flex-direction: column;
-
     padding: 10px 0 10px 0;
+    font-size: 15px;
 }
 
 .lwmButton-selected {
-    text-align: center;
-    cursor: default;
-
     background: rgb(35 168 64 / 10%);
-    padding: 10px 0 10px 0;
 }
 
 .lwmButton:hover { 
