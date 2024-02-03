@@ -1,20 +1,20 @@
 .lwmButton {
     text-align: center;
-    border-bottom: solid 1px rgb(173 216 230 / 20%);
     cursor: default;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
 
+    padding: 10px 0 10px 0;
 }
 
 .lwmButton-selected {
-    border-bottom: solid 1px #6fe873;
     text-align: center;
     cursor: default;
-    padding: 10px;
+
+    background: rgb(35 168 64 / 10%);
+    padding: 10px 0 10px 0;
 }
 
-.lwmButton:hover {
-   
-    border-bottom: solid 1px rgb(173 216 230 );
-    
+.lwmButton:hover { 
+    color: rgb(173 216 230 ); 
 }

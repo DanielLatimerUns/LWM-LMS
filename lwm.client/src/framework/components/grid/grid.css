@@ -12,6 +12,7 @@
     display: grid; 
     grid-template-columns: 300px;
     grid-auto-columns: minmax(150px, 1fr);
+    
 }
 
 .gridContentRow {

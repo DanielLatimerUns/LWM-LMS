@@ -1,19 +1,15 @@
 .moduleContainer {
     display: grid;
-    grid-template-rows: 40px auto;
-    grid-template-columns: 100px auto;
-    gap: 10px;
+    grid-template-rows: 50px auto;
+    grid-template-columns: 80px auto;
     height: 100%;
 }
 
 .moduleActionSectionOptionContainer {
-    padding-bottom: 0px;
     display: flex;
     flex-direction: column;
-    gap: 40px;
-    padding: 10px;
-    justify-content: space-between;
-    border-right: 2px solid rgb(242 242 242 / 5%);
+    gap: 20px;
+    border-right: 2px solid rgb(247 242 242 / 10%);
 }
 
 .moduleActionSectionOptionContainer > div {
@@ -44,13 +40,14 @@
 .moduleHeader {
     display: flex;
     justify-content: center;
-    background: rgb(242 242 242 / 5%);
+    background: rgb(247,242,242);
+    background: linear-gradient(90deg, rgba(247 242 242 / 10%) 0%, rgba(247 242 242 / 15%) 55%, rgba(247 242 242 / 20%) 100%);
     padding: 10px;
     grid-column: span 2;
 }
 
 .moduleHeaderTitle {
-    font-size: 15px;
+    font-size: 18px;
 }
 
 .moduleError {
@@ -76,7 +73,7 @@
 
 .moduleActionSectionAppletContent {
     background: rgb(62 62 62 / 100%);
-    padding: 0 20px 0 20px;
+    padding: 0 10px 0 10px;
     border-radius: 4px;
 
 }
@@ -85,8 +82,8 @@
     display: flex;
     gap: 20px;
     padding-top: 10px;
-
-    justify-content: center;
+    justify-content: space-around;
+    border-bottom: 1px solid rgba(247 242 242 / 10%);
 }
 
 .fieldSetHeader  {

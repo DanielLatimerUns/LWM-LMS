@@ -1,8 +1,10 @@
 .panelOuterContainer {
     display: grid;
-    grid-template-rows: 100px auto 100px;
+    grid-template-rows: 50px auto 150px;
     min-height: 100%;
     background: rgb(242 242 242 / 5%);
+    background: rgb(247,242,242);
+    background: linear-gradient(180deg, rgba(247 242 242 / 10%) 0%, rgba(247 242 242 / 15%) 55%, rgba(247 242 242 / 20%) 100%);
 }
 
 .panelFooterContainer {
@@ -13,7 +15,7 @@
 }
 
 .footerOption {
-    width: fit-content; 
+    width: 100;
 }
 
 .footerOption:hover {
@@ -23,24 +25,22 @@
 .panelContentContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 50px;
+    align-items: flex-start;
+    gap: 20px;
 }
 
 .panelContentContainer > div {
-    width: 90px;
-    padding: 0px;
-    padding-bottom: 10px;
+   width: 100%;
 }
 
 .panelHeaderContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 5px
+    border: 1px solid black;
 }
 
 .panelHeaderContainer > img {
-    max-width: 80px;
-    border-radius: 10px;
+    max-width: 100%;
+    border-radius: 2px;
 }

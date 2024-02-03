@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import SideBarOption from '../../entities/framework/sideBarOption';
 import './module-side-bar.css';
 import LessonManager from '../lesson/lesson-manager';
 import ControlCenter from '../controlCenter/control-center';
-import userImage from '../../assets/user1.png'
 import PersonManager from '../people/people-manager';
 import GroupManager from '../group/group-manager';
 import ScheduleManager from '../schedule/schedule-manager';
 import LwmButton from '../../framework/components/button/lwm-button';
 import LessonFeed from '../lesson-feed/lesson-feed';
+import logo from '../../assets/lwm_logo.jpg';
 
 interface Props {
     userName: string
@@ -71,7 +71,7 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         return(
             <div className='panelOuterContainer'>
                 <div className='panelHeaderContainer'>
-                    <img src="src\assets\lwm_logo.jpg"></img>
+                    <img src={logo}></img>
                 </div>
                 <div className='panelContentContainer'>
                     {this.renderContent()}
@@ -107,14 +107,14 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         });
 
         return (
-            <div>
-                <div>
+            <Fragment>
                     {(footerOptions.map(option => 
-                    <div className='footerOption' onClick={this.handleModuleSelectionClick.bind(this, option)}>
-                        {option.name}
-                    </div>))}
-                </div>
-            </div>);
+                    <LwmButton 
+                        isSelected={false} 
+                        onClick={this.handleModuleSelectionClick.bind(this, option)}
+                        name={option.name}>
+                    </LwmButton>))}
+            </Fragment>);
     }
 
     private handleModuleSelectionClick(option: SideBarOption) {

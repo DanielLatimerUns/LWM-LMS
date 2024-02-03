@@ -73,9 +73,7 @@ export default class Module extends React.Component<Props, State> {
     private renderOptionsSection() {
         return(
             <div className="moduleActionSectionOptionContainer">
-                <div>
-                    {this.props.options}
-                </div>
+                {this.props.options}
             </div>
         );
     }
