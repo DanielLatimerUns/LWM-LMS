@@ -25,6 +25,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    padding: 5px;
+    justify-content: space-evenly;
 }
 
 .panelContentContainer > div {
@@ -45,9 +47,9 @@
 .panelHeaderLogo {
     border-radius: 100px;
     overflow: hidden; 
-    width: 70px;
-    height: 70px;
-    border: 2px solid rgba(247 242 242 / 70%);
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(247 242 242 / 30%);
     
 }
 

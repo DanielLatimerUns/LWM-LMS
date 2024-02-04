@@ -92,7 +92,7 @@ export default class ScheduleManager extends React.Component<Props, State> {
                     name={(this.state.selectedSchedule === undefined || 
                         this.state.selectedSchedule?.id === 0) ? "Add" : 
                         "Edit: " + this.state.selectedSchedule?.schedualedStartTime}
-                    icon={recordIcon}>    
+                    icon={newIcon}>    
                 </LwmButton>
             )
         ];

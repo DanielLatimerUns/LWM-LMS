@@ -60,15 +60,13 @@ export default class Grid extends React.Component<Props, State> {
     }
 
     private generateRow(columnData: any, rowId: number) {
-
         const columns: JSX.Element[] = [];
             Object.entries(columnData).map((column: any) => 
             {
                 if (this.props.columns.map(c => c.name).includes(column[0]) && column[0] !== "id") {
                     columns.push(
-                    <div className="gridContentColumn">
-                      
-                        <LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name={column[1]}></LwmButton>
+                    <div className="gridContentColumn" title={column[1]}>
+                        {this.generateContent(column, rowId)}
                     </div>);
                 }
             })
@@ -80,6 +78,14 @@ export default class Grid extends React.Component<Props, State> {
             )
             
             return columns;
+    }
+
+    private generateContent(content: any, rowId: number) {
+        if(!content[1]) {
+            return "-"
+        }
+
+        return <LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name={content[1]}/>
     }
 
     private generateGridButtons(rowId: number) {

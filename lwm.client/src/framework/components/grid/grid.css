@@ -57,9 +57,8 @@
     align-items: center;
     gap: 10px;
     padding-left: 10px;
-  
-}
-
-.gridContentColumn .lwmButton {
-   padding: 10px;
+    justify-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
