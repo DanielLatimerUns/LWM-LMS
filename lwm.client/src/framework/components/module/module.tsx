@@ -5,6 +5,8 @@ import GridColumn from "../../../entities/framework/gridColumn";
 import GridRow from "../../../entities/framework/gridRow";
 import Grid from "../grid/grid";
 
+import Spinner from '../../../assets/loading_spinner.gif';
+
 export interface Props {
     moduleName: string;
     moduleEntityName: string;
@@ -81,6 +83,13 @@ export default class Module extends React.Component<Props, State> {
     private renderGrid() {
         if (this.props?.gridConfig.columns === undefined)
             return;
+
+        if (this.props?.gridConfig.rows.length === 0) {
+            return (
+            <div className="moduleSpinnerContainer">
+                <img src={Spinner}/>
+            </div>)
+        }
 
         return (
         <div className="moduleGridContainer">

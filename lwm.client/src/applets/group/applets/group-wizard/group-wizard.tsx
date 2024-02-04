@@ -44,7 +44,7 @@ export default class GroupWizard extends React.Component<Props, State> {
 
     private renderForms() {
         const teachers: JSX.Element[] = [
-            <option value={undefined}>Select a Teacher</option>
+            <option value={-1}>Select a Teacher</option>
         ];
 
         this.state.teachers.map(teachher => teachers.push(
@@ -111,7 +111,7 @@ export default class GroupWizard extends React.Component<Props, State> {
     }
 
     private getAssigneStudents() {
-        if (this.state.group.id === 0)
+        if (this.state.group.id === 0 )
             return;
         
         RestService.Get(`group/${this.state.group.id}/students`).then(

@@ -111,7 +111,7 @@ export default class PersonManager extends React.Component<Props, State> {
             surname: "", id: 0, 
             emailAddress1: "", 
             phoneNo: "",
-            personType: undefined
+            personType: -1
         };
 
         this.setState({selectedPerson: person})

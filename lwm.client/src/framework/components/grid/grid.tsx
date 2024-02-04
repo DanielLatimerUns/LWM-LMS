@@ -67,7 +67,8 @@ export default class Grid extends React.Component<Props, State> {
                 if (this.props.columns.map(c => c.name).includes(column[0]) && column[0] !== "id") {
                     columns.push(
                     <div className="gridContentColumn">
-                        {column[1]}
+                      
+                        <LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name={column[1]}></LwmButton>
                     </div>);
                 }
             })

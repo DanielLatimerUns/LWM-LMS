@@ -16,7 +16,8 @@ export default class Form extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        this.props.fields.forEach(field => this.validateField(field));
+        const isFormValid = this.validateAllFields();
+        this.props.onFieldValidationChanged(isFormValid);
     }
 
     render() { 
@@ -60,20 +61,42 @@ export default class Form extends React.Component<Props, State> {
 
     private handleFormChange(e: any, field: FormField ) {
         field.value = e.target.value;
-        this.validateField(field);
 
-        for (const field of this.props.fields) {
-            const isValid = this.validateField(field)
-            this.props.onFieldValidationChanged(isValid);
+        const isChangedFieldValid = this.validateField(field);
+        this.props.onFieldValidationChanged(isChangedFieldValid);
 
-            if (!isValid) {break;}
+        if (!isChangedFieldValid) {
+            return;
         }
+
+        this.props.onFieldValidationChanged(this.validateAllFields(field.id))
 
         field.onFieldChangedSuccsess(e);
     }
 
+    private validateAllFields(fieldToExclude?: string) {
+        for (const field of this.props.fields) {
+            if (fieldToExclude && field.id === fieldToExclude) {
+                continue;
+            }
+
+            const isValid = this.validateField(field)
+            if (!isValid) { 
+                return false; 
+            }
+        }
+
+        return true;
+    }
+
     private validateField(field: FormField): boolean {
-        if (field.required && (field.value === undefined || field.value === "" || field.value === 0)) {
+        if (field.required && 
+            (field.value === undefined || 
+                field.value === "" || 
+                field.value === "-1" || 
+                field.value === -1 || 
+                field.value === null ||
+                Number.isNaN(field.value))) {
             return false;
         }
 

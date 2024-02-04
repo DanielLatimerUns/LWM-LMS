@@ -108,8 +108,8 @@ export default class ScheduleManager extends React.Component<Props, State> {
             id: 0,
             schedualedStartTime: "",
             schedualedEndTime: "",
-            schedualedDayOfWeek: 0,
-            groupId: 0
+            schedualedDayOfWeek: -1,
+            groupId: -1
         };
 
         this.setState({selectedSchedule: schedule})

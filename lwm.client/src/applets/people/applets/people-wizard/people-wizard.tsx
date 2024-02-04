@@ -106,7 +106,7 @@ export default class PeopleWizard extends React.Component<Props, State> {
         }
 
         const groups: JSX.Element[] = [
-            <option value={0}>Select a Group</option>
+            <option value={-1}>Select a Group</option>
         ];
 
         this.state.groups.map(group => groups.push(
@@ -179,6 +179,10 @@ export default class PeopleWizard extends React.Component<Props, State> {
         }
 
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
+        
+        if (changedPerson.student) {
+            changedPerson.student.groupId =  Number.parseInt((changedPerson.student.groupId as any));
+        }
 
         this.setState({person: changedPerson})
     }

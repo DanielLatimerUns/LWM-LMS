@@ -106,7 +106,7 @@ export default class GroupManager extends React.Component<Props, State> {
         const group: Group = {
             name: "", 
             id: 0, 
-            teacherId: 0,
+            teacherId: -1,
             completedLessonNumber: 0
         };
 
