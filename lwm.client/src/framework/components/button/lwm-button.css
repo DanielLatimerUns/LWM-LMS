@@ -10,7 +10,7 @@
 }
 
 .lwmButton-selected {
-    background: rgb(35 168 64 / 10%);
+    color: green;
 }
 
 .lwmButton:hover { 

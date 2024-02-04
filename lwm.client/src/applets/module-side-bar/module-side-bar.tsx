@@ -27,38 +27,39 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         options.push({
             name: 'Feed',
             module: <LessonFeed></LessonFeed>,
-            active: true
+            active: true,
+            icon: '/src/assets/module-icons/bachelor.png'
         });
 
         options.push({
             name: 'Lessons',
             module: <LessonManager></LessonManager>,
-            active: false
+            active: false,
+            icon: '/src/assets/module-icons/books.png'
+            
         });
 
         options.push({
             name: 'People',
             module: <PersonManager></PersonManager>,
-            active: false
+            active: false,
+            icon: '/src/assets/module-icons/teamwork.png'
         });
 
         options.push({
             name: 'Groups',
             module: <GroupManager></GroupManager>,
-            active: false
+            active: false,
+            icon: '/src/assets/module-icons/video-conference.png'
         });
 
         options.push({
             name: 'Schedules',
             module: <ScheduleManager></ScheduleManager>,
-            active: false
+            active: false,
+            icon: '/src/assets/module-icons/school.png'
         });
 
-        options.push({
-            name: 'Timetable',
-            module: <div></div>,
-            active: false
-        });
 
         this.state = {options: options};
     }
@@ -86,8 +87,11 @@ export default class ModuleSideBar extends React.Component<Props, State> {
     private renderContent() {
         return (
             this.state.options.map(option => 
-            <LwmButton isSelected={option.active} onClick={this.handleModuleSelectionClick.bind(this, option)} name={option.name}>
-            </LwmButton>)
+                <div onClick={this.handleModuleSelectionClick.bind(this, option)}>
+                    <img src={option.icon}></img>
+                    <LwmButton isSelected={option.active} onClick={this.handleModuleSelectionClick.bind(this, option)} name={option.name}/>
+                </div>
+            )
         );
     }
 

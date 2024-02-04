@@ -24,12 +24,20 @@
 .panelContentContainer {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: center;
     gap: 20px;
 }
 
+.panelContentContainer img {
+    width: 40px;
+    display: flex;
+}
+
 .panelContentContainer > div {
-   width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .panelHeaderContainer {
