@@ -20,9 +20,9 @@ namespace LWM.Api.ApplicationServices.PersonServices.WriteServices
             person.Student.PersonId = personid;
             person.Teacher.PersonId = personid;
 
-            if (person.PersonType is 1)
+            if (person.PersonType is Enums.PersonType.Student)
                 await studentWriteService.CreateAsync(person.Student);
-            if (person.PersonType is 2)
+            if (person.PersonType is Enums.PersonType.Teacher)
                 await teacherWriteService.CreateAsync(person.Teacher);
 
             return personid;

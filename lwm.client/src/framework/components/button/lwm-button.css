@@ -1,12 +1,18 @@
 .lwmButton, 
 .lwmButton-selected {
-    text-align: center;
     cursor: default;
     display: flex;
+    align-items: center;
     flex-direction: column;
     padding: 10px 0 10px 0;
     font-size: 15px;
     border-radius: 2px;
+    gap: 5px;
+}
+
+.lwmButton img,
+.lwmButton-selected img {
+    width: 40px;
 }
 
 .lwmButton-selected {

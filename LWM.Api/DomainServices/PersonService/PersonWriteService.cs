@@ -19,7 +19,7 @@ namespace LWM.Api.DomainServices.PersonService
                 Surname = person.Surname,
                 EmailAddress1 = person.EmailAddress1,
                 PhoneNo = person.PhoneNo,
-                PersonType = person.PersonType
+                PersonType = ((int)person.PersonType)
             };
 
             context.Persons.Add(model);
@@ -50,6 +50,7 @@ namespace LWM.Api.DomainServices.PersonService
             model.Surname = person.Surname;
             model.EmailAddress1 = person.EmailAddress1;
             model.PhoneNo = person.PhoneNo;
+            model.PersonType = ((int)person.PersonType);
 
             await context.SaveChangesAsync();
         }

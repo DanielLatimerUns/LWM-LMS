@@ -2,13 +2,18 @@ import React, { Fragment } from 'react';
 import SideBarOption from '../../entities/framework/sideBarOption';
 import './module-side-bar.css';
 import LessonManager from '../lesson/lesson-manager';
-import ControlCenter from '../controlCenter/control-center';
 import PersonManager from '../people/people-manager';
 import GroupManager from '../group/group-manager';
 import ScheduleManager from '../schedule/schedule-manager';
 import LwmButton from '../../framework/components/button/lwm-button';
 import LessonFeed from '../lesson-feed/lesson-feed';
+
 import logo from '../../assets/lwm_logo.jpg';
+import feedIcon from '../../assets/module-icons/bachelor.png';
+import lessonIcon from '../../assets/module-icons/books.png';
+import peopleIcon from '../../assets/module-icons/teamwork.png';
+import groupIcon from '../../assets/module-icons/video-conference.png';
+import schedualIcon from '../../assets/module-icons/school.png';
 
 interface Props {
     userName: string
@@ -28,14 +33,14 @@ export default class ModuleSideBar extends React.Component<Props, State> {
             name: 'Feed',
             module: <LessonFeed></LessonFeed>,
             active: true,
-            icon: '/src/assets/module-icons/bachelor.png'
+            icon: feedIcon
         });
 
         options.push({
             name: 'Lessons',
             module: <LessonManager></LessonManager>,
             active: false,
-            icon: '/src/assets/module-icons/books.png'
+            icon: lessonIcon
             
         });
 
@@ -43,21 +48,21 @@ export default class ModuleSideBar extends React.Component<Props, State> {
             name: 'People',
             module: <PersonManager></PersonManager>,
             active: false,
-            icon: '/src/assets/module-icons/teamwork.png'
+            icon: peopleIcon
         });
 
         options.push({
             name: 'Groups',
             module: <GroupManager></GroupManager>,
             active: false,
-            icon: '/src/assets/module-icons/video-conference.png'
+            icon: groupIcon
         });
 
         options.push({
             name: 'Schedules',
             module: <ScheduleManager></ScheduleManager>,
             active: false,
-            icon: '/src/assets/module-icons/school.png'
+            icon: schedualIcon
         });
 
 
@@ -72,13 +77,15 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         return(
             <div className='panelOuterContainer'>
                 <div className='panelHeaderContainer'>
-                    <img src={logo}></img>
+                    <div className='panelHeaderLogo'>
+                        <img src={logo}></img>
+                    </div>
+                </div>
+                <div className='panelUserContainer'>
+                    {this.renderFooter()}
                 </div>
                 <div className='panelContentContainer'>
                     {this.renderContent()}
-                </div>
-                <div className='panelFooterContainer'>
-                    {this.renderFooter()}
                 </div>
             </div>
         )
@@ -87,10 +94,11 @@ export default class ModuleSideBar extends React.Component<Props, State> {
     private renderContent() {
         return (
             this.state.options.map(option => 
-                <div onClick={this.handleModuleSelectionClick.bind(this, option)}>
-                    <img src={option.icon}></img>
-                    <LwmButton isSelected={option.active} onClick={this.handleModuleSelectionClick.bind(this, option)} name={option.name}/>
-                </div>
+                    <LwmButton 
+                        isSelected={option.active} 
+                        onClick={this.handleModuleSelectionClick.bind(this, option)} 
+                        name={option.name}
+                        icon={option.icon}/>
             )
         );
     }
@@ -99,19 +107,17 @@ export default class ModuleSideBar extends React.Component<Props, State> {
         const footerOptions: SideBarOption[] = [];
 
         footerOptions.push({
-            name: 'Control Center',
-            module: <ControlCenter></ControlCenter>,
-            active: true
-        });
-
-        footerOptions.push({
             name: 'Log Out',
             module: <div></div>,
-            active: true
+            active: true,
+            icon: ''
         });
 
         return (
             <Fragment>
+                <div className='usernameContainer'>
+                    Kristina
+                </div>
                     {(footerOptions.map(option => 
                     <LwmButton 
                         isSelected={false} 

@@ -7,6 +7,10 @@ import GridRow from "../../entities/framework/gridRow";
 import Schedule from "../../entities/domainModels/schedule";
 import ScheduleWizard from "./applets/schedule-wizard/schedule-wizard";
 
+import newIcon from '../../assets/new_icon.png';
+import recordIcon from '../../assets/record_icon.png';
+
+
 export interface Props {
     
 }
@@ -77,7 +81,8 @@ export default class ScheduleManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedSchedule: undefined})} 
-                    name="Records">
+                    name="Records"
+                    icon={recordIcon}>
                 </LwmButton>
             ),
             (
@@ -86,7 +91,8 @@ export default class ScheduleManager extends React.Component<Props, State> {
                     onClick={this.handleAddNewSchedule.bind(this)} 
                     name={(this.state.selectedSchedule === undefined || 
                         this.state.selectedSchedule?.id === 0) ? "Add" : 
-                        "Edit: " + this.state.selectedSchedule?.schedualedStartTime}>    
+                        "Edit: " + this.state.selectedSchedule?.schedualedStartTime}
+                    icon={recordIcon}>    
                 </LwmButton>
             )
         ];

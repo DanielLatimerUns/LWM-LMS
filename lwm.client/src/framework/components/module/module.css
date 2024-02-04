@@ -1,7 +1,7 @@
 .moduleContainer {
     display: grid;
-    grid-template-rows: 50px auto;
-    grid-template-columns: 80px auto;
+    grid-template-rows: 30px auto;
+    grid-template-columns: 100px auto;
     height: 100%;
 }
 
@@ -10,6 +10,7 @@
     flex-direction: column;
     gap: 20px;
     border-right: 2px solid rgb(247 242 242 / 10%);
+    padding-top: 10px;
 }
 
 .moduleActionSectionOptionContainer > div {
@@ -43,12 +44,12 @@
     background: rgb(247,242,242);
     background: linear-gradient(90deg, rgba(247 242 242 / 10%) 0%, rgba(247 242 242 / 15%) 55%, rgba(247 242 242 / 20%) 100%);
     border-bottom: 1px solid rgba(247 242 242 / 10%);
-    padding: 10px;
+    align-items: center;
     grid-column: span 2;
 }
 
 .moduleHeaderTitle {
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .moduleError {

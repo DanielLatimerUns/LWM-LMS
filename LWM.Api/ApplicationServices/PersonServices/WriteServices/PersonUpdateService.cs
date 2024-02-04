@@ -4,6 +4,7 @@ using LWM.Api.DomainServices.StudentService.Contracts;
 using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using LWM.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LWM.Api.ApplicationServices.PersonServices.WriteServices
@@ -30,31 +31,49 @@ namespace LWM.Api.ApplicationServices.PersonServices.WriteServices
 
         private async Task UpdateStudent(Person person)
         {
-            if (person.PersonType is not 1) return;
-
-            var student = coreContext.Students.FirstOrDefault(x => x.Person.Id == person.Id);
-
-            if (student is null)
+            if (person.PersonType is not Enums.PersonType.Student)
             {
-                await studentWriteService.CreateAsync(person.Student);
-                return;
+                var students = coreContext.Students.Where(x => x.Person.Id == person.Id);
+                coreContext.Students.RemoveRange(students);
             }
+            else
+            {
+                this.ValidateStudent(person.Student);
 
-            person.Student.Id = student.Id;
-            await studentWriteService.UpdateeAsync(person.Student);
+                var student = coreContext.Students.FirstOrDefault(x => x.Person.Id == person.Id);
+
+                if (student is null)
+                {
+                    await studentWriteService.CreateAsync(person.Student);
+                    return;
+                }
+
+                person.Student.Id = student.Id;
+                await studentWriteService.UpdateeAsync(person.Student);
+            }
         }
 
         private async Task UpdateTeacher(Person person)
         {
-            if (person.PersonType is not 2) return;
-
-            if (coreContext.Teachers.FirstOrDefault(x => x.Id == person.Teacher.Id) is null)
+            if (person.PersonType is not Enums.PersonType.Teacher)
             {
-                await teacherWriteService.CreateAsync(person.Teacher);
-                return;
+                var teachers = coreContext.Teachers.Where(x => x.Person.Id == person.Id);
+                coreContext.Teachers.RemoveRange(teachers);
+            }
+            else
+            {
+                var teacher = coreContext.Teachers.Include(x => x.Person).FirstOrDefault(x => x.Person.Id == person.Id);
+                if (teacher is null)
+                {
+                    await teacherWriteService.CreateAsync(person.Teacher);
+                    return;
+                }
+
+                person.Teacher.Id = teacher.Id;
+                await teacherWriteService.UpdateeAsync(person.Teacher);
             }
 
-            await teacherWriteService.UpdateeAsync(person.Teacher);
+
         }
 
         private static void ValidatePerson(Person person)
@@ -64,6 +83,14 @@ namespace LWM.Api.ApplicationServices.PersonServices.WriteServices
 
             if (person.Forename.IsNullOrEmpty())
                 throw new BadHttpRequestException("Missing Person Forename.");
+        }
+
+        private void ValidateStudent(Student student)
+        {
+            if (student.GroupId is not null && !coreContext.Groups.Any(x => x.Id == student.GroupId))
+            {
+                throw new BadHttpRequestException("Group not found.");
+            }
         }
     }
 }

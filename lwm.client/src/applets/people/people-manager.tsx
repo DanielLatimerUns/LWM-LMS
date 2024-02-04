@@ -8,6 +8,10 @@ import Module from "../../framework/components/module/module";
 import GridColumn from "../../entities/framework/gridColumn";
 import GridRow from "../../entities/framework/gridRow";
 
+import newIcon from '../../assets/new_icon.png';
+import recordIcon from '../../assets/record_icon.png';
+
+
 export interface Props {
     
 }
@@ -79,7 +83,8 @@ export default class PersonManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedPerson: undefined})} 
-                    name="Records">
+                    name="Records"
+                    icon={recordIcon}>
                 </LwmButton>
             ),
             (
@@ -88,7 +93,8 @@ export default class PersonManager extends React.Component<Props, State> {
                     onClick={this.handleAddNewPerson.bind(this)} 
                     name={(this.state.selectedPerson === undefined || 
                         this.state.selectedPerson?.id === 0) ? "Add" : 
-                        "Edit: " + this.state.selectedPerson?.forename}>    
+                        "Edit: " + this.state.selectedPerson?.forename}
+                    icon={newIcon}>    
                 </LwmButton>
             )
         ];
@@ -111,7 +117,7 @@ export default class PersonManager extends React.Component<Props, State> {
             surname: "", id: 0, 
             emailAddress1: "", 
             phoneNo: "",
-            personType: -1
+            personType: 1
         };
 
         this.setState({selectedPerson: person})

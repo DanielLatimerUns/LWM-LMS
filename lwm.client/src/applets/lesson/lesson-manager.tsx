@@ -7,6 +7,8 @@ import LwmButton from "../../framework/components/button/lwm-button";
 import Module from "../../framework/components/module/module";
 import GridColumn from "../../entities/framework/gridColumn";
 import GridRow from "../../entities/framework/gridRow";
+import newIcon from '../../assets/new_icon.png';
+import recordIcon from '../../assets/record_icon.png';
 
 export interface Props {   
 }
@@ -56,7 +58,8 @@ export default class LessonManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedLesson: undefined})} 
-                    name="Records">
+                    name="Records"
+                    icon={recordIcon}>
                 </LwmButton>
             ),
             (
@@ -65,7 +68,8 @@ export default class LessonManager extends React.Component<Props, State> {
                     onClick={this.handleAddClicked.bind(this)} 
                     name={(this.state.selectedLesson === undefined || 
                         this.state.selectedLesson?.id === 0) ? "Add" : 
-                        "Edit: " + this.state.selectedLesson?.name}>    
+                        "Edit: " + this.state.selectedLesson?.name}
+                    icon={newIcon}>    
                 </LwmButton>
             )
         ];

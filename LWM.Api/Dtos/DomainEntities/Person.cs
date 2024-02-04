@@ -15,7 +15,7 @@ namespace LWM.Api.Dtos.DomainEntities
         public string? PhoneNo { get; set; }
 
         // need to refactor into a ENUm once I figure out de-serializing enums in .core
-        public int? PersonType { get; set; }
+        public PersonType PersonType { get; set; }
 
         public Student Student { get; set; } = new();
 

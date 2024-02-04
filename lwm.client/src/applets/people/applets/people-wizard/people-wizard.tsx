@@ -6,6 +6,7 @@ import RestService from "../../../../services/network/RestService";
 import Student from "../../../../entities/domainModels/student";
 import FormField from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
+import personType from "../../../../entities/enums/personType";
 
 export interface Props {
     person: Person;
@@ -24,8 +25,8 @@ export default class PeopleWizard extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        this.getGroups();
-        if (this.props.person.personType === 1) {
+        if (this.props.person.personType === personType.Student) {
+            this.getGroups();
             this.getStudentRecord();
         }
     }
@@ -50,9 +51,9 @@ export default class PeopleWizard extends React.Component<Props, State> {
                 required: true,
                 type: "select",
                 selectOptions: [
-                    <option value={3}>Basic</option>,
-                    <option value={1}>Student</option>,
-                    <option value={2}>Teacher</option>,
+                    <option value={personType.Basic}>Basic</option>,
+                    <option value={personType.Student}>Student</option>,
+                    <option value={personType.Teacher}>Teacher</option>,
                 ]
             },
             {
@@ -97,7 +98,7 @@ export default class PeopleWizard extends React.Component<Props, State> {
             }
         ];
 
-        if (this.props.person.personType !== 1) {
+        if (this.props.person.personType !== personType.Student) {
             return (
             <Fragment>
                 <div className="fieldSetHeader">Person Record</div>
@@ -119,7 +120,7 @@ export default class PeopleWizard extends React.Component<Props, State> {
                 value: this.props.person.student?.groupId,
                 onFieldChangedSuccsess: this.handleFormChange.bind(this),
                 validationPattern: undefined,
-                required: true,
+                required: false,
                 type: "select",
                 selectOptions: groups
             }

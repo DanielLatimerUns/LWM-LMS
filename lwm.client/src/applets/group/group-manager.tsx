@@ -8,6 +8,10 @@ import GridRow from "../../entities/framework/gridRow";
 import Group from "../../entities/domainModels/group";
 import GroupWizard from "./applets/group-wizard/group-wizard";
 
+import newIcon from '../../assets/new_icon.png';
+import recordIcon from '../../assets/record_icon.png';
+
+
 export interface Props {
     
 }
@@ -77,7 +81,8 @@ export default class GroupManager extends React.Component<Props, State> {
                 <LwmButton 
                     isSelected={this.state.activeActionApplet === undefined} 
                     onClick={() => this.setState({activeActionApplet: undefined, selectedGroup: undefined})} 
-                    name="Records">
+                    name="Records"
+                    icon={recordIcon}>
                 </LwmButton>
             ),
             (
@@ -86,7 +91,8 @@ export default class GroupManager extends React.Component<Props, State> {
                     onClick={this.handleAddNewGroup.bind(this)} 
                     name={(this.state.selectedGroup === undefined || 
                         this.state.selectedGroup?.id === 0) ? "Add" : 
-                        "Edit : " + this.state.selectedGroup?.name}>    
+                        "Edit : " + this.state.selectedGroup?.name}
+                    icon={newIcon}>    
                 </LwmButton>
             )
         ];

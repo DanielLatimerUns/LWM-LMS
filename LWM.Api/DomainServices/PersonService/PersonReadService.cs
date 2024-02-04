@@ -25,7 +25,7 @@ namespace LWM.Api.DomainServices.PersonService
                     Surname = x.Surname,
                     EmailAddress1 = x.EmailAddress1,
                     PhoneNo = x.PhoneNo,
-                    PersonType = x.PersonType,
+                    PersonType = Enum.Parse<PersonType>(x.PersonType.ToString()),
                 }).ToListAsync();
         }
     }
