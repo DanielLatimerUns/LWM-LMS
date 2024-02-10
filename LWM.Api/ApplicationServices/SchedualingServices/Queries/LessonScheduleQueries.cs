@@ -5,6 +5,9 @@ using LWM.Data.Contexts;
 using LWM.Data.Models;
 using LWM.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
 using Group = LWM.Api.Dtos.DomainEntities.Group;
 using Student = LWM.Api.Dtos.DomainEntities.Student;
 
@@ -13,9 +16,36 @@ namespace LWM.Api.ApplicationServices.SchedualingServices.Queries
     public class LessonScheduleQueries(
         CoreContext context) : ILessonScheduleQueries
     {
+        public IEnumerable<Dtos.DomainEntities.LessonSchedule> GetLessonSchedules(
+            Expression<Func<Data.Models.LessonSchedule, bool>> filter = null)
+        {
+            var query = context.LessonSchedules
+                .Include(x => x.Group);
+
+            if (filter != null)
+                query.Where(filter);
+
+            return query.Select(x => new Dtos.DomainEntities.LessonSchedule
+            {
+                Id = x.Id,
+                GroupId = x.Group.Id,
+                SchedualedDayOfWeek = x.SchedualedDayOfWeek,
+                SchedualedStartTime = x.SchedualedStartTime.ToString("HH:mm"),
+                SchedualedEndTime = x.SchedualedEndTime.ToString("HH:mm"),
+                HourStart = x.SchedualedStartTime.Hour,
+                HourEnd = x.SchedualedEndTime.Hour,
+                MinuteStart = x.SchedualedStartTime.Minute,
+                MinuteEnd = x.SchedualedEndTime.Minute,
+                DurationMinutes = (x.SchedualedEndTime - x.SchedualedStartTime).TotalMinutes,
+                SchedualedDayOfWeekName = ((DayOfWeek)x.SchedualedDayOfWeek).ToString(),
+                Repeat = x.Repeat,
+                StartWeek = x.StartWeek
+            });
+        }
+
         public LessonViewModel GetCurrentLessonForTeacher(UserViewModel userViewModel)
         {
-            var currentDayOFWeekk = ((int)DateTime.Now.DayOfWeek);
+            var currentDayOFWeekk = (int)DateTime.Now.DayOfWeek;
             var currentTime = DateTime.Now;
 
             var lessonSchedule =
@@ -88,7 +118,9 @@ namespace LWM.Api.ApplicationServices.SchedualingServices.Queries
 
         public LessonFeedViewModel GetCurrentLessonFeedForTeacher(UserViewModel userViewModel)
         {
-            var currentDayOFWeekk = ((int)DateTime.Now.DayOfWeek);
+            var cal = new CultureInfo("en-Us").Calendar;
+            int currentWeek = cal.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+            var currentDayOFWeek = ((int)DateTime.Now.DayOfWeek);
             var currentTime = DateTime.Now;
 
             var lessonSchedules =
@@ -97,8 +129,7 @@ namespace LWM.Api.ApplicationServices.SchedualingServices.Queries
                 .Include(x => x.Group).ThenInclude(x => x.Teacher).ThenInclude(x => x.Person)
                 .Where(
                     x => x.Group.Teacher.Person.Id == userViewModel.PersonId
-                    && x.SchedualedDayOfWeek == currentDayOFWeekk
-                    && TimeOnly.FromDateTime(currentTime) < x.SchedualedEndTime)
+                    && x.SchedualedDayOfWeek == currentDayOFWeek && (x.Repeat == 0 || (x.StartWeek + x.Repeat >= currentWeek)))
                 .OrderBy(x => x.SchedualedStartTime);
 
             if (!lessonSchedules.Any())

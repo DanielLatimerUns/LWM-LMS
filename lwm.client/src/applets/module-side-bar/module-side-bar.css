@@ -1,16 +1,18 @@
 .panelOuterContainer {
     display: grid;
-    grid-template-rows: 100px 70px auto;
-    border-radius: 5px;
+    grid-template-rows: 80px auto 70px;
+    gap: 10px;
     min-height: 100%;
+    padding-left: 5px;
     background: linear-gradient(180deg, rgba(247 242 242 / 10%) 0%, rgba(247 242 242 / 15%) 55%, rgba(247 242 242 / 20%) 100%);
 }
 
 .panelUserContainer {
     align-items: center;
+    justify-content: center;
     display: flex;
     flex-direction: column;
-    background: rgba(247 242 242 / 20%) 100%;
+    border-top: 1px solid rgba(247 242 242 / 10%);
 }
 
 .footerOption {
@@ -24,9 +26,8 @@
 .panelContentContainer {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 5px;
-    justify-content: space-evenly;
+    gap: 30px;
+    justify-content: flex-start;
 }
 
 .panelContentContainer > div {
@@ -39,18 +40,18 @@
 .panelHeaderContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(247 242 242 / 20%) 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background: rgba(247 242 242 / 1%);
+    border-bottom: 1px solid rgba(247 242 242 / 10%);
 }
 
 .panelHeaderLogo {
     border-radius: 100px;
-    overflow: hidden; 
-    width: 80px;
-    height: 80px;
-    border: 2px solid rgba(247 242 242 / 30%);
-    
+    overflow: hidden;
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(247 242 242 / 30%);
 }
 
 .panelHeaderLogo > img {
@@ -62,3 +63,19 @@
     font-size: 17px;
     font-weight: 500;
 }
+
+@media (max-width: 800px) {
+    .panelOuterContainer {
+        display: flex;
+        justify-content: flex-start;
+        height: 100%;
+    }
+
+    .panelContentContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+    }
+
+  }

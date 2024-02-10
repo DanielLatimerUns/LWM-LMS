@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import './people-wizard.css';
 import { Person } from "../../../../entities/domainModels/person";
 import Group from "../../../../entities/domainModels/group";
@@ -11,42 +11,26 @@ import personType from "../../../../entities/enums/personType";
 export interface Props {
     person: Person;
     onValidationChanged?: Function;
-}
- 
-export interface State {
-    person: Person;
-    groups: Group[];
-}
- 
-export default class PeopleWizard extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {person: this.props.person, groups: []}
-    }
+    onChange: Function;
+};
 
-    componentDidMount(): void {
-        if (this.props.person.personType === personType.Student) {
-            this.getGroups();
-            this.getStudentRecord();
+const PeopleWizard: React.FunctionComponent<Props> = (props) => {
+    const [groups, setGroups] = useState<Group[]>([]);
+
+    useEffect(() => {
+        if (props.person.personType === personType.Student) {
+            getGroups();
+            getStudentRecord();
         }
-    }
+    }, []);
 
-    render() { 
-        return ( 
-        <div className="personWizardContainer">
-            <div className="personWizardBody">
-                {this.renderForms()}
-            </div>
-        </div>);
-    }
-
-    private renderForms() {
+    function renderForms() {
         const fields: FormField[] = [
             {
                 label: "Person Type" ,
                 id: "personType",
-                value: this.props.person.personType,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.person.personType,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
@@ -59,8 +43,8 @@ export default class PeopleWizard extends React.Component<Props, State> {
             {
                 label: "Forename" ,
                 id: "forename",
-                value: this.props.person.forename,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.person.forename,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -69,8 +53,8 @@ export default class PeopleWizard extends React.Component<Props, State> {
             {
                 label: "Surname" ,
                 id: "surname",
-                value: this.props.person.surname,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.person.surname,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -79,8 +63,8 @@ export default class PeopleWizard extends React.Component<Props, State> {
             {
                 label: "Email" ,
                 id: "emailAddress1",
-                value: this.props.person.emailAddress1,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.person.emailAddress1,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -89,8 +73,8 @@ export default class PeopleWizard extends React.Component<Props, State> {
             {
                 label: "Phone" ,
                 id: "phoneNo",
-                value: this.props.person.phoneNo,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.person.phoneNo,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: "[0-9]+",
                 required: false,
                 type: "text",
@@ -98,67 +82,67 @@ export default class PeopleWizard extends React.Component<Props, State> {
             }
         ];
 
-        if (this.props.person.personType !== personType.Student) {
+        if (props.person.personType !== personType.Student) {
             return (
             <Fragment>
                 <div className="fieldSetHeader">Person Record</div>
-                <Form fields={fields} onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)}/>
+                <Form fields={fields} onFieldValidationChanged={handleFieldValidationChanged}/>
             </Fragment>);
         }
 
-        const groups: JSX.Element[] = [
+        const builtGroups: JSX.Element[] = [
             <option value={-1}>Select a Group</option>
         ];
 
-        this.state.groups.map(group => groups.push(
-        <option value={group.id}>{group.name}</option>))
+        groups.map(group => builtGroups.push(
+            <option value={group.id}>{group.name}</option>)
+        );
 
         const studentFields: FormField[] = [
             {
                 label: "Group",
                 id: "groupId",
-                value: this.props.person.student?.groupId,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.person.student?.groupId,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: false,
                 type: "select",
-                selectOptions: groups
+                selectOptions: builtGroups
             }
         ]
 
         return (
         <Fragment>
             <div className="fieldSetHeader">Person Record</div>
-            <Form fields={fields} onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)}/>
+            <Form fields={fields} onFieldValidationChanged={handleFieldValidationChanged}/>
             <div className="fieldSetHeader">Student Record</div>
-            <Form fields={studentFields} onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)}/>
+            <Form fields={studentFields} onFieldValidationChanged={handleFieldValidationChanged}/>
         </Fragment>)
     }
 
-    private getGroups() {
+    function getGroups() {
         RestService.Get('group').then(
             resoponse => resoponse.json().then(
-                (data: Group[]) => this.setState(
-                    {groups: data})
+                (data: Group[]) => setGroups(data)
             ).catch( error => console.error(error))
         );
     }
-    
-    private getStudentRecord() {
-        RestService.Get(`person/${this.props.person.id}/student`).then(
+
+    function getStudentRecord() {
+        RestService.Get(`person/${props.person.id}/student`).then(
             resoponse => resoponse.json().then(
                 (data: Student[]) => {
-                    const updatedPerson = this.state.person;
+                    const updatedPerson = Object.assign({}, props.person);
                     updatedPerson.student = data[0];
 
-                    this.setState(prevState => ({...prevState, person: updatedPerson}))
-                } 
+                    props.onChange(updatedPerson);
+                }
             ).catch( error => console.error(error))
         );
     }
 
-    private handleFormChange(e: any) {
-        const changedPerson = this.state.person;
+    function handleFormChange(e: any) {
+        const changedPerson = Object.assign({}, props.person);
         const targetField: string = e.target.value;
 
         for (const field in changedPerson) {
@@ -180,17 +164,25 @@ export default class PeopleWizard extends React.Component<Props, State> {
         }
 
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
-        
+
         if (changedPerson.student) {
             changedPerson.student.groupId =  Number.parseInt((changedPerson.student.groupId as any));
         }
 
-        this.setState({person: changedPerson})
+        props.onChange(changedPerson);
     }
 
-    private handleFieldValidationChanged(isValid: boolean) {
-        if (this.props.onValidationChanged) {
-            this.props.onValidationChanged(isValid);
+    function handleFieldValidationChanged(isValid: boolean) {
+        if (props.onValidationChanged) {
+            props.onValidationChanged(isValid);
         }
     }
-}
+        return(
+            <div className="personWizardContainer">
+                <div className="personWizardBody">
+                    {renderForms()}
+                </div>
+            </div>);
+};
+
+export default PeopleWizard;

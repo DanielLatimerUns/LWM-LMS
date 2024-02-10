@@ -11,8 +11,8 @@ export default class RestService {
         });
     }
 
-    public static Post(requestUrl: string, payload: any) : Promise<Response> {   
-        const authHeader = this.BuildAuthHeader().Authorization;    
+    public static Post(requestUrl: string, payload: any) : Promise<Response> {
+        const authHeader = this.BuildAuthHeader().Authorization;
         return fetch(this.BaseApiUrl + requestUrl, {
             method: "post",
             headers: {
@@ -24,8 +24,8 @@ export default class RestService {
         });
     }
 
-    public static Put(requestUrl: string, payload: any) : Promise<Response> {     
-        const authHeader = this.BuildAuthHeader().Authorization;    
+    public static Put(requestUrl: string, payload: any) : Promise<Response> {
+        const authHeader = this.BuildAuthHeader().Authorization;
         return fetch(this.BaseApiUrl + requestUrl, {
             method: "put",
             headers: {
@@ -38,7 +38,7 @@ export default class RestService {
     }
 
     public static Delete(requestUrl: string) : Promise<Response> {
-        const authHeader = this.BuildAuthHeader().Authorization;  
+        const authHeader = this.BuildAuthHeader().Authorization;
         return fetch(this.BaseApiUrl + requestUrl, { method: "delete", headers: {"Authorization": "Bearer " + authHeader}});
     }
 

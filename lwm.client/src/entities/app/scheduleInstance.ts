@@ -1,4 +1,4 @@
-export default interface Schedule {
+export default interface ScheduleInstance {
     id: number;
     schedualedDayOfWeek: number;
     schedualedStartTime: string;
@@ -6,9 +6,10 @@ export default interface Schedule {
     groupId?: number;
     hourStart: number;
     hourEnd: number;
+    weekNumber: number;
+    durationMinutes?: number;
+    repeat: number;
+    startWeek: number;
     minuteStart: number;
     minuteEnd: number;
-    durationMinutes: number;
-    repeat?: number;
-    startWeek?: number;
 }

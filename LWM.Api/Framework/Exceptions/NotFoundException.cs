@@ -1,9 +1,8 @@
-﻿namespace LWM.Api.Framework.Exceptions
+﻿using System.Net;
+
+namespace LWM.Api.Framework.Exceptions
 {
-    public class NotFoundException : Exception
+    public class NotFoundException(string message) : BaseException(HttpStatusCode.NotFound, message)
     {
-        public NotFoundException(string message) : base(message)
-        {           
-        }
     }
 }

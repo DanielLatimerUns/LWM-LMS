@@ -3,6 +3,7 @@ using LWM.Api.DomainServices.PersonService.Contracts;
 using LWM.Api.DomainServices.StudentService.Contracts;
 using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
+using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -79,17 +80,17 @@ namespace LWM.Api.ApplicationServices.PersonServices.WriteServices
         private static void ValidatePerson(Person person)
         {
             if (person is null)
-                throw new BadHttpRequestException("No Person Provided.");
+                throw new BadRequestException("No Person Provided.");
 
             if (person.Forename.IsNullOrEmpty())
-                throw new BadHttpRequestException("Missing Person Forename.");
+                throw new BadRequestException("Missing Person Forename.");
         }
 
         private void ValidateStudent(Student student)
         {
             if (student.GroupId is not null && !coreContext.Groups.Any(x => x.Id == student.GroupId))
             {
-                throw new BadHttpRequestException("Group not found.");
+                throw new NotFoundException("Group not found.");
             }
         }
     }

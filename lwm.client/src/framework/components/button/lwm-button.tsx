@@ -3,27 +3,27 @@ import "./lwm-button.css";
 
 interface Props {
     onClick: Function
-    name: string
+    name?: string
     isSelected: boolean
     children?: JSX.Element
     icon?: string;
 }
- 
+
 interface State {
 }
- 
+
 export default class LwmButton extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
     }
 
-    render() { 
+    render() {
         return (
-        <div 
-            className={this.props.isSelected ? "lwmButton-selected" : "lwmButton"} 
+        <div
+            className={this.props.isSelected ? "lwmButton-selected" : "lwmButton"}
             onClick={this.props.onClick.bind(this)}>
             {this.buildIcon()}
-            <div>{this.props.name ?? this.props.children}</div>
+            {this.props.name ?? this.props.children}
         </div> );
     }
 

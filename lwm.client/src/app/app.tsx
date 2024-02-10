@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ModuleSideBar from "../applets/module-side-bar/module-side-bar";
 import ModuleLoader from "../framework/components/modulePanel/module-loader";
 import './app.css';
@@ -8,61 +8,49 @@ import AuthService from "../services/network/authentication/authService";
 import LessonFeed from "../applets/lesson-feed/lesson-feed";
 
 interface Props {
-    
 }
- 
-interface State {
-    activeModule: string | JSX.Element;
-    isAuthenticated: boolean;
-}
- 
-export default class App extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = { activeModule: <LessonFeed></LessonFeed>, isAuthenticated: false}
 
-        addEventListener("app-logout", this.handleLogout.bind(this), true);
-    }
-    
-    render() { 
-        return this.buildApp();
-    }
+ const App: React.FunctionComponent<Props> = () => {
+    const [activeModule, setActiveModule] = useState<string | JSX.Element>(<LessonFeed></LessonFeed>);
 
-    componentDidMount(): void {
-        this.setState({isAuthenticated: AuthService.isLoggedIn()});
-    }
+    const [isAuthenticated, setisAuthenticated] = useState<boolean>(AuthService.isLoggedIn());
 
-    private buildApp() {
-        if(this.state.isAuthenticated) {
-            return (        
-            <div className="appOuterContainer">    
-                <ModuleSideBar 
-                    onOptionSelectionChanged={this.onModuleSecetionChanged.bind(this)} 
+    addEventListener("app-logout", handleLogout, true);
+
+    function buildApp() {
+        if(isAuthenticated) {
+            return (
+            <div className="appOuterContainer">
+                <ModuleSideBar
+                    onOptionSelectionChanged={onModuleSecetionChanged}
                     userName="Kristina Unsworth">
                 </ModuleSideBar>
                 <ModuleLoader>
-                    {this.state.activeModule}
+                    {activeModule}
                 </ModuleLoader>
             </div>);
         }
 
         return (
             <div className="appOuterContainer-login-spalsh">
-                <LoginSpash onLoginSuccsess={this.onLoginComplete.bind(this)}></LoginSpash>
+                <LoginSpash onLoginSuccsess={onLoginComplete}></LoginSpash>
             </div>)
     }
 
-    private onModuleSecetionChanged = (option: SideBarOption) => {
-        this.setState({activeModule: option.module})
+    function onModuleSecetionChanged (option: SideBarOption) {
+        setActiveModule(option.module);
     }
 
-    private onLoginComplete() {
-        this.setState({isAuthenticated: true});
+    function onLoginComplete() {
+        setisAuthenticated(true);
     }
 
-    private handleLogout() {
+    function handleLogout() {
         AuthService.Logout();
-        this.setState({isAuthenticated: false});
+        setisAuthenticated(false);
     }
+
+    return buildApp();
 }
- 
+
+export default App;

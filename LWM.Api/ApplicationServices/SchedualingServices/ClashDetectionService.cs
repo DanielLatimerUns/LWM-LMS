@@ -1,48 +1,56 @@
 ﻿using LWM.Api.ApplicationServices.SchedualingServices.Contracts;
-using LWM.Api.DomainServices.LessonScheduleService.Contracts;
-using LWM.Api.DomainServices.LessonService.Contracts;
-using LWM.Data.Models;
+using LWM.Api.Framework.Exceptions;
+using LWM.Data.Contexts;
 
 namespace LWM.Api.ApplicationServices.SchedualingServices
 {
-    public class ClashDetectionService(ILessonScheduleReadService lessonScheduleReadService) : IClashDetectionService
+    public class ClashDetectionService(CoreContext context) : IClashDetectionService
     {
-        public async Task<bool> LessonSceduleHasClash(Dtos.DomainEntities.LessonSchedule lessonSchedule)
+        public Dtos.DomainEntities.LessonSchedule FindClash(Dtos.DomainEntities.LessonSchedule lessonSchedule)
         {
             if (lessonSchedule.SchedualedStartTime is null || lessonSchedule.SchedualedEndTime is null)
-                return false;
+                throw new BadRequestException("Missing start or end time.");
 
             if (lessonSchedule.SchedualedDayOfWeek is null)
-                return false;
-
+                throw new BadRequestException("Missing day of week.");
 
             var parsedStartTime = TimeOnly.Parse(lessonSchedule.SchedualedStartTime);
             var parsedEndTime = TimeOnly.Parse(lessonSchedule.SchedualedEndTime);
 
             if (parsedEndTime < parsedStartTime)
-                return false;
+                throw new BadRequestException("End time before start time.");
 
             var potentialClashes =
-            await lessonScheduleReadService.GetLessonSchedules(
-                x => x.SchedualedDayOfWeek == lessonSchedule.SchedualedDayOfWeek);
+                context.LessonSchedules.Where(
+                    x => x.SchedualedDayOfWeek == lessonSchedule.SchedualedDayOfWeek &&
+                         ((x.StartWeek == lessonSchedule.StartWeek) || 
+                          ((x.StartWeek + x.Repeat) <= (lessonSchedule.StartWeek + lessonSchedule.Repeat)) ||
+                                (x.StartWeek > lessonSchedule.StartWeek && lessonSchedule.Repeat == 0) ||
+                                    (lessonSchedule.StartWeek > x.StartWeek && x.Repeat == 0)));
 
             foreach(var potentialClash in potentialClashes)
             {
-                
-                var clashTimeStart = TimeOnly.Parse(potentialClash.SchedualedStartTime);
-                var clashTimeEnd = TimeOnly.Parse(potentialClash.SchedualedEndTime);
+                if (potentialClash.Id == lessonSchedule.Id) { continue; }
 
-                if (parsedStartTime < clashTimeStart & (parsedEndTime < clashTimeEnd & parsedEndTime > clashTimeStart)) // start time before - end time within
-                    return true;
+                var clashTimeStart = potentialClash.SchedualedStartTime;
+                var clashTimeEnd = potentialClash.SchedualedEndTime;
 
-                if ((parsedStartTime < clashTimeStart & parsedStartTime < clashTimeEnd) & parsedEndTime > clashTimeEnd) // start time within - end time after
-                    return true;
-
-                if (parsedStartTime < clashTimeStart & parsedEndTime > clashTimeEnd) // start time before - end time after
-                    return true;
+                if (parsedStartTime.IsBetween(clashTimeStart, clashTimeEnd) || 
+                    parsedEndTime.IsBetween(clashTimeStart, clashTimeEnd) ||
+                    parsedStartTime < clashTimeStart && parsedEndTime > clashTimeEnd)
+                {
+                    return new Dtos.DomainEntities.LessonSchedule
+                    {
+                        Id = potentialClash.Id,
+                        SchedualedStartTime = potentialClash.SchedualedStartTime.ToString(),
+                        SchedualedEndTime = potentialClash.SchedualedEndTime.ToString(),
+                        SchedualedDayOfWeek = potentialClash.SchedualedDayOfWeek,
+                        SchedualedDayOfWeekName = ((DayOfWeek)potentialClash.SchedualedDayOfWeek).ToString()
+                    };
+                }
             }
 
-            return false;
+            return null;
         }
     }
 }

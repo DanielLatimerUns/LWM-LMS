@@ -7,11 +7,11 @@ import LessonDocument from "../framework/LessonDocument";
 export default interface DashboardModel {
     lesson?: Lesson;
 
-    lessonSchedule?: LessonSchedule;
-    
+    lessonSchedule: LessonSchedule;
+
     students: Student[];
-    
+
     documents: LessonDocument[];
-    
+
     group?: Group;
 }

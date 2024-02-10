@@ -16,7 +16,9 @@ namespace LWM.Api.DomainServices.LessonSchedualService
                 SchedualedDayOfWeek = lessonSchedule.SchedualedDayOfWeek.Value,
                 SchedualedStartTime = TimeOnly.Parse(lessonSchedule.SchedualedStartTime),
                 SchedualedEndTime = TimeOnly.Parse(lessonSchedule.SchedualedEndTime),
-                Group = await context.Groups.FirstAsync(x => x.Id == lessonSchedule.GroupId)
+                Group = await context.Groups.FirstAsync(x => x.Id == lessonSchedule.GroupId),
+                StartWeek = lessonSchedule.StartWeek,
+                Repeat = lessonSchedule.Repeat,
             };
 
             context.LessonSchedules.Add(model);
@@ -47,6 +49,8 @@ namespace LWM.Api.DomainServices.LessonSchedualService
             model.SchedualedStartTime = TimeOnly.Parse(lessonSchedule.SchedualedStartTime);
             model.SchedualedEndTime = TimeOnly.Parse(lessonSchedule.SchedualedEndTime);
             model.Group = await context.Groups.FirstAsync(x => x.Id == lessonSchedule.GroupId);
+            model.Repeat = lessonSchedule.Repeat;
+            model.StartWeek = lessonSchedule.StartWeek;
 
             await context.SaveChangesAsync();
         }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RestService from "../../services/network/RestService";
 import './group-manager.css';
 import LwmButton from "../../framework/components/button/lwm-button";
@@ -7,173 +7,160 @@ import GridColumn from "../../entities/framework/gridColumn";
 import GridRow from "../../entities/framework/gridRow";
 import Group from "../../entities/domainModels/group";
 import GroupWizard from "./applets/group-wizard/group-wizard";
-
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 
 
 export interface Props {
-    
+
 }
- 
-export interface State {
-    groups: Group[]
-    selectedGroup?: Group,
-    activeActionApplet: JSX.Element | undefined,
-    hasError: boolean,
-    error?: string
-}
- 
-export default class GroupManager extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-            
-        this.state = {
-            groups: [], 
-            selectedGroup: undefined, 
-            activeActionApplet: undefined,
-            hasError: false,
-            error: 'All fields required'
+
+const GroupManager: React.FunctionComponent<Props> = () => {
+    const [groups, setGroups] = useState<Group[]>([]);
+    const [selectedGroup, setSelectedGroup] = useState<Group>({
+        name: "",
+        id: 0,
+        teacherId: -1,
+        completedLessonNumber: 0
+    });
+    const [hasError, setHasError] = useState<boolean>(false);
+    const [error, setError] = useState<string | undefined>('All fields required');
+    const [appletActive, setAppletActive] = useState<boolean>(false);
+    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (requiresUpdate) {
+            getGroups();
+            setRequiresUpdate(false);
+            setAppletActive(false);
         }
-    }
+    }, [requiresUpdate]);
 
-    componentDidMount() {
-        this.getGroups();
-    }
-
-    render() { 
-        return ( 
-            <Module 
-                gridConfig={this.buildGridConfig()}
-                moduleName="Group Center"
-                moduleEntityName="Group"
-                handleCloseClicked={this.handleAppletCancel.bind(this)}
-                handleSaveCloseClicked={this.handleAppletSave.bind(this)}
-                options={this.buildActionOptions()}
-                hasError={this.state.hasError}
-                error={this.state.error}>
-                {this.state.activeActionApplet}
-            </Module>
-        );
-    }
-
-    private buildGridConfig() {
+    function buildGridConfig() {
         const columns: GridColumn[] = [
             {lable: "Name", name: "name"},
         ];
 
-        const rows: GridRow[] = 
-        this.state.groups.map(group => ({columnData: group, id: group.id}));
-        
+        const rows: GridRow[] =
+        groups.map(group => ({columnData: group, id: group.id}));
+
         const gridConfig = {
                 columns: columns,
                 rows: rows,
-                handleEditClicked: this.handleEditGroup.bind(this),
-                handleDeleteClicked: this.handleDeleteGroup.bind(this),
+                handleEditClicked: handleEditGroup,
+                handleDeleteClicked: handleDeleteGroup,
             };
 
         return gridConfig;
     }
 
-    private buildActionOptions() {
+    function buildActionOptions() {
         const options: JSX.Element[] = [
             (
-                <LwmButton 
-                    isSelected={this.state.activeActionApplet === undefined} 
-                    onClick={() => this.setState({activeActionApplet: undefined, selectedGroup: undefined})} 
+                <LwmButton
+                    isSelected={!appletActive}
+                    onClick={() => setAppletActive(false)}
                     name="Records"
                     icon={recordIcon}>
                 </LwmButton>
             ),
             (
-                <LwmButton 
-                    isSelected={this.state.activeActionApplet?.type === GroupWizard}  
-                    onClick={this.handleAddNewGroup.bind(this)} 
-                    name={(this.state.selectedGroup === undefined || 
-                        this.state.selectedGroup?.id === 0) ? "Add" : 
-                        "Edit : " + this.state.selectedGroup?.name}
-                    icon={newIcon}>    
+                <LwmButton
+                    isSelected={appletActive}
+                    onClick={handleAddNewGroup}
+                    name={(!appletActive||
+                        selectedGroup?.id === 0) ? "Add" :
+                        "Edit : " + selectedGroup?.name}
+                    icon={newIcon}>
                 </LwmButton>
             )
         ];
         return options;
     }
 
-    private getGroups() {        
+    function getGroups() {
         RestService.Get('group').then(
             resoponse => resoponse.json().then(
-                (data: Group[]) => this.setState(
-                    {groups: data})
+                (data: Group[]) => setGroups(data)
             ).catch( error => console.error(error))
         );
     }
 
-    private handleAddNewGroup() {
+    function handleAddNewGroup() {
         const group: Group = {
-            name: "", 
-            id: 0, 
+            name: "",
+            id: 0,
             teacherId: -1,
             completedLessonNumber: 0
         };
 
-        this.setState({selectedGroup: group})
-
-        const applet = 
-                <GroupWizard
-                    onValidationChanged={this.handleValidationChanged.bind(this)}
-                    group={group}>
-                </GroupWizard>;
-
-        this.setState({activeActionApplet: applet });
+        setSelectedGroup(group);
+        setAppletActive(true);
     }
 
-    private handleEditGroup(group: Group) {
-        this.setState({selectedGroup: group});
-
-        const applet = <GroupWizard 
-                            onValidationChanged={this.handleValidationChanged.bind(this)}
-                            group={group}>
-                        </GroupWizard>;
-
-        this.setState({activeActionApplet: applet });
+    function handleEditGroup(group: Group) {
+        setSelectedGroup(group);
+        setAppletActive(true);
     }
 
-    private handleDeleteGroup(group: Group) {
-        RestService.Delete(`group/${group.id}`).then(() => this.getGroups());
+    function handleDeleteGroup(group: Group) {
+        RestService.Delete(`group/${group.id}`).then(() => getGroups());
     }
 
-    private handleGroupChange() {
-        this.getGroups();
-        this.setState({activeActionApplet: undefined, selectedGroup: undefined});
+    function handleGroupChange() {
+        setRequiresUpdate(true);
     }
 
-    private handleAppletCancel() {
-        this.setState({activeActionApplet: undefined, selectedGroup: undefined});
+    function handleAppletCancel() {
+        setHasError(false);
+        setAppletActive(false);
     }
 
-    private handleAppletSave() {
-        if (this.state.hasError) {
-            this.setState({hasError: true, error: "Required fields not set"});
+    function handleAppletSave() {
+        if (hasError) {
+            setHasError(hasError)
+            setError("Required fields not set");
             return;
         }
 
-        if (this.state.selectedGroup?.id === 0) {
-            RestService.Post('group', this.state.selectedGroup).then( data =>
-                data.json().then(this.handleGroupChange.bind(this))
+        if (selectedGroup?.id === 0) {
+            RestService.Post('group', selectedGroup).then( data =>
+                data.json().then(handleGroupChange)
             ).catch( error =>
                 console.error(error)
             )
             return;
         }
 
-        RestService.Put('group', this.state.selectedGroup).then(
-            this.handleGroupChange.bind(this)
+        RestService.Put('group', selectedGroup).then(
+            handleGroupChange
         ).catch( error =>
             console.error(error)
         )
     }
 
-    private handleValidationChanged(isValid: boolean) {
-        this.setState({hasError: !isValid});
+    function handleValidationChanged(isValid: boolean) {
+        setHasError(!isValid);
     }
+
+    return (
+        <Module
+            gridConfig={buildGridConfig()}
+            moduleName="Group Center"
+            moduleEntityName="Group"
+            handleCloseClicked={handleAppletCancel}
+            handleSaveCloseClicked={handleAppletSave}
+            options={buildActionOptions()}
+            hasError={hasError}
+            error={error}
+            appletActive={appletActive}>
+             <GroupWizard
+                onChange={(group: Group) => setSelectedGroup(group)}
+                    onValidationChanged={handleValidationChanged}
+                    group={selectedGroup}>
+            </GroupWizard>
+        </Module>
+    );
 }
+
+export default GroupManager;

@@ -6,11 +6,11 @@ import LessonDashboard from "../lesson-dashboard/lesson-dashboard";
 
 interface LessonFeedProps {
 }
- 
+
 interface LessonFeedState {
     feed: LessonFeedModel;
 }
- 
+
 export default class LessonFeed extends React.Component<LessonFeedProps, LessonFeedState> {
     constructor(props: LessonFeedProps) {
         super(props);
@@ -20,8 +20,8 @@ export default class LessonFeed extends React.Component<LessonFeedProps, LessonF
     componentDidMount(): void {
         this.getFeed();
     }
-    
-    render() { 
+
+    render() {
          return this.buildFeed();
     }
 
@@ -36,7 +36,7 @@ export default class LessonFeed extends React.Component<LessonFeedProps, LessonF
         return (
             <div className="lessonFeed">
                 {this.state.feed.lessons.map(lesson => <LessonDashboard dashboardModel={lesson}></LessonDashboard>)}
-            </div> 
+            </div>
         )
     }
 
@@ -52,4 +52,3 @@ export default class LessonFeed extends React.Component<LessonFeedProps, LessonF
 
 
 }
- 

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import SideBarOption from '../../entities/framework/sideBarOption';
 import './module-side-bar.css';
 import LessonManager from '../lesson/lesson-manager';
@@ -19,91 +19,62 @@ interface Props {
     userName: string
     onOptionSelectionChanged: Function;
 }
- 
-interface State {
-    options: SideBarOption[];
-}
- 
-export default class ModuleSideBar extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        const options: SideBarOption[] = [];
 
-        options.push({
-            name: 'Feed',
-            module: <LessonFeed></LessonFeed>,
-            active: true,
-            icon: feedIcon
-        });
+const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
+    const _options: SideBarOption[] = [];
 
-        options.push({
-            name: 'Lessons',
-            module: <LessonManager></LessonManager>,
-            active: false,
-            icon: lessonIcon
-            
-        });
+    _options.push({
+        name: 'Feed',
+        module: <LessonFeed></LessonFeed>,
+        active: true,
+        icon: feedIcon
+    });
 
-        options.push({
-            name: 'People',
-            module: <PersonManager></PersonManager>,
-            active: false,
-            icon: peopleIcon
-        });
+    _options.push({
+        name: 'Lessons',
+        module: <LessonManager></LessonManager>,
+        active: false,
+        icon: lessonIcon
 
-        options.push({
-            name: 'Groups',
-            module: <GroupManager></GroupManager>,
-            active: false,
-            icon: groupIcon
-        });
+    });
 
-        options.push({
-            name: 'Schedules',
-            module: <ScheduleManager></ScheduleManager>,
-            active: false,
-            icon: schedualIcon
-        });
+    _options.push({
+        name: 'People',
+        module: <PersonManager></PersonManager>,
+        active: false,
+        icon: peopleIcon
+    });
+
+    _options.push({
+        name: 'Groups',
+        module: <GroupManager></GroupManager>,
+        active: false,
+        icon: groupIcon
+    });
+
+    _options.push({
+        name: 'Schedules',
+        module: <ScheduleManager></ScheduleManager>,
+        active: false,
+        icon: schedualIcon
+    });
+
+    const [options, setOptions] = useState<SideBarOption[]>(_options);
 
 
-        this.state = {options: options};
-    }
-
-    render() { 
-        return this.renderPanel();
-    }
-
-    private renderPanel() {
-        return(
-            <div className='panelOuterContainer'>
-                <div className='panelHeaderContainer'>
-                    <div className='panelHeaderLogo'>
-                        <img src={logo}></img>
-                    </div>
-                </div>
-                <div className='panelUserContainer'>
-                    {this.renderFooter()}
-                </div>
-                <div className='panelContentContainer'>
-                    {this.renderContent()}
-                </div>
-            </div>
-        )
-    }
-
-    private renderContent() {
+    function renderContent() {
         return (
-            this.state.options.map(option => 
-                    <LwmButton 
-                        isSelected={option.active} 
-                        onClick={this.handleModuleSelectionClick.bind(this, option)} 
+            options.map(option =>
+                    <LwmButton
+                        isSelected={option.active}
+                        onClick={() => handleModuleSelectionClick(option)}
                         name={option.name}
                         icon={option.icon}/>
             )
         );
     }
 
-    private renderFooter() {
+    function renderFooter() {
         const footerOptions: SideBarOption[] = [];
 
         footerOptions.push({
@@ -118,26 +89,44 @@ export default class ModuleSideBar extends React.Component<Props, State> {
                 <div className='usernameContainer'>
                     Kristina
                 </div>
-                    {(footerOptions.map(option => 
-                    <LwmButton 
-                        isSelected={false} 
-                        onClick={this.handleModuleSelectionClick.bind(this, option)}
+                    {(footerOptions.map(option =>
+                    <LwmButton
+                        isSelected={false}
+                        onClick={() => handleModuleSelectionClick(option)}
                         name={option.name}>
                     </LwmButton>))}
             </Fragment>);
     }
 
-    private handleModuleSelectionClick(option: SideBarOption) {
+    function handleModuleSelectionClick(option: SideBarOption) {
         if (option.name === "Log Out") {
             dispatchEvent(new Event("app-logout"));
             return;
         }
 
-        const updatedOptions = this.state.options;
+        const updatedOptions = options;
 
         updatedOptions.forEach(x => x.active = x.name === option.name);
-        
-        this.setState({options: updatedOptions});
-        this.props.onOptionSelectionChanged(option);
+
+        setOptions(updatedOptions);
+        props.onOptionSelectionChanged(option);
     }
+
+    return(
+        <div className='panelOuterContainer'>
+            <div className='panelHeaderContainer'>
+                <div className='panelHeaderLogo'>
+                    <img src={logo}></img>
+                </div>
+            </div>
+            <div className='panelContentContainer'>
+                {renderContent()}
+            </div>
+            <div className='panelUserContainer'>
+                {renderFooter()}
+            </div>
+        </div>
+    )
 }
+
+export default ModuleSideBar;

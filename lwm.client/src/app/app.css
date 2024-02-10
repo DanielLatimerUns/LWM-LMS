@@ -1,6 +1,6 @@
 .appOuterContainer {
     display: grid;
-    grid-template-columns: 100px auto;
+    grid-template-columns: 80px auto;
     height: 100vh;
     background: rgb(51, 51, 51);
 }
@@ -12,3 +12,11 @@
     align-items: center;
     background-image: url('../assets/lwm_logo.jpg');
 }
+
+@media (max-width: 800px) {
+    .appOuterContainer {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+  }

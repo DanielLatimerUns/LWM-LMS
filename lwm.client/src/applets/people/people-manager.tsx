@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RestService from "../../services/network/RestService";
 import './people-manager.css';
 import { Person } from "../../entities/domainModels/person";
@@ -7,56 +7,35 @@ import PeopleWizard from "./applets/people-wizard/people-wizard";
 import Module from "../../framework/components/module/module";
 import GridColumn from "../../entities/framework/gridColumn";
 import GridRow from "../../entities/framework/gridRow";
-
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 
+export interface Props {}
 
-export interface Props {
-    
-}
- 
-export interface State {
-    persons: Person[]
-    selectedPerson?: Person,
-    activeActionApplet: JSX.Element | undefined,
-    hasError: boolean,
-    error?: string
-}
- 
-export default class PersonManager extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);           
-        this.state = {
-            persons: [], 
-            selectedPerson: undefined, 
-            activeActionApplet: undefined,
-            hasError: false,
-            error: 'All fields required'
+const PersonManager: React.FunctionComponent<Props> = () => {
+    const [persons, setPersons] = useState<Person[]>([]);
+    const [selectedPerson, setSelectedPerson] = useState<Person>({
+        forename: "",
+        surname: "", id: 0,
+        emailAddress1: "",
+        phoneNo: "",
+        personType: 1
+    });
+    const [appletActive, setAppletActive] = useState<boolean>(false);
+    const [hasError, setHasError] = useState<boolean>(false);
+    const [error, setError] = useState<string | undefined>('All fields required');
+    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (requiresUpdate) {
+            getPeople();
+            setAppletActive(false);
+            setRequiresUpdate(false);
         }
-    }
+    }, [requiresUpdate]);
 
-    componentDidMount() {
-        this.getPeople();
-    }
 
-    render() { 
-        return ( 
-            <Module 
-                gridConfig={this.buildGridConfig()}
-                moduleName="Person Center"
-                moduleEntityName="Person"
-                handleCloseClicked={this.handleAppletCancel.bind(this)}
-                handleSaveCloseClicked={this.handleAppletSave.bind(this)}
-                options={this.buildActionOptions()}
-                hasError={this.state.hasError}
-                error={this.state.error}>
-                {this.state.activeActionApplet}
-            </Module>
-        );
-    }
-
-    private buildGridConfig() {
+    function buildGridConfig() {
         const columns: GridColumn[] = [
             {lable: "Forename", name: "forename"},
             {lable: "Surname", name: "surname"},
@@ -64,121 +43,127 @@ export default class PersonManager extends React.Component<Props, State> {
             {lable: "Phone", name: "phoneNo"},
         ];
 
-        const rows: GridRow[] = 
-        this.state.persons.map(person => ({columnData: person, id: person.id}));
-        
+        const rows: GridRow[] =
+        persons.map(person => ({columnData: person, id: person.id}));
+
         const gridConfig = {
                 columns: columns,
                 rows: rows,
-                handleEditClicked: this.handleEditPerson.bind(this),
-                handleDeleteClicked: this.handleDeletePerson.bind(this),
+                handleEditClicked: handleEditPerson,
+                handleDeleteClicked: handleDeletePerson,
             };
 
         return gridConfig;
-    }
+    };
 
-    private buildActionOptions() {
+    function buildActionOptions() {
         const options: JSX.Element[] = [
             (
-                <LwmButton 
-                    isSelected={this.state.activeActionApplet === undefined} 
-                    onClick={() => this.setState({activeActionApplet: undefined, selectedPerson: undefined})} 
+                <LwmButton
+                    isSelected={!appletActive}
+                    onClick={() => setAppletActive(false)}
                     name="Records"
                     icon={recordIcon}>
                 </LwmButton>
             ),
             (
-                <LwmButton 
-                    isSelected={this.state.activeActionApplet?.type === PeopleWizard}  
-                    onClick={this.handleAddNewPerson.bind(this)} 
-                    name={(this.state.selectedPerson === undefined || 
-                        this.state.selectedPerson?.id === 0) ? "Add" : 
-                        "Edit: " + this.state.selectedPerson?.forename}
-                    icon={newIcon}>    
+                <LwmButton
+                    isSelected={appletActive}
+                    onClick={handleAddNewPerson}
+                    name={(!appletActive ||
+                        selectedPerson.id === 0) ? "Add" :
+                        "Edit: " + selectedPerson.forename}
+                    icon={newIcon}>
                 </LwmButton>
             )
         ];
 
         return options;
-    }
+    };
 
-    private getPeople() {        
+    function getPeople() {
         RestService.Get('person').then(
             resoponse => resoponse.json().then(
-                (data: Person[]) => this.setState(
-                    {persons: data})
+                (data: Person[]) => setPersons(data)
             ).catch( error => console.error(error))
         );
-    }
+    };
 
-    private handleAddNewPerson() {
+    function handleAddNewPerson() {
         const person: Person = {
-            forename: "", 
-            surname: "", id: 0, 
-            emailAddress1: "", 
+            forename: "",
+            surname: "", id: 0,
+            emailAddress1: "",
             phoneNo: "",
             personType: 1
         };
 
-        this.setState({selectedPerson: person})
+        setSelectedPerson(person);
+        setAppletActive(true);
+    };
 
-        const applet = 
-                <PeopleWizard 
-                    onValidationChanged={this.handleValidationChanged.bind(this)}
-                    person={person}>
-                </PeopleWizard>;
+    function handleEditPerson(person: Person) {
+        setSelectedPerson(person);
+        setAppletActive(true);
+    };
 
-        this.setState({activeActionApplet: applet });
-    }
+    function handleDeletePerson(person: Person) {
+        RestService.Delete(`person/${person.id}`).then(() => getPeople());
+    };
 
-    private handleEditPerson(person: Person) {
-        this.setState({selectedPerson: person});
+    function handleLessonChange() {
+        setRequiresUpdate(true);
+    };
 
-        const applet = 
-                <PeopleWizard 
-                    onValidationChanged={this.handleValidationChanged.bind(this)}
-                    person={person}>
-                </PeopleWizard>;
+    function handleAppletCancel() {
+        setAppletActive(false);
+    };
 
-        this.setState({activeActionApplet: applet });
-    }
-
-    private handleDeletePerson(person: Person) {
-        RestService.Delete(`person/${person.id}`).then(() => this.getPeople());
-    }
-
-    private handleLessonChange() {
-        this.getPeople();
-        this.setState({activeActionApplet: undefined, selectedPerson: undefined});
-    }
-
-    private handleAppletCancel() {
-        this.setState({activeActionApplet: undefined, selectedPerson: undefined});
-    }
-
-    private handleAppletSave() {
-        if (this.state.hasError) {
-            this.setState({hasError: true, error: "Required fields not set"});
+    function handleAppletSave() {
+        if (hasError) {
+            setHasError(true);
+            setError("Required fields not set");
             return;
         }
 
-        if (this.state.selectedPerson?.id === 0) {
-            RestService.Post('person', this.state.selectedPerson).then( data =>
-                data.json().then(this.handleLessonChange.bind(this))
+        if (selectedPerson?.id === 0) {
+            RestService.Post('person', selectedPerson).then(data =>
+                data.json().then(handleLessonChange)
             ).catch( error =>
                 console.error(error)
             )
-            return;
+            return
         }
 
-        RestService.Put('person', this.state.selectedPerson).then(
-            this.handleLessonChange.bind(this)
+        RestService.Put('person', selectedPerson).then(
+            handleLessonChange
         ).catch( error =>
             console.error(error)
         )
     }
 
-    private handleValidationChanged(isValid: boolean) {
-        this.setState({hasError: !isValid});
-    }
-}
+    function handleValidationChanged(isValid: boolean) {
+        setHasError(!isValid);
+    };
+
+    return (
+        <Module
+            gridConfig={buildGridConfig()}
+            moduleName="Person Center"
+            moduleEntityName="Person"
+            handleCloseClicked={handleAppletCancel}
+            handleSaveCloseClicked={handleAppletSave}
+            options={buildActionOptions()}
+            hasError={hasError}
+            error={error}
+            appletActive={appletActive}>
+                <PeopleWizard
+                    onChange={(person: Person) => setSelectedPerson(person)}
+                    onValidationChanged={handleValidationChanged}
+                    person={selectedPerson}>
+                </PeopleWizard>
+        </Module>
+    );
+};
+
+export default PersonManager;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Lesson from "../../entities/domainModels/Lesson";
 import RestService from "../../services/network/RestService";
 import './lesson-manager.css';
@@ -10,66 +10,43 @@ import GridRow from "../../entities/framework/gridRow";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 
-export interface Props {   
+export interface Props {
 }
- 
-export interface State {
-    lessons: Lesson[]
-    selectedLesson?: Lesson,
-    activeActionApplet?: JSX.Element,
-    hasError: boolean,
-    error?: string
-}
- 
-export default class LessonManager extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            lessons: [], 
-            selectedLesson: undefined, 
-            activeActionApplet: undefined,
-            hasError: false,
-            error: 'All fields required'
+
+const LessonManager: React.FunctionComponent<Props> = ({}) => {
+    const [lessons, setLessons] = useState<Lesson[]>([]);
+    const [selectedLesson, setSelectedLesson] = useState<Lesson>({name: "", lessonNo: "", id: 0});
+    const [appletActive, setAppletActive] = useState<boolean>(false);
+    const [hasError, setHasError] = useState<boolean>(false);
+    const [error] = useState<string | undefined>('All fields required');
+    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (requiresUpdate) {
+            getLessons();
+            setAppletActive(false);
+            setRequiresUpdate(false);
         }
-    }
+    }, [requiresUpdate]);
 
-    componentDidMount() {
-        this.getLessons();
-    }
-
-    render() { 
-        return (
-            <Module 
-                gridConfig={this.buildGridConfig()}
-                moduleName="Lesson Center"
-                moduleEntityName="Lesson"
-                handleCloseClicked={this.handleAppletCancel.bind(this)}
-                handleSaveCloseClicked={this.handleAppletSave.bind(this)}
-                options={this.buildActionOptions()}
-                hasError={this.state.hasError}
-                error={this.state.error}>
-                {this.state.activeActionApplet}
-            </Module>);
-    }
-
-    private buildActionOptions() {
+    const buildActionOptions = () => {
         const options: JSX.Element[] = [
             (
-                <LwmButton 
-                    isSelected={this.state.activeActionApplet === undefined} 
-                    onClick={() => this.setState({activeActionApplet: undefined, selectedLesson: undefined})} 
+                <LwmButton
+                    isSelected={!appletActive}
+                    onClick={() => setAppletActive(false)}
                     name="Records"
                     icon={recordIcon}>
                 </LwmButton>
             ),
             (
-                <LwmButton 
-                    isSelected={this.state.activeActionApplet?.type === LessonWizard}  
-                    onClick={this.handleAddClicked.bind(this)} 
-                    name={(this.state.selectedLesson === undefined || 
-                        this.state.selectedLesson?.id === 0) ? "Add" : 
-                        "Edit: " + this.state.selectedLesson?.name}
-                    icon={newIcon}>    
+                <LwmButton
+                    isSelected={appletActive}
+                    onClick={handleAddClicked}
+                    name={(!appletActive ||
+                        selectedLesson?.id === 0) ? "Add" :
+                        "Edit: " + selectedLesson?.name}
+                    icon={newIcon}>
                 </LwmButton>
             )
         ];
@@ -77,81 +54,91 @@ export default class LessonManager extends React.Component<Props, State> {
         return options;
     }
 
-    private buildGridConfig() {
+    const buildGridConfig = () => {
         const columns: GridColumn[] = [
             {lable: "Lesson Name", name: "name"},
             {lable: "Lesson No", name: "lessonNo"}
         ];
 
-        const rows: GridRow[] = 
-        this.state.lessons.map(lesson => ({columnData: lesson, id: lesson.id}));
-
+        const rows: GridRow[] =
+        lessons.map(lesson => ({columnData: lesson, id: lesson.id}));
 
         const gridConfig = {
                 columns: columns,
                 rows: rows,
-                handleEditClicked: this.handleEditClicked.bind(this),
-                handleDeleteClicked: this.handleDeleteClicked.bind(this),
+                handleEditClicked: handleEditClicked,
+                handleDeleteClicked: handleDeleteClicked,
             };
 
         return gridConfig;
     }
 
-    private buildWizard(lesson: Lesson) {
-        return(
-        <LessonWizard 
-            onValidationChanged={this.handleValidationChanged.bind(this)}
-            lesson={lesson}>
-        </LessonWizard>);
+    function handleFormChange(changedlesson: Lesson) {
+        setSelectedLesson(changedlesson);
     }
 
-    private getLessons() {        
+    const getLessons = () => {
         RestService.Get('lesson').then(
             resoponse => resoponse.json().then(
-                (data: Lesson[]) =>
-                    this.setState(
-                    {
-                        lessons: data,
-                        selectedLesson: undefined,
-                        activeActionApplet: undefined
-                    })
-            ).catch( error => console.error(error))
+                (data: Lesson[]) => {setLessons(data);}
+            ).catch(error => console.error(error))
         );
     }
 
-    private handleAddClicked() {
+    const handleAddClicked = () => {
         const lesson: Lesson = {lessonNo: "", name: "", id: 0};
-        this.setState({selectedLesson: lesson, activeActionApplet: this.buildWizard(lesson)});
+        setSelectedLesson(lesson);
+        setAppletActive(true);
     }
 
-    private handleEditClicked(lesson: Lesson) {
-        this.setState({selectedLesson: lesson ,activeActionApplet: this.buildWizard(lesson) });
+    const handleEditClicked = (lesson: Lesson) => {
+        setSelectedLesson(lesson);
+        setAppletActive(true);
     }
 
-    private handleDeleteClicked(lesson: Lesson) {
-        RestService.Delete(`lesson/${lesson.id}`).then(() => this.getLessons());
+    const handleDeleteClicked = (lesson: Lesson) => {
+        RestService.Delete(`lesson/${lesson.id}`).then(() => setRequiresUpdate(true));
     }
 
-    private handleAppletCancel() {
-        this.setState({activeActionApplet: undefined, selectedLesson: undefined, hasError: false});
-        this.setState({hasError: false});
+    const handleAppletCancel = () => {
+        setHasError(false);
+        setAppletActive(false);
     }
 
-    private handleAppletSave() {
-        if (this.state.hasError) {
-            this.setState({hasError: true, error: "Required fields not set"});
+    const handleAppletSave = () => {
+        if (hasError) {
             return;
         }
 
-        if (this.state.selectedLesson?.id === 0) {
-            RestService.Post('lesson', this.state.selectedLesson).then(() => this.getLessons());
+        if (selectedLesson?.id === 0) {
+            RestService.Post('lesson', selectedLesson).then(() => setRequiresUpdate(true));
             return;
         }
 
-        RestService.Put('lesson',this.state.selectedLesson).then(() => this.getLessons());
+        RestService.Put('lesson',selectedLesson).then(() => setRequiresUpdate(true));
     }
 
-    private handleValidationChanged(isValid: boolean) {
-        this.setState({hasError: !isValid});
+    const handleValidationChanged = () => (isValid: boolean) => {
+        setHasError(isValid);
     }
-}
+
+    return (
+        <Module
+            gridConfig={buildGridConfig()}
+            moduleName="Lesson Center"
+            moduleEntityName="Lesson"
+            handleCloseClicked={ handleAppletCancel}
+            handleSaveCloseClicked={handleAppletSave}
+            options={buildActionOptions()}
+            hasError={hasError}
+            error={error}
+            appletActive={appletActive}>
+            <LessonWizard
+                onChange={handleFormChange}
+                onValidationChanged={handleValidationChanged}
+                lesson={selectedLesson}>
+            </LessonWizard>
+        </Module>);
+};
+
+export default LessonManager;

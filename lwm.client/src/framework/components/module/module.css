@@ -10,7 +10,7 @@
     flex-direction: column;
     gap: 20px;
     border-right: 2px solid rgb(247 242 242 / 10%);
-    padding: 5px;
+    padding: 15px;
     padding-top: 10px;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .moduleActionSectionContainer {
-    display: flex;  
+    display: flex;
     height: 100%;
     overflow: auto;
 }
@@ -42,8 +42,6 @@
 .moduleHeader {
     display: flex;
     justify-content: center;
-    background: rgb(247,242,242);
-    background: linear-gradient(90deg, rgba(247 242 242 / 10%) 0%, rgba(247 242 242 / 15%) 55%, rgba(247 242 242 / 20%) 100%);
     border-bottom: 1px solid rgba(247 242 242 / 10%);
     align-items: center;
     grid-column: span 2;
@@ -101,5 +99,12 @@
     justify-content: center;
     align-items: center;
     font-size: 20px;
+    width: 100%;
+}
+
+.moduleAppletViewContainer {
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
     width: 100%;
 }

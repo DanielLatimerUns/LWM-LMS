@@ -7,36 +7,29 @@ import './lesson-wizard-documents.css'
 interface Props {
     documents: LessonDocument[];
 }
- 
-interface State {
-}
- 
-export default class LessonWizardDocuments extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-    }
-    render() { 
-        return ( 
-            <div className="lessonWizardFormDocuments">
-            <div>
-                Lesson Documents
-            </div>                   
-            {this.renderDocumentGrid()}
-        </div>
-         );
-    }
 
-    private renderDocumentGrid() {
+const LessonWizardDocuments: React.FunctionComponent<Props> = (props) => {
+    function renderDocumentGrid() {
         const columns: GridColumn[] = [];
         columns.push({name: "name", lable: "Document Name"});
         columns.push({name: "path", lable: "Document Path"});
-        
+
         return (
-        <Grid 
-            columns={columns} 
-            rows={this.props.documents.map(doc => ({columnData: doc, id: doc.id}))}
+        <Grid
+            columns={columns}
+            rows={props.documents.map(doc => ({columnData: doc, id: doc.id}))}
             editClicked={() => {return;}}
             deletClicked={() => {return;}}>
         </Grid>)
     }
+
+    return (
+        <div className="lessonWizardFormDocuments">
+        <div>
+            Lesson Documents
+        </div>
+        {renderDocumentGrid()}
+    </div>);
 }
+
+export default LessonWizardDocuments;

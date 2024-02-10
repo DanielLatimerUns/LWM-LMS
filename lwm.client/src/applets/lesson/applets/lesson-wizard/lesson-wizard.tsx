@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import './lesson-wizard.css';
 import Lesson from "../../../../entities/domainModels/Lesson";
 import RestService from "../../../../services/network/RestService";
@@ -10,79 +10,63 @@ import Form from "../../../../framework/components/form/form";
 export interface Props {
     lesson: Lesson;
     onValidationChanged?: Function;
-}
- 
-export interface State {
-    lessonState: Lesson;
-    documents: LessonDocument[];
-}
- 
-export default class LessonWizard extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {lessonState: this.props.lesson, documents: []}
-    }
+    onChange: Function;
+};
 
-    componentDidMount() {
-        this.getDocuments(this.props.lesson.id);
-    }
+const LessonWizard: React.FunctionComponent<Props> = (props) => {
+    const [documents, setDocuments] = useState<LessonDocument[]>([]);
 
-    render() { 
-        return ( 
-        <div className="lessonWizardContainer">
-            <div className="lessonWizardBody">
-                {this.buildForm()}
-                {this.renderDoocuments()} 
-            </div>
-        </div>);
-    }
+    const [formFields] = useState<FormField[]>([
+        {
+            label: "Name" ,
+            type: "text",
+            id: "name" ,
+            value: props.lesson.name,
+            onFieldChangedSuccsess: handleFormChange,
+            required: false,
+            validationPattern: undefined,
+            selectOptions: undefined
+        },
+        {
+            label: "Lesson Number" ,
+            type: "text",
+            id: "lessonNo" ,
+            value: props.lesson.lessonNo,
+            onFieldChangedSuccsess: handleFormChange,
+            required: true,
+            validationPattern: "[0-9]+",
+            selectOptions: undefined
+        }
+    ]);
 
-    private renderDoocuments() {
-        if(this.props.lesson.id === 0)
+    useEffect(() => {
+        getDocuments(props.lesson.id);
+    }, []);
+
+    function renderDoocuments() {
+        if(props.lesson.id === 0)
             return;
 
-        return <LessonWizardDocuments documents={this.state.documents}/>;
+        return <LessonWizardDocuments documents={documents}/>;
     }
 
-    private getDocuments(lessonId: number) {
+    function getDocuments(lessonId: number) {
         RestService.Get(`document/${lessonId}`).then( response =>
-            response.json().then(data => this.setState({documents: data}))
+            response.json().then(data => setDocuments(data))
         ).catch(error => console.error(error));
     }
 
-    private buildForm() {
-        const fields: FormField[] = [
-            {
-                label: "Name" ,
-                type: "text",
-                id: "name" ,
-                value: this.props.lesson.name,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
-                required: true,
-                validationPattern: undefined,
-                selectOptions: undefined
-            },
-            {
-                label: "Lesson Number" ,
-                type: "text",
-                id: "lessonNo" ,
-                value: this.props.lesson.lessonNo,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
-                required: true,
-                validationPattern: "[0-9]+",
-                selectOptions: undefined
-            }
-        ];
+    function buildForm() {
 
         return (
             <Fragment>
                 <div className="fieldSetHeader">Lesson Record</div>
-                <Form onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)} fields={fields}/>
+                <Form onFieldValidationChanged={handleFieldValidationChanged} fields={formFields}/>
             </Fragment>)
     }
 
-    private handleFormChange(e: any) {
-        const changedLesson: Lesson = Object.assign(this.state.lessonState);
+    function handleFormChange(e: any) {
+        const changedLesson: Lesson = Object.assign({}, props.lesson);
         const targetField: any = e.target.value;
 
         for (const field in changedLesson) {
@@ -90,13 +74,22 @@ export default class LessonWizard extends React.Component<Props, State> {
                 (changedLesson as any)[field] = targetField;
             }
         }
-
-        this.setState({lessonState: changedLesson})
+        props.onChange(changedLesson);
     }
 
-    private handleFieldValidationChanged(isValid: boolean) {
-        if (this.props.onValidationChanged) {
-            this.props.onValidationChanged(isValid);
+    function handleFieldValidationChanged(isValid: boolean) {
+        if (props.onValidationChanged) {
+            props.onValidationChanged(isValid);
         }
     }
+
+    return (
+        <div className="lessonWizardContainer">
+            <div className="lessonWizardBody">
+                {buildForm()}
+                {renderDoocuments()}
+            </div>
+        </div>);
 }
+
+export default LessonWizard;

@@ -1,7 +1,7 @@
-﻿using LWM.Api.ApplicationServices.PersonServices.Contracts;
-using LWM.Api.ApplicationServices.SchedualingServices.Contracts;
+﻿using LWM.Api.ApplicationServices.SchedualingServices.Contracts;
 using LWM.Api.DomainServices.LessonScheduleService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
+using LWM.Api.Framework.Exceptions;
 
 namespace LWM.Api.ApplicationServices.SchedualingServices.WriteServices
 {
@@ -11,30 +11,29 @@ namespace LWM.Api.ApplicationServices.SchedualingServices.WriteServices
     {
         public async Task Execute(LessonSchedule lessonSchedule)
         {
-            await ValidateLessonSchedule(lessonSchedule);
+            ValidateLessonSchedule(lessonSchedule);
 
             await scheduleWriteService.UpdateAsync(lessonSchedule);
         }
 
-        private async Task ValidateLessonSchedule(LessonSchedule lessonSchedule)
+        private void ValidateLessonSchedule(LessonSchedule lessonSchedule)
         {
             if (lessonSchedule is null)
-                throw new BadHttpRequestException("No Lesson Schedual Provided.");
+                throw new BadRequestException("No Lesson Schedual Provided.");
 
             if (lessonSchedule.SchedualedDayOfWeek is null)
-                throw new BadHttpRequestException("Missing Day of week.");
+                throw new BadRequestException("Missing Day of week.");
 
             if (lessonSchedule.GroupId is null)
-                throw new BadHttpRequestException("Missing Group.");
+                throw new BadRequestException("Missing Group.");
 
             if (lessonSchedule.SchedualedStartTime is null)
-                throw new BadHttpRequestException("Missing Start Time.");
+                throw new BadRequestException("Missing Start Time.");
 
             if (lessonSchedule.SchedualedEndTime is null)
-                throw new BadHttpRequestException("Missing End Time.");
+                throw new BadRequestException("Missing End Time.");
 
-            if (await clashDetectionService.LessonSceduleHasClash(lessonSchedule))
-                throw new BadHttpRequestException("Schedual Clash Detected.");
+            var clash = clashDetectionService.FindClash(lessonSchedule);
         }
     }
 }

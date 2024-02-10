@@ -16,15 +16,15 @@ namespace LWM.Api.Controllers
         ILessonSchedualCreationService lessonSchedualCreationService,
         ILessonSchedualDeleteService lessonSchedualDeleteService,
         ILessonSchedualUpdateService lessonSchedualUpdateService,
-        ILessonScheduleReadService lessonScheduleReadService,
         ILessonScheduleQueries lessonScheduleQueries,
+        IClashDetectionService clashDetectionService,
         UserManager<User> userManager)  : Controller
     {
 
         [HttpGet]
-        public async Task<IEnumerable<LessonSchedule>> Get()
+        public IEnumerable<LessonSchedule> Get()
         {
-            return await lessonScheduleReadService.GetLessonSchedules();
+            return lessonScheduleQueries.GetLessonSchedules();
         }
 
         [HttpGet("current")]
@@ -73,5 +73,10 @@ namespace LWM.Api.Controllers
             await lessonSchedualDeleteService.Execute(id);
         }
 
+        [HttpPost("clash")]
+        public LessonSchedule HasClash(LessonSchedule lessonSchedule)
+        {
+            return clashDetectionService.FindClash(lessonSchedule);
+        }
     }
 }

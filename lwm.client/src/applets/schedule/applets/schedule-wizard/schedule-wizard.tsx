@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import './schedule-wizard.css';
 import Group from "../../../../entities/domainModels/group";
-import RestService from "../../../../services/network/RestService";
 import Schedule from "../../../../entities/domainModels/schedule";
 import FormField from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
@@ -9,33 +8,13 @@ import Form from "../../../../framework/components/form/form";
 export interface Props {
     schedule: Schedule;
     onValidationChanged?: Function;
-}
- 
-export interface State {
-    schedule: Schedule;
     groups: Group[];
+    onChange: Function;
 }
- 
-export default class ScheduleWizard extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {schedule: this.props.schedule, groups: []}
-    }
 
-    componentDidMount(): void {
-        this.getGroups();
-    }
+const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
 
-    render() { 
-        return ( 
-        <div className="scheduleWizardContainer">
-            <div className="scheduleWizardBody">
-                {this.renderForms()}
-            </div>
-        </div>);
-    }
-
-    private renderForms() {
+    function renderForms() {
         const groups: JSX.Element[] = [
             <option value={undefined}>Select a Group</option>
         ];
@@ -51,7 +30,7 @@ export default class ScheduleWizard extends React.Component<Props, State> {
             <option value={7}>Sunday</option>
         ];
 
-        this.state.groups.map(group => groups.push(
+        props.groups.map(group => groups.push(
         <option value={group.id}>{group.name}</option>))
 
 
@@ -59,19 +38,18 @@ export default class ScheduleWizard extends React.Component<Props, State> {
             {
                 label: "Day Of Week",
                 id: "schedualedDayOfWeek",
-                value: this.props.schedule.schedualedDayOfWeek,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.schedule.schedualedDayOfWeek,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
                 selectOptions: daysOfWeek
             },
-
             {
                 label: "Start Time" ,
                 id: "schedualedStartTime",
-                value: this.props.schedule.schedualedStartTime,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.schedule.schedualedStartTime,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "time",
@@ -80,18 +58,38 @@ export default class ScheduleWizard extends React.Component<Props, State> {
             {
                 label: "End Time" ,
                 id: "schedualedEndTime",
-                value: this.props.schedule.schedualedEndTime,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.schedule.schedualedEndTime,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "time",
                 selectOptions: undefined
             },
             {
+                label: "Repeat Weeks (0 for indefinit)" ,
+                id: "repeat",
+                value: props.schedule.repeat,
+                onFieldChangedSuccsess: handleFormChange,
+                validationPattern: undefined,
+                required: true,
+                type: "text",
+                selectOptions: undefined
+            },
+            {
+                label: "Start Week" ,
+                id: "startWeek",
+                value: props.schedule.startWeek,
+                onFieldChangedSuccsess: handleFormChange,
+                validationPattern: undefined,
+                required: true,
+                type: "text",
+                selectOptions: undefined
+            },
+            {
                 label: "Group",
                 id: "groupId",
-                value: this.props.schedule.groupId,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.schedule.groupId,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
@@ -99,24 +97,16 @@ export default class ScheduleWizard extends React.Component<Props, State> {
             },
         ];
 
-        return(           
-        <Fragment>
-            <div className="fieldSetHeader">Schedule Record</div>
-            <Form onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)} fields={fields}/>
-        </Fragment>)
-    }
-
-    private getGroups() {
-        RestService.Get('group').then(
-            resoponse => resoponse.json().then(
-                (data: Group[]) => this.setState(
-                    {groups: data})
-            ).catch( error => console.error(error))
+        return(
+            <Fragment>
+                <div className="fieldSetHeader">Schedule Record</div>
+                <Form onFieldValidationChanged={handleFieldValidationChanged} fields={fields}/>
+            </Fragment>
         );
     }
 
-    private handleFormChange(e: any) {
-        const changedSchedule = this.state.schedule;
+    function handleFormChange(e: any) {
+        const changedSchedule = Object.assign({}, props.schedule);
         const targetField: string = e.target.value;
 
         for (const field in changedSchedule) {
@@ -124,13 +114,22 @@ export default class ScheduleWizard extends React.Component<Props, State> {
                 (changedSchedule as any)[field] = targetField;
             }
         }
-        
-        this.setState({schedule: changedSchedule})
+
+        props.onChange(changedSchedule);
     }
 
-    private handleFieldValidationChanged(isValid: boolean) {
-        if (this.props.onValidationChanged) {
-            this.props.onValidationChanged(isValid);
+    function handleFieldValidationChanged(isValid: boolean) {
+        if (props.onValidationChanged) {
+            props.onValidationChanged(isValid);
         }
     }
-}
+
+    return (
+        <div className="scheduleWizardContainer">
+            <div className="scheduleWizardBody">
+                {renderForms()}
+            </div>
+        </div>);
+};
+
+export default ScheduleWizard;

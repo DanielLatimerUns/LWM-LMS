@@ -1,13 +1,16 @@
 using LWM.Api.Framework.Services;
+using LWM.Api.Middleware.Exceptions;
 using LWM.Authentication;
 using LWM.Authentication.DataAccess;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Data;
 using System.Runtime.CompilerServices;
 
@@ -88,9 +91,10 @@ var identityBuilder = builder.Services.AddIdentityCore<User>(o =>
 identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(Role), identityBuilder.Services);
 identityBuilder.AddEntityFrameworkStores<AuthenticationDbContext>().AddDefaultTokenProviders();
 
-//
 
 var app = builder.Build();
+
+app.UseMiddleware<ProductionApiExceptionHandler>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -108,5 +112,7 @@ app.MapControllers();
 app.UseCors(cors => cors.AllowAnyOrigin().
                         AllowAnyHeader().
                         AllowAnyMethod().SetIsOriginAllowed(origin => true));
+
+app.UseStatusCodePages();
 
 app.Run();

@@ -4,6 +4,6 @@ namespace LWM.Api.ApplicationServices.SchedualingServices.Contracts
 {
     public interface IClashDetectionService
     {
-        Task<bool> LessonSceduleHasClash(LessonSchedule lessonSchedule);
+        LessonSchedule FindClash(LessonSchedule lessonSchedule);
     }
 }

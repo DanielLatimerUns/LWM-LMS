@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import './group-wizard.css';
 import Teacher from "../../../../entities/domainModels/teacher";
 import RestService from "../../../../services/network/RestService";
@@ -11,51 +11,32 @@ import Form from "../../../../framework/components/form/form";
 export interface Props {
     group: Group;
     onValidationChanged?: Function;
+    onChange: Function;
 }
- 
-export interface State {
-    group: Group;
-    teachers: Teacher[];
-    assignedStudents: Student[];
-}
- 
-export default class GroupWizard extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {group: this.props.group, teachers: [], assignedStudents: []}
-    }
 
-    componentDidMount(): void {
-        this.getTeachers();
-        this.getAssigneStudents();
-    }
+const GroupWizard: React.FunctionComponent<Props> = (props) => {
+    const [teachers, setTeachers] = useState<Teacher[]>([]);
+    const [assignedStudents, setAssignedStudents] = useState<Student[]>([]);
 
-    render() { 
-        return ( 
-        <div className="groupWizardContainer">
-            <div className="groupWizardBody">
-                {this.renderForms()}
-                <GroupWizardStudents
-                    students={this.state.assignedStudents}>
-                </GroupWizardStudents>
-            </div>
-        </div>);
-    }
+    useEffect(() => {
+        getTeachers();
+        getAssigneStudents();
+    }, []);
 
-    private renderForms() {
-        const teachers: JSX.Element[] = [
+    function renderForms() {
+        const builtTeachers: JSX.Element[] = [
             <option value={-1}>Select a Teacher</option>
         ];
 
-        this.state.teachers.map(teachher => teachers.push(
+        teachers.map(teachher => builtTeachers.push(
         <option value={teachher.id}>{teachher.name}</option>))
 
         const fields: FormField[] = [
             {
                 label: "Name" ,
                 id: "name",
-                value: this.props.group.name,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.group.name,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -64,24 +45,24 @@ export default class GroupWizard extends React.Component<Props, State> {
             {
                 label: "Teacher",
                 id: "teacherId",
-                value: this.props.group.teacherId,
-                onFieldChangedSuccsess: this.handleFormChange.bind(this),
+                value: props.group.teacherId,
+                onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
-                selectOptions: teachers
+                selectOptions: builtTeachers
             }
         ];
 
-        return(            
-        <Fragment>
-            <div className="fieldSetHeader">Group Record</div>
-            <Form onFieldValidationChanged={this.handleFieldValidationChanged.bind(this)} fields={fields}/>
-        </Fragment>)
+        return(
+            <Fragment>
+                <div className="fieldSetHeader">Group Record</div>
+                <Form onFieldValidationChanged={handleFieldValidationChanged} fields={fields}/>
+            </Fragment>)
     }
 
-    private handleFormChange(e: any) {
-        const changedgroup: Group = Object.assign(this.state.group);
+    function handleFormChange(e: any) {
+        const changedgroup: Group = Object.assign({}, props.group);
         const targetField: string = e.target.value;
 
         for (const field in changedgroup) {
@@ -92,33 +73,43 @@ export default class GroupWizard extends React.Component<Props, State> {
 
         changedgroup.teacherId = (changedgroup.teacherId as number);
 
-        this.setState({group: changedgroup})
+        props.onChange(changedgroup);
     }
 
-    private handleFieldValidationChanged(isValid: boolean) {
-        if (this.props.onValidationChanged) {
-            this.props.onValidationChanged(isValid);
+    function handleFieldValidationChanged(isValid: boolean) {
+        if (props.onValidationChanged) {
+            props.onValidationChanged(isValid);
         }
     }
 
-    private getTeachers() {
+    function getTeachers() {
         RestService.Get('teacher').then(
             resoponse => resoponse.json().then(
-                (data: Teacher[]) => this.setState(
-                    {teachers: data})
+                (data: Teacher[]) => setTeachers(data)
             ).catch( error => console.error(error))
         );
     }
 
-    private getAssigneStudents() {
-        if (this.state.group.id === 0 )
+    function getAssigneStudents() {
+        if (props.group.id === 0 )
             return;
-        
-        RestService.Get(`group/${this.state.group.id}/students`).then(
+
+        RestService.Get(`group/${props.group.id}/students`).then(
             resoponse => resoponse.json().then(
-                (data: Student[]) => this.setState(
-                    {assignedStudents: data})
+                (data: Student[]) => setAssignedStudents(data)
             ).catch( error => console.error(error))
         );
     }
+
+    return (
+        <div className="groupWizardContainer">
+            <div className="groupWizardBody">
+                {renderForms()}
+                <GroupWizardStudents
+                    students={assignedStudents}>
+                </GroupWizardStudents>
+            </div>
+        </div>);
 }
+
+export default GroupWizard;

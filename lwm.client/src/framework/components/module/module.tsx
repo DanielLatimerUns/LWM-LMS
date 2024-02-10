@@ -16,38 +16,41 @@ export interface Props {
         handleEditClicked: Function,
         handleDeleteClicked: Function,
     };
-    handleSaveCloseClicked: Function;
-    handleCloseClicked: Function;
+    handleSaveCloseClicked?: Function;
+    handleCloseClicked?: Function;
     options: JSX.Element[];
     children: JSX.Element | JSX.Element[] | undefined;
     error?: string;
     hasError: boolean;
+    altView?: JSX.Element;
+    appletActive: boolean;
 }
- 
+
 export interface State {
 }
- 
+
 export default class Module extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
     }
 
-    render() { 
-        return ( 
+    render() {
+        return (
             <div className="moduleContainer">
                 <div className="moduleHeader">
                     <div className="moduleHeaderTitle">{this.props.moduleName}</div>
                 </div>
                 {this.renderOptionsSection()}
                 <div className="moduleActionSectionContainer">
-                    {this.renderGrid()}
+                    {this.renderView()}
                     {this.renderApplet()}
                 </div>
             </div>);
     }
 
     private renderApplet() {
-        if (!this.props.children) { return;}
+        if (!this.props.children || !this.props.appletActive) { return;}
+
         return (
             <div className="moduleActionSectionApplet">
                 <div className="moduleActionSectionAppletContent">
@@ -80,7 +83,13 @@ export default class Module extends React.Component<Props, State> {
         );
     }
 
-    private renderGrid() {
+    private renderView() {
+        if (this.props.altView) {
+            return (<div className="moduleAppletViewContainer">
+            {this.props.altView}
+             </div>);
+        }
+
         if (this.props?.gridConfig.columns === undefined)
             return;
 
@@ -96,7 +105,7 @@ export default class Module extends React.Component<Props, State> {
             <Grid
                 editClicked={this.props.gridConfig.handleEditClicked}
                 deletClicked={this.props.gridConfig.handleDeleteClicked}
-                columns={this.props.gridConfig.columns} 
+                columns={this.props.gridConfig.columns}
                 rows={this.props.gridConfig.rows}>
             </Grid>
         </div>);
@@ -106,14 +115,18 @@ export default class Module extends React.Component<Props, State> {
         if (!this.props.children)
             return;
 
+        if (!this.props.handleSaveCloseClicked || !this.props.handleCloseClicked) {
+            return "";
+        }
+
         return <Fragment>
-                    <LwmButton 
-                        name="Save & Close" 
-                        onClick={this.props.handleSaveCloseClicked.bind(this)} 
+                    <LwmButton
+                        name="Save & Close"
+                        onClick={this.props.handleSaveCloseClicked.bind(this)}
                         isSelected={false}/>
-                    <LwmButton 
-                        name="Cancel & Close" 
-                        onClick={this.props.handleCloseClicked.bind(this)} 
+                    <LwmButton
+                        name="Cancel & Close"
+                        onClick={this.props.handleCloseClicked.bind(this)}
                         isSelected={false}/>
                 </Fragment>;
     }
