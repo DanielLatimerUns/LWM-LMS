@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LWM.Api.Migrations
 {
     [DbContext(typeof(CoreContext))]
-    [Migration("20240125131626_add lesson schedule table")]
-    partial class addlessonscheduletable
+    [Migration("20240216175522_make-curiculum-object-link-nullable")]
+    partial class makecuriculumobjectlinknullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,23 @@ namespace LWM.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("LWM.Data.Models.AzureObjectLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AzureId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AzureObjectLinks");
+                });
 
             modelBuilder.Entity("LWM.Data.Models.Configuration", b =>
                 {
@@ -42,6 +59,36 @@ namespace LWM.Api.Migrations
                     b.ToTable("Configurations");
                 });
 
+            modelBuilder.Entity("LWM.Data.Models.Curriculum", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AzureObjectLinkId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NativeLanguage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Targetlanguage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AzureObjectLinkId");
+
+                    b.ToTable("LessonCurriculums");
+                });
+
             modelBuilder.Entity("LWM.Data.Models.Document", b =>
                 {
                     b.Property<int>("Id")
@@ -49,6 +96,9 @@ namespace LWM.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AzureObjectLinkId")
+                        .HasColumnType("int");
 
                     b.Property<string>("DocumentPath")
                         .IsRequired()
@@ -62,6 +112,8 @@ namespace LWM.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AzureObjectLinkId");
 
                     b.HasIndex("LessonId");
 
@@ -101,6 +153,12 @@ namespace LWM.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AzureObjectLinkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurriculumId")
+                        .HasColumnType("int");
+
                     b.Property<int>("LessonNo")
                         .HasColumnType("int");
 
@@ -109,6 +167,10 @@ namespace LWM.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AzureObjectLinkId");
+
+                    b.HasIndex("CurriculumId");
 
                     b.ToTable("Lessons");
                 });
@@ -150,11 +212,20 @@ namespace LWM.Api.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Repeat")
+                        .HasColumnType("int");
+
                     b.Property<int>("SchedualedDayOfWeek")
                         .HasColumnType("int");
 
-                    b.Property<TimeOnly>("SchedualedTime")
+                    b.Property<TimeOnly>("SchedualedEndTime")
                         .HasColumnType("time");
+
+                    b.Property<TimeOnly>("SchedualedStartTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("StartWeek")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -236,13 +307,30 @@ namespace LWM.Api.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("LWM.Data.Models.Curriculum", b =>
+                {
+                    b.HasOne("LWM.Data.Models.AzureObjectLink", "AzureObjectLink")
+                        .WithMany()
+                        .HasForeignKey("AzureObjectLinkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AzureObjectLink");
+                });
+
             modelBuilder.Entity("LWM.Data.Models.Document", b =>
                 {
+                    b.HasOne("LWM.Data.Models.AzureObjectLink", "AzureObjectLink")
+                        .WithMany()
+                        .HasForeignKey("AzureObjectLinkId");
+
                     b.HasOne("LWM.Data.Models.Lesson", "Lesson")
                         .WithMany("Documents")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AzureObjectLink");
 
                     b.Navigation("Lesson");
                 });
@@ -256,6 +344,23 @@ namespace LWM.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Lesson", b =>
+                {
+                    b.HasOne("LWM.Data.Models.AzureObjectLink", "AzureObjectLink")
+                        .WithMany()
+                        .HasForeignKey("AzureObjectLinkId");
+
+                    b.HasOne("LWM.Data.Models.Curriculum", "Curriculum")
+                        .WithMany("Lessons")
+                        .HasForeignKey("CurriculumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AzureObjectLink");
+
+                    b.Navigation("Curriculum");
                 });
 
             modelBuilder.Entity("LWM.Data.Models.LessonInstance", b =>
@@ -310,6 +415,11 @@ namespace LWM.Api.Migrations
                         .HasForeignKey("PersonId");
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Curriculum", b =>
+                {
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("LWM.Data.Models.Group", b =>

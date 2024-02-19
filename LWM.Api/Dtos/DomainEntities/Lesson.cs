@@ -7,5 +7,7 @@
         public string? Name { get; set; }
 
         public int LessonNo { get; set; }
+
+        public int CurriculumId { get; set; }
     }
 }

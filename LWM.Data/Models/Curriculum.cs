@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 
 namespace LWM.Data.Models
 {
-    public class Document
+    public class Curriculum
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public string DocumentPath { get; set; }
+        public string NativeLanguage { get; set; }
+
+        public string Targetlanguage { get; set; }
 
         public AzureObjectLink? AzureObjectLink { get; set; }
 
-        public Lesson Lesson { get; set; }
-    } 
+        public ICollection<Lesson>? Lessons { get; set; }
+    }
 }

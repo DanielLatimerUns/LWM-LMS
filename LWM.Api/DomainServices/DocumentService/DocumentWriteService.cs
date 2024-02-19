@@ -15,12 +15,13 @@ namespace LWM.Api.DomainServices.DocumentService
             _context = context;
         }
 
-        public async Task<int> CreateAsync(LessonDocument document)
+        public async Task<int> CreateAsync(LessonDocument document, AzureObjectLink? azureObjectLink = null)
         {
             var model = new Document
             {
                 Name = document.Name,
                 DocumentPath = document.Path,
+                AzureObjectLink = azureObjectLink
             };
 
             _context.Documents.Add(model);

@@ -14,12 +14,21 @@ namespace LWM.Api.DomainServices.LessonService
             _context = context;
         }
 
-        public async Task<int> CreateAsync(Dtos.DomainEntities.Lesson lesson)
+        public async Task<int> CreateAsync(Dtos.DomainEntities.Lesson lesson, AzureObjectLink? azureObjectLink = null)
         {
+            var curricullum = _context.LessonCurriculums.FirstOrDefault(x => x.Id == lesson.CurriculumId);
+
+            if (curricullum == null)
+            {
+                throw new NotFoundException("Curriculum not found.");
+            }
+
             var model = new Data.Models.Lesson
             {
                 Name = lesson.Name,
                 LessonNo = lesson.LessonNo,
+                Curriculum = curricullum,
+                AzureObjectLink = azureObjectLink
             };
 
             _context.Lessons.Add(model);

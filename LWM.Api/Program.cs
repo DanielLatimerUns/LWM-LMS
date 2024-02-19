@@ -36,6 +36,8 @@ builder.Services.AddDbContext<CoreContext>(
 builder.Services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("LWM"),
     c => c.MigrationsAssembly("LWM.Api")));
 
+builder.Services.AddMemoryCache();
+
 var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
 
 

@@ -14,6 +14,10 @@ namespace LWM.Data.Models
 
         public int LessonNo { get; set;}
 
+        public Curriculum Curriculum { get; set;}
+
+        public AzureObjectLink? AzureObjectLink { get; set; }
+
         public ICollection<Document> Documents { get; set;} = new List<Document>();
     }
 }

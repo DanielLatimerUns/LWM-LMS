@@ -9,6 +9,8 @@ import GridColumn from "../../entities/framework/gridColumn";
 import GridRow from "../../entities/framework/gridRow";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
+import spinner from '../../assets/loading_spinner.gif';
+import syncIcon from '../../assets/cloud-sync.png'
 
 export interface Props {
 }
@@ -20,6 +22,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     const [hasError, setHasError] = useState<boolean>(false);
     const [error] = useState<string | undefined>('All fields required');
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+    const [isSyncInProgress, setisSyncInProgress] = useState<boolean>();
 
     useEffect(() => {
         if (requiresUpdate) {
@@ -48,7 +51,15 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
                         "Edit: " + selectedLesson?.name}
                     icon={newIcon}>
                 </LwmButton>
-            )
+            ),
+            (
+                <LwmButton
+                    isSelected={false}
+                    onClick={() => syncLessonsWithOneDrive()}
+                    name={isSyncInProgress ? "Sync in progress..." : "Sync With OneDrive"}
+                    icon={isSyncInProgress ? spinner : syncIcon}>
+                </LwmButton>
+            ),
         ];
 
         return options;
@@ -120,6 +131,11 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
 
     const handleValidationChanged = () => (isValid: boolean) => {
         setHasError(isValid);
+    }
+
+    const syncLessonsWithOneDrive = () => {
+        setisSyncInProgress(true);
+        RestService.Get('azure/import').then(() => setisSyncInProgress(false));
     }
 
     return (

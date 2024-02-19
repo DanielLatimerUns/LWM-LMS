@@ -18,7 +18,7 @@ const LessonWizardDocuments: React.FunctionComponent<Props> = (props) => {
         <Grid
             columns={columns}
             rows={props.documents.map(doc => ({columnData: doc, id: doc.id}))}
-            editClicked={() => {return;}}
+            editClicked={(doc: LessonDocument) => window.open(doc.path)}
             deletClicked={() => {return;}}>
         </Grid>)
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModuleSideBar from "../applets/module-side-bar/module-side-bar";
 import ModuleLoader from "../framework/components/modulePanel/module-loader";
 import './app.css';
@@ -6,6 +6,7 @@ import SideBarOption from "../entities/framework/sideBarOption";
 import LoginSpash from "./authentication/login-spash/login-splash";
 import AuthService from "../services/network/authentication/authService";
 import LessonFeed from "../applets/lesson-feed/lesson-feed";
+import RestService from "../services/network/RestService";
 
 interface Props {
 }
@@ -16,6 +17,19 @@ interface Props {
     const [isAuthenticated, setisAuthenticated] = useState<boolean>(AuthService.isLoggedIn());
 
     addEventListener("app-logout", handleLogout, true);
+
+    // hacky but works - this is to request consent for a azure token. once consent has been granted the request is redirected back to the app via the api response (not ideal but works).
+    useEffect(() => {
+        RestService.Get("azure/consent/required").then(
+            data => data.json().then(required => {
+                if (required === true) {
+                    RestService.Get("azure/consent").then(
+                        data => data.text().then(
+                            consentUrl => window.open(consentUrl)
+                        )
+                    )
+                }
+            }))},[]);
 
     function buildApp() {
         if(isAuthenticated) {
@@ -34,7 +48,7 @@ interface Props {
         return (
             <div className="appOuterContainer-login-spalsh">
                 <LoginSpash onLoginSuccsess={onLoginComplete}></LoginSpash>
-            </div>)
+            </div>);
     }
 
     function onModuleSecetionChanged (option: SideBarOption) {

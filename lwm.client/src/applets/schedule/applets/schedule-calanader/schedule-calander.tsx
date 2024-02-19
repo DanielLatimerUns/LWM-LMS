@@ -16,10 +16,6 @@ interface ScheduleCalanderProps {
     groups: Group[];
 }
 
-interface ScheduleCalanderState {
-    currentWeekInView: Week;
-}
-
 const ScheduleCalander: React.FunctionComponent<ScheduleCalanderProps> = (props) => {
     const [currentWeekInView, setCurrentWeekInView] = useState<Week>({
         weekNumber: Moment().week(),

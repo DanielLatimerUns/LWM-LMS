@@ -1,16 +1,12 @@
 ﻿using LWM.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LWM.Data.Contexts
 {
     public class CoreContext : DbContext
     {
+        public DbSet<AzureObjectLink> AzureObjectLinks { get; set; }
+
         public DbSet<Group> Groups { get; set; }
 
         public DbSet<Lesson> Lessons { get; set; }
@@ -31,6 +27,8 @@ namespace LWM.Data.Contexts
 
         public DbSet<Configuration> Configurations { get; set; }
 
+        public DbSet<Curriculum> LessonCurriculums { get; set; }
+
         public CoreContext(DbContextOptions<CoreContext> options)
         : base(options)
         { }
@@ -42,8 +40,6 @@ namespace LWM.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
             base.OnModelCreating(modelBuilder);
         }
     }
