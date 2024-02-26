@@ -6,7 +6,7 @@ import SideBarOption from "../entities/framework/sideBarOption";
 import LoginSpash from "./authentication/login-spash/login-splash";
 import AuthService from "../services/network/authentication/authService";
 import LessonFeed from "../applets/lesson-feed/lesson-feed";
-import RestService from "../services/network/RestService";
+import azureAuthService from "../services/network/azure/azureAuthService";
 
 interface Props {
 }
@@ -18,18 +18,9 @@ interface Props {
 
     addEventListener("app-logout", handleLogout, true);
 
-    // hacky but works - this is to request consent for a azure token. once consent has been granted the request is redirected back to the app via the api response (not ideal but works).
     useEffect(() => {
-        RestService.Get("azure/consent/required").then(
-            data => data.json().then(required => {
-                if (required === true) {
-                    RestService.Get("azure/consent").then(
-                        data => data.text().then(
-                            consentUrl => window.open(consentUrl)
-                        )
-                    )
-                }
-            }))},[]);
+        authoriseAzureCredentials();
+    },[isAuthenticated]);
 
     function buildApp() {
         if(isAuthenticated) {
@@ -62,6 +53,25 @@ interface Props {
     function handleLogout() {
         AuthService.Logout();
         setisAuthenticated(false);
+    }
+
+    function authoriseAzureCredentials() {
+        if (!isAuthenticated) { return; }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestToken = urlParams.get('token')
+
+        if (requestToken) {
+            azureAuthService.cacheAuthToken(requestToken);
+            window.location.assign(window.location.pathname);
+            return;
+        }
+
+        if (azureAuthService.getCachedAuthToken()) {
+            return;
+        }
+
+        azureAuthService.redirectToAzureUserAuth();
     }
 
     return buildApp();

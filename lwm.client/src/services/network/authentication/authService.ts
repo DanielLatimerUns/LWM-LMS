@@ -23,7 +23,7 @@ export default class AuthService {
     public static async Logout() {
         localStorage.removeItem(this.AuthTokenKey);
     }
-    
+
     public static GetAuthToken(): LoginResponseModel | undefined {
         return this.TryGetCachedAuthToken();
     }
@@ -35,12 +35,11 @@ export default class AuthService {
     private static TryGetCachedAuthToken(): LoginResponseModel | undefined {
         const cachedToken = localStorage.getItem(this.AuthTokenKey);
         if (!cachedToken) {return undefined;}
-        return JSON.parse(cachedToken);         
+        return JSON.parse(cachedToken);
     }
 
     private static SaveTokenToCache(token: LoginResponseModel) {
         localStorage.setItem(this.AuthTokenKey, JSON.stringify(token));
     }
-
 
 }

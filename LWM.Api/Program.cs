@@ -1,5 +1,6 @@
 using LWM.Api.Framework.Services;
 using LWM.Api.Middleware.Exceptions;
+using LWM.Api.Middleware.Request;
 using LWM.Authentication;
 using LWM.Authentication.DataAccess;
 using LWM.Data.Contexts;
@@ -25,8 +26,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-ServiceBuilder.BuildServices(builder.Services);
-
 // need to add con string...
 builder.Services.AddDbContext<CoreContext>(
     options => options.UseSqlServer(configuration.GetConnectionString("LWM"), 
@@ -46,7 +45,6 @@ builder.Services.Configure<JwtIssuerOptions>(options =>
     options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
     options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
     options.SigningCredentials = new SigningCredentials(KeyFactory.GetKey(), SecurityAlgorithms.HmacSha256);
-
 });
 
 var tokenValidationParameters = new TokenValidationParameters
@@ -93,10 +91,12 @@ var identityBuilder = builder.Services.AddIdentityCore<User>(o =>
 identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(Role), identityBuilder.Services);
 identityBuilder.AddEntityFrameworkStores<AuthenticationDbContext>().AddDefaultTokenProviders();
 
+ServiceBuilder.BuildServices(builder.Services);
 
 var app = builder.Build();
 
 app.UseMiddleware<ProductionApiExceptionHandler>();
+app.UseMiddleware<RequestStateInjectionHandler>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

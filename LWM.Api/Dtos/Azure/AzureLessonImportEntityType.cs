@@ -1,4 +1,4 @@
-﻿namespace LWM.Api.Dtos.AzureResponses
+﻿namespace LWM.Api.Dtos.Azure
 {
     public enum AzureLessonImportEntityType
     {

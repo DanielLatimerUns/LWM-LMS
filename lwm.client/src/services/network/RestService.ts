@@ -1,4 +1,5 @@
 import AuthService from './authentication/authService';
+import azureAuthService from './azure/azureAuthService';
 
 export default class RestService {
     //https://localhost:7120/ local dev - this should use env var later on
@@ -7,18 +8,22 @@ export default class RestService {
 
     public static Get(requestUrl: string) : Promise<Response> {
         return fetch(this.BaseApiUrl + requestUrl, {
-            headers: {"Authorization": "Bearer " + this.BuildAuthHeader().Authorization}
+            headers: {
+                "Authorization": 'Bearer ' + this.BuildAuthHeader().Authorization,
+                "AZURE_TOKEN": azureAuthService.getCachedAuthToken()?.token ?? ''
+            }
         });
     }
 
     public static Post(requestUrl: string, payload: any) : Promise<Response> {
         const authHeader = this.BuildAuthHeader().Authorization;
         return fetch(this.BaseApiUrl + requestUrl, {
-            method: "post",
+            method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                "Authorization": "Bearer " + authHeader
+                "Authorization": "Bearer " + authHeader,
+                "AZURE_TOKEN": azureAuthService.getCachedAuthToken()?.token ?? ''
             },
             body: JSON.stringify(payload)
         });
@@ -31,20 +36,21 @@ export default class RestService {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                "Authorization": "Bearer " + authHeader
+                "Authorization": "Bearer " + authHeader,
+                "AZURE_TOKEN": azureAuthService.getCachedAuthToken()?.token ?? ''
             },
-            body: payload ? JSON.stringify(payload) : ""
+            body: payload ? JSON.stringify(payload) : ''
         });
     }
 
     public static Delete(requestUrl: string) : Promise<Response> {
         const authHeader = this.BuildAuthHeader().Authorization;
-        return fetch(this.BaseApiUrl + requestUrl, { method: "delete", headers: {"Authorization": "Bearer " + authHeader}});
+        return fetch(this.BaseApiUrl + requestUrl, { method: 'delete', headers: {'Authorization': 'Bearer ' + authHeader}});
     }
 
     private static BuildAuthHeader() {
         const bearer = AuthService.GetAuthToken();
-        if (!bearer) { return { 'Authorization': "" }}
+        if (!bearer) { return { 'Authorization': '' }}
 
         return { 'Authorization':  bearer.token.auth_Token};
     }

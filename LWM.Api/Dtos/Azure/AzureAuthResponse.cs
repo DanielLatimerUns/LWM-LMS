@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LWM.Api.Dtos.AzureResponses
+namespace LWM.Api.Dtos.Azure
 {
     public class AzureAuthResponse
     {

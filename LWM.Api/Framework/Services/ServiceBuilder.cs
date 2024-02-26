@@ -6,6 +6,10 @@ namespace LWM.Api.Framework.Services
 {
     public class ServiceBuilder
     {
+        private readonly static string[] _scopedServices = ["IApplicationInstanceService"];
+
+        private readonly static string[] _singletonServices = ["IApplicationInstanceService"];
+
         public static void BuildServices(IServiceCollection services)
         {
             var assembly = Assembly.GetAssembly(typeof(DocumentReadService));
@@ -27,6 +31,18 @@ namespace LWM.Api.Framework.Services
 
                 if (serviceImplementation == null)
                     continue;
+
+                if (_scopedServices.Contains(service.Name))
+                {
+                    services.AddScoped(service, serviceImplementation);
+                    continue;
+                }
+
+                if (_singletonServices.Contains(service.Name))
+                {
+                    services.AddSingleton(service, serviceImplementation);
+                    continue;
+                }
 
                 services.Add(new ServiceDescriptor(service, serviceImplementation, ServiceLifetime.Transient));
             }

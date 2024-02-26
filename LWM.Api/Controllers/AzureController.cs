@@ -1,18 +1,19 @@
-﻿using LWM.Api.ApplicationServices.Azure;
-using LWM.Api.ApplicationServices.DocumentServices.OneDrive;
-using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.ApplicationServices.Azure.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.Models;
-using System.Web;
 
 namespace LWM.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("azure")]
-    public class AzureController(IAzureConsentService azureConsentService, IAzureLessonImportService azureLessonImportService) : Controller
+    public class AzureController(
+        IAzureConsentService azureConsentService, 
+        IAzureLessonImportService azureLessonImportService,
+        IAzureAuthenticationService azureAuthenticationService,
+        IWebHostEnvironment webHostEnvironment) : Controller
     {
-        [HttpGet]
+        [HttpPut]
         [Route("import")]
         public async Task Import()
         {
@@ -23,25 +24,23 @@ namespace LWM.Api.Controllers
         [Route("consent")]
         public string GetConsentUrl()
         {
-            return azureConsentService.GetConsentUri().ToString();
+            return azureConsentService.GetConsentUri(this.Request.Host.Value).ToString();
         }
 
-        [HttpGet]
-        [Route("consent/required")] 
-        public bool RequiresConsent()
-        {
-            return azureConsentService.RequiresConsent();
-        }
 
         [HttpGet]
         [Route("consent/redirect")]
-        public IActionResult ConsentReponseRedirect()
+        public async Task<IActionResult> ConsentReponseRedirect()
         {
-               var code = this.HttpContext.Request.Query.FirstOrDefault(x => x.Key == "code").Value;
+            var code = this.HttpContext.Request.Query.FirstOrDefault(x => x.Key == "code").Value;
+            var token = await azureAuthenticationService.GetAuthTokenForCode(code.ToString());
 
-            azureConsentService.HandleConsentResponse(code.ToString());
+            if (webHostEnvironment.IsDevelopment())
+            {
+                return Redirect($"../..?token={token.AccessToken}");
+            }
 
-            return Ok("Authenticated with providor, you can now close this window!");
+            return Redirect($"https://localhost:5173/?token={token.AccessToken}");
         }
     }
 }

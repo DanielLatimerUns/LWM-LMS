@@ -11,6 +11,8 @@ import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 import spinner from '../../assets/loading_spinner.gif';
 import syncIcon from '../../assets/cloud-sync.png'
+import azureSyncService from "../../services/network/azure/azureSyncService";
+import azureAuthService from "../../services/network/azure/azureAuthService";
 
 export interface Props {
 }
@@ -135,7 +137,10 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
 
     const syncLessonsWithOneDrive = () => {
         setisSyncInProgress(true);
-        RestService.Get('azure/import').then(() => setisSyncInProgress(false));
+        azureSyncService.attemptFullSync().then(() =>
+            setisSyncInProgress(false),
+            _ => azureAuthService.redirectToAzureUserAuth()
+        );
     }
 
     return (

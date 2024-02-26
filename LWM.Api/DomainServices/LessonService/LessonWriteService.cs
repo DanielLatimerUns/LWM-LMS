@@ -1,4 +1,5 @@
 ﻿using LWM.Api.DomainServices.LessonService.Contracts;
+using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using LWM.Data.Models;

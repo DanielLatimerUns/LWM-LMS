@@ -1,8 +1,8 @@
-﻿using LWM.Api.DomainServices.CurriculumService.Contracts;
+﻿using LWM.Api.ApplicationServices.Azure.Contracts;
+using LWM.Api.DomainServices.CurriculumService.Contracts;
 using LWM.Api.DomainServices.DocumentService.Contracts;
 using LWM.Api.DomainServices.LessonService.Contracts;
-using LWM.Api.Dtos.AzureResponses;
-using LWM.Api.Dtos.DomainEntities;
+using LWM.Api.Dtos.Azure;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
@@ -112,7 +112,7 @@ namespace LWM.Api.ApplicationServices.Azure
 
         private async Task<List<AzureLessonImportEntity>> GenerateAzureLessonImportEntities()
         {
-            var graphClient = azureGraphServiceClientFactory.CreateGraphClient();
+            var graphClient = await azureGraphServiceClientFactory.CreateGraphClient();
 
             var drive = await graphClient.Me.Drive.GetAsync() ??
                 throw new NotFoundException("Users Drive not found.");
@@ -147,7 +147,7 @@ namespace LWM.Api.ApplicationServices.Azure
 
         private async Task AddChildItems(string rootDriveId, DriveItem item, AzureLessonImportEntity file ,int level)
         {
-            var graphClient = azureGraphServiceClientFactory.CreateGraphClient();
+            var graphClient = await azureGraphServiceClientFactory.CreateGraphClient();
 
             if (item.Folder != null)
             {

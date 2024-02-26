@@ -1,4 +1,6 @@
-﻿namespace LWM.Api.Dtos.DomainEntities
+﻿using LWM.Api.Enums;
+
+namespace LWM.Api.Dtos.DomainEntities
 {
     public class LessonDocument
     {
@@ -9,5 +11,9 @@
         public string Path { get; set; }
 
         public int LessonId { get; set; }
+
+        public char[] DocumentStream { get; set; }
+
+        public DocumentStorageProvidor DocumentStorageProvidor { get; set; }
     }
 }

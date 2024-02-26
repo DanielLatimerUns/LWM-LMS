@@ -4,6 +4,7 @@ using LWM.Api.DomainServices.StudentService.Contracts;
 using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using LWM.Api.Framework.Exceptions;
+using LWM.Api.Framework.Services;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,8 @@ namespace LWM.Api.ApplicationServices.PersonServices.WriteServices
         IPersonWriteService personWriteService,
         IStudentWriteService studentWriteService,
         ITeacherWriteService teacherWriteService,
+
+        IApplicationInstanceService applicationInstanceService,
         CoreContext coreContext) : IPersonUpdateService
     {
         public async Task Execute(Person person)
