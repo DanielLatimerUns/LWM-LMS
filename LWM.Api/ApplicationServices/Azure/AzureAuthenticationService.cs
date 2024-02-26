@@ -1,14 +1,19 @@
 ﻿using LWM.Api.ApplicationServices.Azure.Contracts;
 using LWM.Api.Dtos.Azure;
 using LWM.Api.Framework.Exceptions;
+using System.Web;
 
 namespace LWM.Api.ApplicationServices.Azure
 {
-    public class AzureAuthenticationService : IAzureAuthenticationService
+    public class AzureAuthenticationService(IConfiguration configuration) : IAzureAuthenticationService
     {
-        public async Task<AzureAuthResponse> GetAuthTokenForCode(string code)
+        public async Task<AzureAuthResponse> GetAuthTokenForCode(
+            string code)
         {
             using var httpClient = new HttpClient();
+
+            var clientId = HttpUtility.UrlEncode(configuration["AzureIntergration:ClientId"]);
+            var clientSecrect = HttpUtility.UrlEncode(configuration["AzureIntergration:ClientSecret"]);
 
             var request = new HttpRequestMessage
             {
@@ -16,12 +21,12 @@ namespace LWM.Api.ApplicationServices.Azure
                 Content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     {"tenant", "consumers"},
-                    {"client_id", "8bef44ef-0d04-4652-bc0f-a1886f3d6333" },
+                    {"client_id", clientId},
                     {"scope", AzureConstants.Scopes},
                     {"code",  code},
                     {"redirect_uri", "https://localhost:7120/azure/consent/redirect" },
                     {"grant_type", "authorization_code" },
-                    {"client_secret", "enc8Q~01qMpSJsSEBwJ3Ah_MHMKL99Tjf2m7MbZ~" }
+                    {"client_secret", clientSecrect }
                 }),
                 RequestUri = new Uri("https://login.microsoftonline.com/consumers/oauth2/v2.0/token")
             };

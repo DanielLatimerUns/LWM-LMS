@@ -16,7 +16,7 @@ namespace LWM.Api.ApplicationServices.Azure
             var authenticationProvider = new BaseBearerTokenAuthenticationProvider(
                 new TokenProvider(state.AzureAuthToken));
 
-            GraphServiceClient graphClient = new GraphServiceClient(authenticationProvider);
+            var graphClient = new GraphServiceClient(authenticationProvider);
             return graphClient;
         }
 
