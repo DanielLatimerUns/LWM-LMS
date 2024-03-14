@@ -53,10 +53,11 @@ namespace LWM.Api.ApplicationServices.Azure
             var token = handler.ReadJwtToken(azureAuthResponse.IdToken);
 
             var userEmail = token.Payload.FirstOrDefault(payload => payload.Key == "email").Value.ToString();
+            var configuredUserEmail = context.Configurations.First().AzureUserEmail;
 
-            if (context.Configurations.First().AzureUserEmail != userEmail)
+            if (configuredUserEmail != userEmail)
             {
-                throw new BadRequestException("Microsoft User does not match configured Microsoft One Drive user.");
+                throw new BadRequestException($"One Drive authentication failed: Microsoft User '{userEmail}' does not match configured Microsoft One Drive intergration user '{configuredUserEmail}'.");
             }
         }
     }

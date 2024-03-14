@@ -11,7 +11,8 @@ namespace LWM.Api.Controllers
     [Route("document")]
     public class DocumentController(
         IDocumentCreationService documentCreationService,
-        IDocumentReadService documentReadService) : Controller
+        IDocumentReadService documentReadService,
+        IDocumentWriteService documentWriteService) : Controller
     {
 
         [HttpGet]
@@ -41,7 +42,7 @@ namespace LWM.Api.Controllers
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            //await _documentWriteService.DeleteAsync(id);
+            await documentWriteService.DeleteAsync(id);
         }
     }
 }

@@ -6,28 +6,25 @@ import './lesson-wizard-documents.css'
 
 interface Props {
     documents: LessonDocument[];
+    onDeleteClicked: Function;
 }
 
 const LessonWizardDocuments: React.FunctionComponent<Props> = (props) => {
     function renderDocumentGrid() {
         const columns: GridColumn[] = [];
-        columns.push({name: "name", lable: "Document Name"});
-        columns.push({name: "path", lable: "Document Path"});
+        columns.push({name: "name", lable: "Name"});
 
         return (
         <Grid
             columns={columns}
             rows={props.documents.map(doc => ({columnData: doc, id: doc.id}))}
             editClicked={(doc: LessonDocument) => window.open(doc.path)}
-            deletClicked={() => {return;}}>
+            deletClicked={(doc: LessonDocument) => props.onDeleteClicked(doc)}>
         </Grid>)
     }
 
     return (
         <div className="lessonWizardFormDocuments">
-        <div>
-            Lesson Documents
-        </div>
         {renderDocumentGrid()}
     </div>);
 }

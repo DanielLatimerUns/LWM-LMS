@@ -40,27 +40,31 @@ const LessonWizard: React.FunctionComponent<Props> = (props) => {
     ]);
 
     useEffect(() => {
-        getDocuments(props.lesson.id);
+        getDocuments();
     }, []);
 
     function renderDoocuments() {
         if(props.lesson.id === 0)
             return;
 
-        return <LessonWizardDocuments documents={documents}/>;
+        return <LessonWizardDocuments
+                    documents={documents}
+                    onDeleteClicked={deleteDocument}/>;
     }
 
-    function getDocuments(lessonId: number) {
-        RestService.Get(`document/${lessonId}`).then( response =>
+    function getDocuments() {
+        RestService.Get(`document/${props.lesson.id}`).then( response =>
             response.json().then(data => setDocuments(data))
         ).catch(error => console.error(error));
     }
 
-    function buildForm() {
+    function deleteDocument(document: LessonDocument) {
+        RestService.Delete(`document/${document.id}`).then(() => getDocuments())
+    }
 
+    function buildForm() {
         return (
             <Fragment>
-                <div className="fieldSetHeader">Lesson Record</div>
                 <Form onFieldValidationChanged={handleFieldValidationChanged} fields={formFields}/>
             </Fragment>)
     }
@@ -86,7 +90,9 @@ const LessonWizard: React.FunctionComponent<Props> = (props) => {
     return (
         <div className="lessonWizardContainer">
             <div className="lessonWizardBody">
+                <div className="fieldSetHeader">Details</div>
                 {buildForm()}
+                <div className="fieldSetHeader">Documents</div>
                 {renderDoocuments()}
             </div>
         </div>);
