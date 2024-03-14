@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace LWM.Api.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("azure")]
     public class AzureController(
         IAzureConsentService azureConsentService, 
@@ -14,6 +13,7 @@ namespace LWM.Api.Controllers
         IWebHostEnvironment webHostEnvironment) : Controller
     {
         [HttpPut]
+        [Authorize]
         [Route("import")]
         public async Task Import()
         {
@@ -21,6 +21,7 @@ namespace LWM.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("consent")]
         public string GetConsentUrl()
         {
@@ -35,12 +36,12 @@ namespace LWM.Api.Controllers
             var code = this.HttpContext.Request.Query.FirstOrDefault(x => x.Key == "code").Value;
             var token = await azureAuthenticationService.GetAuthTokenForCode(code.ToString());
 
-            if (webHostEnvironment.IsDevelopment())
+            if (!webHostEnvironment.IsDevelopment())
             {
-                return Redirect($"../..?token={token.AccessToken}");
+                return Redirect($"../../integratorAuthRedirect?token={token.AccessToken}");
             }
 
-            return Redirect($"https://localhost:5173/?token={token.AccessToken}");
+            return Redirect($"https://localhost:5173/integratorAuthRedirect?token={token.AccessToken}");
         }
     }
 }

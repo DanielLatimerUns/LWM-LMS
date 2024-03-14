@@ -1,19 +1,21 @@
 ﻿using LWM.Api.ApplicationServices.Azure.Contracts;
 using LWM.Api.Dtos.Azure;
 using LWM.Api.Framework.Exceptions;
+using LWM.Data.Contexts;
+using System.IdentityModel.Tokens.Jwt;
 using System.Web;
 
 namespace LWM.Api.ApplicationServices.Azure
 {
-    public class AzureAuthenticationService(IConfiguration configuration) : IAzureAuthenticationService
+    public class AzureAuthenticationService(IConfiguration configuration, CoreContext context) : IAzureAuthenticationService
     {
         public async Task<AzureAuthResponse> GetAuthTokenForCode(
             string code)
         {
             using var httpClient = new HttpClient();
 
-            var clientId = HttpUtility.UrlEncode(configuration["AzureIntergration:ClientId"]);
-            var clientSecrect = HttpUtility.UrlEncode(configuration["AzureIntergration:ClientSecret"]);
+            var clientId = configuration["AzureIntergration:ClientId"];
+            var clientSecrect = configuration["AzureIntergration:ClientSecret"];
 
             var request = new HttpRequestMessage
             {
@@ -39,7 +41,23 @@ namespace LWM.Api.ApplicationServices.Azure
             }
 
             var parsedResponse = await response.Content.ReadFromJsonAsync<AzureAuthResponse>();
+
+            ValidateUser(parsedResponse);
+
             return parsedResponse;
+        }
+
+        private void ValidateUser(AzureAuthResponse azureAuthResponse)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(azureAuthResponse.IdToken);
+
+            var userEmail = token.Payload.FirstOrDefault(payload => payload.Key == "email").Value.ToString();
+
+            if (context.Configurations.First().AzureUserEmail != userEmail)
+            {
+                throw new BadRequestException("Microsoft User does not match configured Microsoft One Drive user.");
+            }
         }
     }
 }

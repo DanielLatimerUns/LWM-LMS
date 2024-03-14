@@ -13,6 +13,7 @@ import spinner from '../../assets/loading_spinner.gif';
 import syncIcon from '../../assets/cloud-sync.png'
 import azureSyncService from "../../services/network/azure/azureSyncService";
 import azureAuthService from "../../services/network/azure/azureAuthService";
+import FileUpload from "../../framework/components/fileUpload/fileUpload";
 
 export interface Props {
 }
@@ -25,6 +26,9 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     const [error] = useState<string | undefined>('All fields required');
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
     const [isSyncInProgress, setisSyncInProgress] = useState<boolean>();
+    const [isDocumentUploadActive, setIsDocumentUploadActive] = useState<boolean>();
+    const [selectedFile, setSelectedFile] = useState<File>();
+    const [isDocumentUploadInProgress, setIsDocumentUploadInProgress] = useState<boolean>(false);
 
     useEffect(() => {
         if (requiresUpdate) {
@@ -39,7 +43,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             (
                 <LwmButton
                     isSelected={!appletActive}
-                    onClick={() => setAppletActive(false)}
+                    onClick={() => handleActionOptionClicked('records')}
                     name="Records"
                     icon={recordIcon}>
                 </LwmButton>
@@ -47,22 +51,38 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             (
                 <LwmButton
                     isSelected={appletActive}
-                    onClick={handleAddClicked}
+                    onClick={() => handleActionOptionClicked('add_edit')}
                     name={(!appletActive ||
                         selectedLesson?.id === 0) ? "Add" :
-                        "Edit: " + selectedLesson?.name}
+                        selectedLesson?.name}
                     icon={newIcon}>
                 </LwmButton>
             ),
-            (
+        ];
+
+        if (!appletActive) {
+            options.push(
                 <LwmButton
                     isSelected={false}
                     onClick={() => syncLessonsWithOneDrive()}
                     name={isSyncInProgress ? "Sync in progress..." : "Sync With OneDrive"}
                     icon={isSyncInProgress ? spinner : syncIcon}>
                 </LwmButton>
-            ),
-        ];
+            );
+        }
+
+        if (appletActive && selectedLesson.id !== 0) {
+            options.push(
+                (
+                    <LwmButton
+                        isSelected={isDocumentUploadActive ?? false}
+                        onClick={() => handleActionOptionClicked('add_document')}
+                        name={'Add Document'}
+                        icon={newIcon}>
+                    </LwmButton>
+                ),
+            )
+        }
 
         return options;
     }
@@ -98,10 +118,27 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
         );
     }
 
-    const handleAddClicked = () => {
+    const handleActionOptionClicked = (action: string) => {
         const lesson: Lesson = {lessonNo: "", name: "", id: 0};
-        setSelectedLesson(lesson);
-        setAppletActive(true);
+
+        switch(action) {
+            case 'add_edit': {
+                if (!isDocumentUploadActive) {
+                    setSelectedLesson(lesson);
+                }
+                setAppletActive(true);
+                setIsDocumentUploadActive(false);
+            }
+            break;
+            case 'add_document': {
+                setIsDocumentUploadActive(true);
+            }
+            break;
+            case 'records': {
+                setAppletActive(false);
+            }
+            break;
+        }
     }
 
     const handleEditClicked = (lesson: Lesson) => {
@@ -116,10 +153,16 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     const handleAppletCancel = () => {
         setHasError(false);
         setAppletActive(false);
+        setIsDocumentUploadActive(false);
     }
 
     const handleAppletSave = () => {
         if (hasError) {
+            return;
+        }
+
+        if (isDocumentUploadActive) {
+            handleDocumentUpload();
             return;
         }
 
@@ -131,16 +174,63 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
         RestService.Put('lesson',selectedLesson).then(() => setRequiresUpdate(true));
     }
 
+    const handleDocumentUpload = () => {
+        if(!selectedFile) {
+            return;
+        }
+
+        if (!azureAuthService.getCachedAuthToken()) {
+            azureAuthService.redirectToAzureUserAuth();
+            return;
+        }
+
+        setIsDocumentUploadInProgress(true);
+
+        const formData = new FormData();
+        formData.append('formFile', selectedFile);
+        formData.append('lessonId', selectedLesson.id as any);
+        formData.append('name', selectedFile.name);
+        formData.append('path', 'AZURE');
+        formData.append('documentStorageProvidor', 'Azure')
+
+        RestService.PostForm('document', formData).then(
+            () => {
+                setIsDocumentUploadActive(false);
+                setIsDocumentUploadInProgress(false);
+            });
+    }
+
     const handleValidationChanged = () => (isValid: boolean) => {
         setHasError(isValid);
     }
 
     const syncLessonsWithOneDrive = () => {
+        if (!azureAuthService.getCachedAuthToken()) {
+            azureAuthService.redirectToAzureUserAuth();
+            return;
+        }
+
         setisSyncInProgress(true);
         azureSyncService.attemptFullSync().then(() =>
             setisSyncInProgress(false),
             _ => azureAuthService.redirectToAzureUserAuth()
         );
+    }
+
+    const buildActiveApplet = () => {
+        if (isDocumentUploadActive) {
+            return <FileUpload
+                        isUploading={isDocumentUploadInProgress}
+                        description="Select Document"
+                        onSelectedFileChanged={(file: File) => setSelectedFile(file)}>
+                    </FileUpload>
+        }
+
+        return <LessonWizard
+                    onChange={handleFormChange}
+                    onValidationChanged={handleValidationChanged}
+                    lesson={selectedLesson}>
+                </LessonWizard>
     }
 
     return (
@@ -154,11 +244,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             hasError={hasError}
             error={error}
             appletActive={appletActive}>
-            <LessonWizard
-                onChange={handleFormChange}
-                onValidationChanged={handleValidationChanged}
-                lesson={selectedLesson}>
-            </LessonWizard>
+            {buildActiveApplet()}
         </Module>);
 };
 

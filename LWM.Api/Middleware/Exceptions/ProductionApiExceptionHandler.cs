@@ -19,7 +19,9 @@ namespace LWM.Api.Middleware.Exceptions
                 return (customException.StatusCode, customException.Message);
             }
 
-            return (HttpStatusCode.InternalServerError, exception.Message);
+            return (
+                HttpStatusCode.InternalServerError, 
+                $"Exception: {exception.Message} - {exception.StackTrace} Inner Exception: {exception.InnerException?.Message} - {exception.InnerException?.StackTrace}");
         }
     }
 }

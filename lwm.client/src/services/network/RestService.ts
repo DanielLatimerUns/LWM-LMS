@@ -25,7 +25,19 @@ export default class RestService {
                 "Authorization": "Bearer " + authHeader,
                 "AZURE_TOKEN": azureAuthService.getCachedAuthToken()?.token ?? ''
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+        });
+    }
+
+    public static PostForm(requestUrl: string, form: FormData) : Promise<Response> {
+        const authHeader = this.BuildAuthHeader().Authorization;
+        return fetch(this.BaseApiUrl + requestUrl, {
+            method: 'post',
+            headers: {
+                "Authorization": "Bearer " + authHeader,
+                "AZURE_TOKEN": azureAuthService.getCachedAuthToken()?.token ?? ''
+            },
+            body: form,
         });
     }
 
@@ -54,4 +66,5 @@ export default class RestService {
 
         return { 'Authorization':  bearer.token.auth_Token};
     }
+
 }

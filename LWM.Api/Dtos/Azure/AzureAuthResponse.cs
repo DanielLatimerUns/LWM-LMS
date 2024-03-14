@@ -11,5 +11,8 @@ namespace LWM.Api.Dtos.Azure
         public int ExpiresIn { get; set; }
 
         public string Scope { get; set; }
+
+        [JsonPropertyName("id_token")]
+        public string IdToken { get; set; }
     }
 }

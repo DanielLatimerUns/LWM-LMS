@@ -11,7 +11,9 @@ const azureAuthService = () => {
         if (cachedToken !== null) {
             const parsedCachedToken = JSON.parse(cachedToken) as AzureAuthToken;
 
-            if (moment() > moment(parsedCachedToken.cachedAt).add(1800, 'seconds')) {
+            const currentMoment = moment();
+            const cachedMoment = moment(parsedCachedToken.cached).add(1680, 'seconds');
+            if (currentMoment > cachedMoment) {
                 localStorage.removeItem(cacheKey);
                 return undefined;
             }
@@ -31,7 +33,7 @@ const azureAuthService = () => {
     function redirectToAzureUserAuth() {
         RestService.Get('azure/consent').then(
             data => data.text().then(
-                consentUrl => window.location.assign(consentUrl)
+                consentUrl => window.open(consentUrl, '_blank')
             )
         );
     }

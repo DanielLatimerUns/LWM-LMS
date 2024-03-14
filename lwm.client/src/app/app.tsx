@@ -58,15 +58,6 @@ interface Props {
     function authoriseAzureCredentials() {
         if (!isAuthenticated) { return; }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const requestToken = urlParams.get('token')
-
-        if (requestToken) {
-            azureAuthService.cacheAuthToken(requestToken);
-            window.location.assign(window.location.pathname);
-            return;
-        }
-
         if (azureAuthService.getCachedAuthToken()) {
             return;
         }

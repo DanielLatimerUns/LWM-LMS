@@ -12,7 +12,7 @@ namespace LWM.Api.Dtos.DomainEntities
 
         public int LessonId { get; set; }
 
-        public char[] DocumentStream { get; set; }
+        public IFormFile FormFile { get; set; }
 
         public DocumentStorageProvidor DocumentStorageProvidor { get; set; }
     }

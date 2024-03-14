@@ -11,5 +11,7 @@ namespace LWM.Data.Models
         public int Id { get; set; }
 
         public string DocumentPath { get; set; }
+
+        public string AzureUserEmail { get; set; }
     }
 }
