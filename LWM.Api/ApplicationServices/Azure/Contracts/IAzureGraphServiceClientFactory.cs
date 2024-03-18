@@ -4,6 +4,6 @@ namespace LWM.Api.ApplicationServices.Azure.Contracts
 {
     public interface IAzureGraphServiceClientFactory
     {
-        Task<BaseGraphServiceClient> CreateGraphClient();
+        Task<BaseGraphServiceClient> CreateGraphClientAsync();
     }
 }

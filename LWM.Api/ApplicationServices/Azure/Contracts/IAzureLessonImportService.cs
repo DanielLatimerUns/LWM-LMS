@@ -2,6 +2,6 @@
 {
     public interface IAzureLessonImportService
     {
-        Task Import();
+        Task ImportAsync();
     }
 }

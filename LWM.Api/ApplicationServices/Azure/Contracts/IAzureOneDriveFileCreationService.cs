@@ -4,6 +4,6 @@ namespace LWM.Api.ApplicationServices.Azure.Contracts
 {
     public interface IAzureOneDriveFileCreationService
     {
-        Task<(string id, string path)> UploadFile(AzureFileEntity azureFileEntity);
+        Task<(string id, string path)> UploadFileAsync(AzureFileEntity azureFileEntity);
     }
 }

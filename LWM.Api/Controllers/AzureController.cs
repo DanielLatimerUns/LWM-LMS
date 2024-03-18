@@ -17,7 +17,7 @@ namespace LWM.Api.Controllers
         [Route("import")]
         public async Task Import()
         {
-           await azureLessonImportService.Import();
+           await azureLessonImportService.ImportAsync();
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace LWM.Api.Controllers
         public async Task<IActionResult> ConsentReponseRedirect()
         {
             var code = this.HttpContext.Request.Query.FirstOrDefault(x => x.Key == "code").Value;
-            var token = await azureAuthenticationService.GetAuthTokenForCode(code.ToString());
+            var token = await azureAuthenticationService.GetAuthTokenForCodeAsync(code.ToString());
 
             if (!webHostEnvironment.IsDevelopment())
             {

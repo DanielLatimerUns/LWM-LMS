@@ -1,7 +1,7 @@
-﻿using LWM.Api.DomainServices.LessonService.Contracts;
+﻿using LWM.Api.ApplicationServices.Lesson.Contracts;
+using LWM.Api.DomainServices.LessonService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LWM.Api.Controllers
@@ -10,42 +10,39 @@ namespace LWM.Api.Controllers
     [Authorize]
     [Route("lesson")]
     [Authorize]
-    public class LessonController : Controller
+    public class LessonController(
+        ILessonWriteService lessonWriteService,
+        ILessonQueries lessonQueries) : Controller
     {
-        private readonly ILessonWriteService _lessonWriteService;
-
-        private readonly ILessonReadService _lessonReadService;
-
-        public LessonController(
-            ILessonWriteService lessonWriteService, 
-            ILessonReadService lessonReadService) 
-        {
-            _lessonReadService = lessonReadService;
-            _lessonWriteService = lessonWriteService; 
-        }
 
         [HttpGet]
         public async Task<IEnumerable<Lesson>> Get()
         {
-            return await _lessonReadService.GetLessons();
+            return await lessonQueries.GetLessonsAsync();
+        }
+
+        [HttpGet("{searchString}")]
+        public async Task<IEnumerable<Lesson>> GetWithFilter(string searchString)
+        {
+            return await lessonQueries.GetLessonsAsync(x => x.Name.Contains(searchString));
         }
 
         [HttpPost]
         public async Task<int> Create(Lesson lesson)
         {
-            return await _lessonWriteService.CreateAsync(lesson);
+            return await lessonWriteService.CreateAsync(lesson);
         }
 
         [HttpPut]
         public async Task Update(Lesson lesson)
         {
-            await _lessonWriteService.UpdateAsync(lesson);
+            await lessonWriteService.UpdateAsync(lesson);
         }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            await _lessonWriteService.DeleteAsync(id);
+            await lessonWriteService.DeleteAsync(id);
         }
     }
 }

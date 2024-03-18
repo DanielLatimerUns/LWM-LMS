@@ -1,4 +1,4 @@
-﻿using LWM.Api.ApplicationServices.DocumentServices;
+﻿using LWM.Api.ApplicationServices.Document.Contracts;
 using LWM.Api.DomainServices.DocumentService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Authorization;
@@ -10,21 +10,21 @@ namespace LWM.Api.Controllers
     [Authorize]
     [Route("document")]
     public class DocumentController(
+        IDocumentQueries documentQueries,
         IDocumentCreationService documentCreationService,
-        IDocumentReadService documentReadService,
         IDocumentWriteService documentWriteService) : Controller
     {
 
         [HttpGet]
         public async Task<IEnumerable<LessonDocument>> Get()
         {
-            return await documentReadService.GetDocumentsAsync();
+            return await documentQueries.GetDocumentsAsync();
         }
 
         [HttpGet("{lessonId}")]
         public async Task<IEnumerable<LessonDocument>> GetForLesson(int lessonId)
         {
-            return await documentReadService.GetDocumentsAsync(lessonId);
+            return await documentQueries.GetDocumentsAsync(lessonId);
         }
 
         [HttpPost]
@@ -44,6 +44,8 @@ namespace LWM.Api.Controllers
         {
             await documentWriteService.DeleteAsync(id);
         }
+
+
     }
 }
 

@@ -9,7 +9,7 @@ namespace LWM.Api.ApplicationServices.Azure
 {
     public class AzureAuthenticationService(IConfiguration configuration, CoreContext context) : IAzureAuthenticationService
     {
-        public async Task<AzureAuthResponse> GetAuthTokenForCode(
+        public async Task<AzureAuthResponse> GetAuthTokenForCodeAsync(
             string code)
         {
             using var httpClient = new HttpClient();

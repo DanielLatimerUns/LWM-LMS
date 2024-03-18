@@ -1,7 +1,7 @@
 .moduleContainer {
     display: grid;
     grid-template-rows: 30px auto;
-    grid-template-columns: 100px auto;
+    grid-template-columns: 150px auto;
     height: 100%;
 }
 
@@ -10,8 +10,7 @@
     flex-direction: column;
     gap: 20px;
     border-right: 2px solid rgb(247 242 242 / 10%);
-    padding: 15px;
-    padding-top: 10px;
+    padding: 5px;
 }
 
 .moduleActionSectionOptionContainer > div {
@@ -42,6 +41,7 @@
 .moduleHeader {
     display: flex;
     justify-content: center;
+    gap: 10px;
     border-bottom: 1px solid rgba(247 242 242 / 10%);
     align-items: center;
     grid-column: span 2;
@@ -106,4 +106,22 @@
     display: flex;
     justify-content: flex-start;
     width: 100%;
+}
+
+.moduleActionSectionSearchContainer {
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(247 242 242 / 10%);
+}
+
+.moduleActionSectionSearchContainer > input {
+    height: 30px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    padding-left: 5px;
+    background: none;
+}
+
+.moduleActionSectionSearchContainer > input:focus {
+    outline: none;
 }

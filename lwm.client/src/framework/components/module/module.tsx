@@ -24,6 +24,8 @@ export interface Props {
     hasError: boolean;
     altView?: JSX.Element;
     appletActive: boolean;
+    onSearchChnaged?: Function;
+    isLoading: boolean;
 }
 
 export interface State {
@@ -33,6 +35,8 @@ export default class Module extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
     }
+
+    private searchDeBounce: number = 0;
 
     render() {
         return (
@@ -75,15 +79,32 @@ export default class Module extends React.Component<Props, State> {
         return "";
     }
 
+    private buildSearch() {
+        if (this.props.onSearchChnaged) {
+            return (<div className="moduleActionSectionSearchContainer">
+                        <input type="text" placeholder="Search..." onChange={this.handleSearchChanged.bind(this)}/>
+                    </div>)
+        }
+    }
+
     private renderOptionsSection() {
         return(
             <div className="moduleActionSectionOptionContainer">
+                {this.buildSearch()}
                 {this.props.options}
             </div>
         );
     }
 
     private renderView() {
+
+        if (this.props.isLoading) {
+            return (
+                <div className="moduleSpinnerContainer">
+                    <img src={Spinner}/>
+                </div>)
+        }
+
         if (this.props.altView) {
             return (<div className="moduleAppletViewContainer">
             {this.props.altView}
@@ -92,13 +113,6 @@ export default class Module extends React.Component<Props, State> {
 
         if (this.props?.gridConfig.columns === undefined)
             return;
-
-        if (this.props?.gridConfig.rows.length === 0) {
-            return (
-            <div className="moduleSpinnerContainer">
-                <img src={Spinner}/>
-            </div>)
-        }
 
         return (
         <div className="moduleGridContainer">
@@ -129,5 +143,15 @@ export default class Module extends React.Component<Props, State> {
                         onClick={this.props.handleCloseClicked.bind(this)}
                         isSelected={false}/>
                 </Fragment>;
+    }
+
+    private handleSearchChanged(searchEvent: any) {
+        clearTimeout(this.searchDeBounce);
+
+        this.searchDeBounce = setTimeout(() => {
+            if (!this.props.onSearchChnaged) {return;}
+
+            this.props.onSearchChnaged(searchEvent.target.value);
+        }, 200)
     }
 }

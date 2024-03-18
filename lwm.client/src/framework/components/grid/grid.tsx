@@ -10,40 +10,37 @@ export interface Props {
     editClicked: Function | undefined;
     deletClicked: Function | undefined;
 }
- 
+
 export interface State {
 
 }
- 
+
 export default class Grid extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {}
     }
 
-    render() { 
+    render() {
         return this.renderGrid();
     }
 
     private renderGrid() {
-       
+
         return(
         <div className="gridOuterContainer">
             <div className="gridContent">
                 <div className="gridContentHeader">
                     {this.generateHeaderRow()}
                 </div>
-                {this.props.rows.map(row => 
-                <div className="gridContentRow">
-                    {this.generateRow(row.columnData, row.id)}
-                </div>)}
+                {this.generateRows()}
             </div>
         </div>);
     }
 
     private generateHeaderRow() {
         const columns: JSX.Element[] = [];
-         
+
             this.props.columns.forEach(column => {
                 columns.push(
                     <div className="gridHeaderColumn">
@@ -52,16 +49,28 @@ export default class Grid extends React.Component<Props, State> {
                 });
 
                 columns.push(
-                    <div className="gridHeaderColumn">                  
+                    <div className="gridHeaderColumn">
                     </div>
                 )
 
         return columns;
     }
 
+    private generateRows() {
+        if(this.props.rows.length === 0) {
+            return <div className="gridNoRecords">No Records</div>;
+        }
+
+        return(
+            this.props.rows.map(row =>
+                <div className="gridContentRow">
+                    {this.generateRow(row.columnData, row.id)}
+                </div>));
+    }
+
     private generateRow(columnData: any, rowId: number) {
         const columns: JSX.Element[] = [];
-            Object.entries(columnData).map((column: any) => 
+            Object.entries(columnData).map((column: any) =>
             {
                 if (this.props.columns.map(c => c.name).includes(column[0]) && column[0] !== "id") {
                     columns.push(
@@ -76,7 +85,7 @@ export default class Grid extends React.Component<Props, State> {
                     {this.generateGridButtons(rowId)}
                 </div>
             )
-            
+
             return columns;
     }
 

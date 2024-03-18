@@ -9,7 +9,7 @@ namespace LWM.Api.ApplicationServices.Azure
 {
     public class AzureGraphServiceClientFactory(IApplicationInstanceService applicationInstanceService) : IAzureGraphServiceClientFactory
     {
-        public async Task<BaseGraphServiceClient> CreateGraphClient()
+        public async Task<BaseGraphServiceClient> CreateGraphClientAsync()
         {
             var state = applicationInstanceService.GetRequestState();
 

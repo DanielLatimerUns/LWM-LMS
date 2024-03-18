@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using LWM.Api.DomainServices.DocumentService;
+using LWM.Api.ApplicationServices.Lesson.Queries;
 using LWM.Authentication;
 
 namespace LWM.Api.Framework.Services
@@ -12,7 +12,7 @@ namespace LWM.Api.Framework.Services
 
         public static void BuildServices(IServiceCollection services)
         {
-            var assembly = Assembly.GetAssembly(typeof(DocumentReadService));
+            var assembly = Assembly.GetAssembly(typeof(LessonQueries));
             var authAssembly = Assembly.GetAssembly(typeof(JwtFactory));
 
             var extractedServices = assembly.GetExportedTypes().Where(x => !x.IsClass).ToList();

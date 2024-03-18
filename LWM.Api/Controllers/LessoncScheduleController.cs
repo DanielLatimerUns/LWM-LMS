@@ -1,5 +1,4 @@
-﻿using LWM.Api.ApplicationServices.SchedualingServices.Contracts;
-using LWM.Api.DomainServices.LessonScheduleService.Contracts;
+﻿using LWM.Api.ApplicationServices.Schedualing.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using LWM.Api.Dtos.ViewModels;
 using LWM.Authentication.DataAccess;

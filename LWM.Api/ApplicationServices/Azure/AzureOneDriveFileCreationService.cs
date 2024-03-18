@@ -13,7 +13,7 @@ namespace LWM.Api.ApplicationServices.Azure
         IAzureGraphServiceClientFactory azureGraphServiceClientFactory,
         IApplicationInstanceService applicationInstanceService) : IAzureOneDriveFileCreationService
     {
-        public async Task<(string id, string path)> UploadFile(AzureFileEntity azureFileEntity)
+        public async Task<(string id, string path)> UploadFileAsync(AzureFileEntity azureFileEntity)
         {
             var result = await UploadDocument(azureFileEntity);
 
@@ -27,7 +27,7 @@ namespace LWM.Api.ApplicationServices.Azure
 
             DriveItem uploadedFile = null;
 
-            var graphClient = await azureGraphServiceClientFactory.CreateGraphClient();
+            var graphClient = await azureGraphServiceClientFactory.CreateGraphClientAsync();
 
             var drive = await graphClient.Me.Drive.GetAsync();
             var builtFilePath = $"Lessons/All lessons/{azureFileEntity.Lesson.Name}/{azureFileEntity.FileName}.{azureFileEntity.FileName}";

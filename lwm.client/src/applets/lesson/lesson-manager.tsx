@@ -200,6 +200,18 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             });
     }
 
+    const handldeSearchChanged = (searchString: string) => {
+        if (searchString === '') {
+            getLessons();
+            return;
+        }
+        RestService.Get(`lesson/${searchString}`).then(
+            resoponse => resoponse.json().then(
+                (data: Lesson[]) => {setLessons(data);}
+            ).catch(error => console.error(error))
+        );
+    }
+
     const handleValidationChanged = () => (isValid: boolean) => {
         setHasError(isValid);
     }
@@ -238,12 +250,13 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             gridConfig={buildGridConfig()}
             moduleName="Lesson Center"
             moduleEntityName="Lesson"
-            handleCloseClicked={ handleAppletCancel}
+            handleCloseClicked={handleAppletCancel}
             handleSaveCloseClicked={handleAppletSave}
             options={buildActionOptions()}
             hasError={hasError}
             error={error}
-            appletActive={appletActive}>
+            appletActive={appletActive}
+            onSearchChnaged={handldeSearchChanged}>
             {buildActiveApplet()}
         </Module>);
 };

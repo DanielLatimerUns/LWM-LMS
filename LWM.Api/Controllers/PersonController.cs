@@ -1,5 +1,5 @@
-﻿using LWM.Api.ApplicationServices.PersonService.Contracts;
-using LWM.Api.ApplicationServices.PersonServices.Contracts;
+﻿using LWM.Api.ApplicationServices.Person.Contracts;
+using LWM.Api.ApplicationServices.Student.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +13,20 @@ namespace LWM.Api.Controllers
         IPersonUpdateService personUpdateService,
         IPersonCreationService personCreationService,
         IPersonQueries personQueries,
-        IPersonDeleteService personDeleteService) : Controller
+        IPersonDeleteService personDeleteService,
+        IStudentQueries studentQueries) : Controller
     {
 
         [HttpGet]
         public async Task<IEnumerable<Person>> Get()
         {
-            return await personQueries.Get();
+            return await personQueries.GetPersonsAsync();
         }
 
         [HttpGet("{personId}/student")]
         public async Task<IEnumerable<Student>> Get(int personId)
         {
-            return await personQueries.GetStudentForPerson(personId);
+            return await studentQueries.GetStudentsByPersonIdAsync(personId);
         }
 
         [HttpPost]

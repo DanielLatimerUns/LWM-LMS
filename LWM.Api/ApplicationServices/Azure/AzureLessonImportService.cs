@@ -18,7 +18,7 @@ namespace LWM.Api.ApplicationServices.Azure
         ILessonWriteService lessonWriteService,
         IDocumentWriteService documentWriteService) : IAzureLessonImportService
     {
-        public async Task Import()
+        public async Task ImportAsync()
         {
             var azureEntities = await GenerateAzureLessonImportEntities();
 
@@ -112,7 +112,7 @@ namespace LWM.Api.ApplicationServices.Azure
 
         private async Task<List<AzureLessonImportEntity>> GenerateAzureLessonImportEntities()
         {
-            var graphClient = await azureGraphServiceClientFactory.CreateGraphClient();
+            var graphClient = await azureGraphServiceClientFactory.CreateGraphClientAsync();
 
             var drive = await graphClient.Me.Drive.GetAsync() ??
                 throw new NotFoundException("Users Drive not found.");
@@ -147,7 +147,7 @@ namespace LWM.Api.ApplicationServices.Azure
 
         private async Task AddChildItems(string rootDriveId, DriveItem item, AzureLessonImportEntity file ,int level)
         {
-            var graphClient = await azureGraphServiceClientFactory.CreateGraphClient();
+            var graphClient = await azureGraphServiceClientFactory.CreateGraphClientAsync();
 
             if (item.Folder != null)
             {

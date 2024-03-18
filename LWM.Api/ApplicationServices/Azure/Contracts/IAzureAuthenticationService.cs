@@ -4,6 +4,6 @@ namespace LWM.Api.ApplicationServices.Azure.Contracts
 {
     public interface IAzureAuthenticationService
     {
-        Task<AzureAuthResponse> GetAuthTokenForCode(string code);
+        Task<AzureAuthResponse> GetAuthTokenForCodeAsync(string code);
     }
 }

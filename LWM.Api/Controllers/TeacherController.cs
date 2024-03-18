@@ -1,4 +1,5 @@
-﻿using LWM.Api.DomainServices.GroupService.Contracts;
+﻿using LWM.Api.ApplicationServices.Teacher.Queries;
+using LWM.Api.DomainServices.GroupService.Contracts;
 using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Authorization;
@@ -9,20 +10,14 @@ namespace LWM.Api.Controllers
     [ApiController]
     [Authorize]
     [Route("teacher")]
-    public class TeacherController : Controller
+    public class TeacherController(
+        ITeacherQueries teacherQueries) : Controller
     {
-        private ITeacherReadService _teacherReadService;
-
-        public TeacherController(
-            ITeacherReadService teacherReadService)
-        {
-            _teacherReadService = teacherReadService;
-        }
 
         [HttpGet]
         public async Task<IEnumerable<Teacher>> Get()
         {
-            return await _teacherReadService.Get();
+            return await teacherQueries.GetTeachersAsync();
         }
     }
 }
