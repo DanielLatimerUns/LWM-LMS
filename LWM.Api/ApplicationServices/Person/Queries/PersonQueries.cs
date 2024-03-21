@@ -16,20 +16,16 @@
             return result.Select(MapDto);
         }
 
-        public async Task<IEnumerable<Person>> Get(string searchString)
+        public async Task<IEnumerable<Person>> GetPersonsBySearchStringAsync(string searchString)
         {
             var result = await context.Persons.Where(
-                x => x.Forename.Contains(searchString) || 
+                x => x.Forename.Contains(searchString) ||
                 x.Surname.Contains(searchString) ||
                 x.EmailAddress1.Contains(searchString)
                 ).ToListAsync();
+
             return result.Select(MapDto);
         }
-
-        //public async Task<IEnumerable<Student>> GetTeacherForPerson(int personId)
-        //{
-        //    return await studentReadService.Get((x) => x.Person.Id == personId);
-        //}
 
         private static Person MapDto(Data.Models.Person model)
         {

@@ -32,7 +32,8 @@ const LessonDashboard: React.FunctionComponent<LessonDashboardProps> = (props) =
         columns.push({name: "name", lable: "Students"});
 
         return (
-        <Grid
+            <Grid
+            isDataLoading={false}
             columns={columns}
             rows={props.dashboardModel.students.map(student => ({columnData: student, id: student.id}))}
             editClicked={undefined} deletClicked={undefined}>
@@ -45,7 +46,8 @@ const LessonDashboard: React.FunctionComponent<LessonDashboardProps> = (props) =
         columns.push({name: "name", lable: "Documents"});
 
         return (
-        <Grid
+            <Grid
+             isDataLoading={false}
             columns={columns}
             rows={props.dashboardModel.documents.map(document => ({columnData: document, id: document.id}))}
             editClicked={undefined} deletClicked={undefined}>

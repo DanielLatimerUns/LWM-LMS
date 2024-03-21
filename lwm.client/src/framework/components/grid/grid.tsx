@@ -3,12 +3,14 @@ import GridRow from "../../../entities/framework/gridRow";
 import './grid.css';
 import LwmButton from "../button/lwm-button";
 import GridColumn from "../../../entities/framework/gridColumn";
+import Spinner from '../../../assets/loading_spinner.gif';
 
 export interface Props {
     columns: GridColumn[];
     rows: GridRow[];
     editClicked: Function | undefined;
     deletClicked: Function | undefined;
+    isDataLoading: boolean
 }
 
 export interface State {
@@ -59,6 +61,12 @@ export default class Grid extends React.Component<Props, State> {
     private generateRows() {
         if(this.props.rows.length === 0) {
             return <div className="gridNoRecords">No Records</div>;
+        }
+
+        if (this.props.isDataLoading) {
+            return <div className="gridLoading">
+                        <img src={Spinner}/>
+                    </div>;
         }
 
         return(

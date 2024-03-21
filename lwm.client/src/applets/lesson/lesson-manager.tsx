@@ -29,14 +29,21 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     const [isDocumentUploadActive, setIsDocumentUploadActive] = useState<boolean>();
     const [selectedFile, setSelectedFile] = useState<File>();
     const [isDocumentUploadInProgress, setIsDocumentUploadInProgress] = useState<boolean>(false);
+    const [isGettingData, setIsGettingData] = useState<boolean>(false);
+    const [searchString, setSearchString] = useState<string>();
 
     useEffect(() => {
         if (requiresUpdate) {
+            setIsGettingData(true);
             getLessons();
             setAppletActive(false);
             setRequiresUpdate(false);
         }
     }, [requiresUpdate]);
+
+    useEffect(() => {
+        setIsGettingData(false);
+    }, [lessons])
 
     const buildActionOptions = () => {
         const options: JSX.Element[] = [
@@ -111,6 +118,15 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     }
 
     const getLessons = () => {
+        if (searchString) {
+            RestService.Get(`lesson/${searchString}`).then(
+                resoponse => resoponse.json().then(
+                    (data: Lesson[]) => {setLessons(data);}
+                ).catch(error => console.error(error))
+            );
+            return;
+        }
+
         RestService.Get('lesson').then(
             resoponse => resoponse.json().then(
                 (data: Lesson[]) => {setLessons(data);}
@@ -200,16 +216,9 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             });
     }
 
-    const handldeSearchChanged = (searchString: string) => {
-        if (searchString === '') {
-            getLessons();
-            return;
-        }
-        RestService.Get(`lesson/${searchString}`).then(
-            resoponse => resoponse.json().then(
-                (data: Lesson[]) => {setLessons(data);}
-            ).catch(error => console.error(error))
-        );
+    const handldeSearchChanged = (search: string) => {
+        setSearchString(search !== '' ? search : undefined);
+        setRequiresUpdate(true);
     }
 
     const handleValidationChanged = () => (isValid: boolean) => {
@@ -256,7 +265,8 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             hasError={hasError}
             error={error}
             appletActive={appletActive}
-            onSearchChnaged={handldeSearchChanged}>
+            onSearchChnaged={handldeSearchChanged}
+            isLoading={isGettingData}>
             {buildActiveApplet()}
         </Module>);
 };

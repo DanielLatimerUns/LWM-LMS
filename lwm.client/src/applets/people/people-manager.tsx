@@ -25,14 +25,22 @@ const PersonManager: React.FunctionComponent<Props> = () => {
     const [hasError, setHasError] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>('All fields required');
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+    const [isGettingData, setIsGettingData] = useState<boolean>(false);
+    const [searchString, setSearchString] = useState<string>();
 
     useEffect(() => {
         if (requiresUpdate) {
+            setIsGettingData(true);
             getPeople();
             setAppletActive(false);
             setRequiresUpdate(false);
         }
     }, [requiresUpdate]);
+
+    useEffect(() => {
+        setIsGettingData(false);
+    }, [persons])
+
 
 
     function buildGridConfig() {
@@ -82,6 +90,15 @@ const PersonManager: React.FunctionComponent<Props> = () => {
     };
 
     function getPeople() {
+        if(searchString) {
+            RestService.Get(`person/${searchString}`).then(
+                resoponse => resoponse.json().then(
+                    (data: Person[]) => setPersons(data)
+                ).catch( error => console.error(error))
+            );
+            return;
+        }
+
         RestService.Get('person').then(
             resoponse => resoponse.json().then(
                 (data: Person[]) => setPersons(data)
@@ -146,6 +163,11 @@ const PersonManager: React.FunctionComponent<Props> = () => {
         setHasError(!isValid);
     };
 
+    const handldeSearchChanged = (searchString: string) => {
+        setSearchString(searchString !== '' ? searchString : undefined);
+        setRequiresUpdate(true);
+    }
+
     return (
         <Module
             gridConfig={buildGridConfig()}
@@ -156,7 +178,9 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             options={buildActionOptions()}
             hasError={hasError}
             error={error}
-            appletActive={appletActive}>
+            appletActive={appletActive}
+            onSearchChnaged={handldeSearchChanged}
+            isLoading={isGettingData}>
                 <PeopleWizard
                     onChange={(person: Person) => setSelectedPerson(person)}
                     onValidationChanged={handleValidationChanged}

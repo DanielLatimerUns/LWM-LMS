@@ -9,10 +9,10 @@ using LWM.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph.Models;
 
-namespace LWM.Api.ApplicationServices.Azure
+namespace LWM.Api.ApplicationServices.Azure.Services
 {
     public class AzureLessonImportService(
-        IAzureGraphServiceClientFactory azureGraphServiceClientFactory, 
+        IAzureGraphServiceClientFactory azureGraphServiceClientFactory,
         CoreContext coreContext,
         ICurriculumWriteService curriculumWriteService,
         ILessonWriteService lessonWriteService,
@@ -36,10 +36,10 @@ namespace LWM.Api.ApplicationServices.Azure
                         coreContext.SaveChanges();
 
                         var curriculumId = await curriculumWriteService.CreateAsync(
-                            new Dtos.DomainEntities.Curriculum 
-                            { 
-                                Name = entity.Name, 
-                                Targetlanguage = "Greek",  
+                            new Dtos.DomainEntities.Curriculum
+                            {
+                                Name = entity.Name,
+                                Targetlanguage = "Greek",
                                 NativeLanguage = entity.Name
                             }, azureLink);
 
@@ -51,7 +51,7 @@ namespace LWM.Api.ApplicationServices.Azure
             }
         }
 
-        private async Task ImportLessonsForCurriculum(Data.Models.Curriculum curriculum, AzureLessonImportEntity azureLessonImportEntity)
+        private async Task ImportLessonsForCurriculum(Curriculum curriculum, AzureLessonImportEntity azureLessonImportEntity)
         {
             int lessonNo = 1;
 
@@ -80,7 +80,7 @@ namespace LWM.Api.ApplicationServices.Azure
 
                     await ImportDocumentsForLesson(lesson, entity);
                 }
-                lessonNo ++;
+                lessonNo++;
             }
         }
 
@@ -103,7 +103,7 @@ namespace LWM.Api.ApplicationServices.Azure
                         {
                             Name = entity.Name,
                             Path = entity.FilePath,
-                            LessonId = lesson.Id                
+                            LessonId = lesson.Id
                         }, azureLink);
                     }
                 }
@@ -145,7 +145,7 @@ namespace LWM.Api.ApplicationServices.Azure
             return files;
         }
 
-        private async Task AddChildItems(string rootDriveId, DriveItem item, AzureLessonImportEntity file ,int level)
+        private async Task AddChildItems(string rootDriveId, DriveItem item, AzureLessonImportEntity file, int level)
         {
             var graphClient = await azureGraphServiceClientFactory.CreateGraphClientAsync();
 
@@ -163,8 +163,8 @@ namespace LWM.Api.ApplicationServices.Azure
                         {
                             Name = child.Name ?? "",
                             AzureID = child.Id,
-                            EntityType = child.Folder is null ? AzureLessonImportEntityType.Document : 
-                                (level == 1 ? AzureLessonImportEntityType.Curriculum : AzureLessonImportEntityType.Lesson)
+                            EntityType = child.Folder is null ? AzureLessonImportEntityType.Document :
+                                level == 1 ? AzureLessonImportEntityType.Curriculum : AzureLessonImportEntityType.Lesson
                         };
 
                     if (childitem.EntityType == AzureLessonImportEntityType.Document)

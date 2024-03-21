@@ -27,14 +27,21 @@ const GroupManager: React.FunctionComponent<Props> = () => {
     const [error, setError] = useState<string | undefined>('All fields required');
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+    const [isGettingData, setIsGettingData] = useState<boolean>(false);
+    const [searchString, setSearchString] = useState<string>();
 
     useEffect(() => {
         if (requiresUpdate) {
+            setIsGettingData(true);
             getGroups();
             setRequiresUpdate(false);
             setAppletActive(false);
         }
     }, [requiresUpdate]);
+
+    useEffect(() => {
+        setIsGettingData(false);
+    }, [groups])
 
     function buildGridConfig() {
         const columns: GridColumn[] = [
@@ -79,6 +86,15 @@ const GroupManager: React.FunctionComponent<Props> = () => {
     }
 
     function getGroups() {
+        if (searchString) {
+            RestService.Get(`group/${searchString}`).then(
+                resoponse => resoponse.json().then(
+                    (data: Group[]) => setGroups(data)
+                ).catch( error => console.error(error))
+            );
+            return;
+        }
+
         RestService.Get('group').then(
             resoponse => resoponse.json().then(
                 (data: Group[]) => setGroups(data)
@@ -143,9 +159,16 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         setHasError(!isValid);
     }
 
+    const handldeSearchChanged = (searchString: string) => {
+        setSearchString(searchString !== '' ? searchString : undefined);
+        setRequiresUpdate(true);
+    }
+
     return (
         <Module
             gridConfig={buildGridConfig()}
+            isLoading={isGettingData}
+            onSearchChnaged={handldeSearchChanged}
             moduleName="Group Center"
             moduleEntityName="Group"
             handleCloseClicked={handleAppletCancel}

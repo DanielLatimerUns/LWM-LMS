@@ -1,4 +1,5 @@
-﻿using LWM.Api.ApplicationServices.Person.Contracts;
+﻿using LWM.Api.ApplicationServices.Lesson.Queries;
+using LWM.Api.ApplicationServices.Person.Contracts;
 using LWM.Api.ApplicationServices.Student.Contracts;
 using LWM.Api.Dtos.DomainEntities;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,12 @@ namespace LWM.Api.Controllers
         public async Task<IEnumerable<Person>> Get()
         {
             return await personQueries.GetPersonsAsync();
+        }
+
+        [HttpGet("{searchString}")]
+        public async Task<IEnumerable<Person>> GetWithFilter(string searchString)
+        {
+            return await personQueries.GetPersonsBySearchStringAsync(searchString);
         }
 
         [HttpGet("{personId}/student")]

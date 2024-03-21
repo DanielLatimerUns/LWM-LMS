@@ -24,7 +24,7 @@ namespace LWM.Api.Controllers
         [HttpGet("{searchString}")]
         public async Task<IEnumerable<Lesson>> GetWithFilter(string searchString)
         {
-            return await lessonQueries.GetLessonsAsync(x => x.Name.Contains(searchString));
+            return await lessonQueries.GetLessonsBySearchStringAsync(searchString);
         }
 
         [HttpPost]

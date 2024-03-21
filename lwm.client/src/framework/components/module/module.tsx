@@ -5,8 +5,6 @@ import GridColumn from "../../../entities/framework/gridColumn";
 import GridRow from "../../../entities/framework/gridRow";
 import Grid from "../grid/grid";
 
-import Spinner from '../../../assets/loading_spinner.gif';
-
 export interface Props {
     moduleName: string;
     moduleEntityName: string;
@@ -90,21 +88,12 @@ export default class Module extends React.Component<Props, State> {
     private renderOptionsSection() {
         return(
             <div className="moduleActionSectionOptionContainer">
-                {this.buildSearch()}
                 {this.props.options}
             </div>
         );
     }
 
     private renderView() {
-
-        if (this.props.isLoading) {
-            return (
-                <div className="moduleSpinnerContainer">
-                    <img src={Spinner}/>
-                </div>)
-        }
-
         if (this.props.altView) {
             return (<div className="moduleAppletViewContainer">
             {this.props.altView}
@@ -116,7 +105,9 @@ export default class Module extends React.Component<Props, State> {
 
         return (
         <div className="moduleGridContainer">
+            {this.buildSearch()}
             <Grid
+                isDataLoading={this.props.isLoading}
                 editClicked={this.props.gridConfig.handleEditClicked}
                 deletClicked={this.props.gridConfig.handleDeleteClicked}
                 columns={this.props.gridConfig.columns}
@@ -152,6 +143,6 @@ export default class Module extends React.Component<Props, State> {
             if (!this.props.onSearchChnaged) {return;}
 
             this.props.onSearchChnaged(searchEvent.target.value);
-        }, 200)
+        }, 300)
     }
 }

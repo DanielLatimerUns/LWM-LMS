@@ -1,10 +1,4 @@
-﻿
-
-
-
-
-
-namespace LWM.Api.ApplicationServices.Teacher.Queries
+﻿namespace LWM.Api.ApplicationServices.Teacher.Contracts
 {
     public interface ITeacherQueries
     {

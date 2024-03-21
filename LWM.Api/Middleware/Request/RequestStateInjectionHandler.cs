@@ -4,7 +4,9 @@ namespace LWM.Api.Middleware.Request
 {
     public class RequestStateInjectionHandler(RequestDelegate next)
     {
-        public async Task Invoke(HttpContext context, IApplicationInstanceService applicationInstanceService)
+        public async Task Invoke(
+            HttpContext context, 
+            IApplicationInstanceService applicationInstanceService)
         {
             if (context.Request.Headers.TryGetValue("AZURE_TOKEN", out var value))
             {

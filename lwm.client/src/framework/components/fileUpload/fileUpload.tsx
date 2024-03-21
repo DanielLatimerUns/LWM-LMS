@@ -1,4 +1,3 @@
-import { useState } from "react"
 import "./fileUpload.css"
 import spinner from '../../../assets/loading_spinner.gif'
 
@@ -6,15 +5,12 @@ export interface Props {
     description: string,
     onSelectedFileChanged: Function,
     isUploading: boolean;
-};
+}
 
 const FileUpload: React.FunctionComponent<Props> = (props) => {
 
-    const [selectedFileName, setSelectedFileName] = useState<string>();
-
     const handleSelectedFileChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) { return; }
-        setSelectedFileName(e.target.files[0].name)
         props.onSelectedFileChanged(e.target.files[0]);
     }
 

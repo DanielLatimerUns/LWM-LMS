@@ -3,6 +3,7 @@
     using LWM.Data.Contexts;
     using Microsoft.EntityFrameworkCore;
     using LWM.Api.Dtos.DomainEntities;
+    using LWM.Api.ApplicationServices.Teacher.Contracts;
 
     public class TeacherQueries(
         CoreContext coreContext) : ITeacherQueries

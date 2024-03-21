@@ -1,7 +1,7 @@
 .moduleContainer {
     display: grid;
     grid-template-rows: 30px auto;
-    grid-template-columns: 150px auto;
+    grid-template-columns: 100px auto;
     height: 100%;
 }
 
@@ -36,6 +36,7 @@
 
 .moduleGridContainer {
     width: 100%;
+    overflow: hidden;
 }
 
 .moduleHeader {
@@ -109,17 +110,17 @@
 }
 
 .moduleActionSectionSearchContainer {
-    padding-bottom: 5px;
     border-bottom: 1px solid rgba(247 242 242 / 10%);
+    display: flex;
 }
 
 .moduleActionSectionSearchContainer > input {
-    height: 30px;
+    height: 40px;
     font-size: 15px;
     border: none;
-    border-radius: 5px;
-    padding-left: 5px;
+
     background: none;
+    width: 100%;
 }
 
 .moduleActionSectionSearchContainer > input:focus {

@@ -9,20 +9,18 @@
 }
 
 .gridContentHeader {
-    display: grid; 
+    display: grid;
     grid-template-columns: 300px;
     grid-auto-columns: minmax(150px, 1fr);
-    
 }
 
 .gridContentRow {
-   
+
     color: white;
     height: 50px;
     display: grid;
     grid-template-columns: 300px;
     grid-auto-columns: minmax(150px, 1fr);
-
 }
 
 .gridContentRow:nth-child(even) {
@@ -61,4 +59,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.gridLoading, .gridNoRecords {
+    display: flex;
+    align-self: center;
+
+    font-size: 20px;
+    color: red;
+}
+
+.gridOuterContainer {
+    height: 100%;
+    overflow: auto;
 }

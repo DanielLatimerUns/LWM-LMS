@@ -13,7 +13,7 @@ import Group from "../../entities/domainModels/group";
 import moment from "moment";
 import ScheduleInstance from "../../entities/app/scheduleInstance";
 
-export interface Props {};
+export interface Props {}
 
 const ScheduleManager: React.FunctionComponent<Props> = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -65,7 +65,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             };
 
         return gridConfig;
-    };
+    }
 
     function buildActionOptions() {
         const options: JSX.Element[] = [
@@ -98,7 +98,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         ];
 
         return options;
-    };
+    }
 
     function getSchedules() {
         RestService.Get('lessonschedule').then(
@@ -106,7 +106,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
                 (data: Schedule[]) => setSchedules(data)
             ).catch(error => console.error(error))
         );
-    };
+    }
 
     function getGroups() {
         RestService.Get('group').then(
@@ -114,11 +114,11 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
                 (data: Group[]) => setGroups(data)
             ).catch( error => console.error(error))
         );
-    };
+    }
 
     function handleSwitchView() {
         setIsCalanaderViewActive(true);
-    };
+    }
 
     function handleAddNewSchedule(instance?: ScheduleInstance) {
         const schedule: Schedule = {
@@ -147,25 +147,25 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
 
         setSelectedSchedule(schedule);
         setAppletActive(true);
-    };
+    }
 
     function handleEditSchedule(schedule: Schedule) {
         setSelectedSchedule(schedule);
         setAppletActive(true);
-    };
+    }
 
     function handleDeleteSchedule(schedule: Schedule) {
         RestService.Delete(`lessonschedule/${schedule.id}`).then(() => getSchedules());
-    };
+    }
 
     function handleLessonChange() {
         setRequiresUpdate(true);
-    };
+    }
 
     function handleAppletCancel() {
         setHasError(false);
         setAppletActive(false);
-    };
+    }
 
     function handleAppletSave() {
         if (hasError) {
@@ -197,12 +197,12 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             },
             error => handleValidationChanged(true, error.message)
         );
-    };
+    }
 
     function handleValidationChanged(isValid: boolean, error: string ) {
         setHasError(!isValid);
         setError(error);
-    };
+    }
 
     const calanaderView =
     <ScheduleCalander
@@ -222,13 +222,14 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             error={error}
             hasError={hasError}
             appletActive={appletActive}
-            altView={isCalanaderViewActive ? calanaderView : undefined}>
+            altView={isCalanaderViewActive ? calanaderView : undefined}
+            isLoading={false}>
             <ScheduleWizard
                     groups={groups}
                     onChange={(schedule: Schedule) => setSelectedSchedule(schedule)}
                     onValidationChanged={handleValidationChanged}
                     schedule={selectedSchedule}>
-                </ScheduleWizard>
+            </ScheduleWizard>
         </Module>
     );
 };

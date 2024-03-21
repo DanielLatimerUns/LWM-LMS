@@ -1,4 +1,4 @@
-﻿using LWM.Api.ApplicationServices.Teacher.Queries;
+﻿using LWM.Api.ApplicationServices.Teacher.Contracts;
 using LWM.Api.DomainServices.GroupService.Contracts;
 using LWM.Api.DomainServices.TeacherService.Contracts;
 using LWM.Api.Dtos.DomainEntities;

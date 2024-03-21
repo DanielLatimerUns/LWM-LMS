@@ -1,6 +1,7 @@
 ﻿namespace LWM.Api.Controllers
 {
     using LWM.Api.ApplicationServices.Group.Contracts;
+    using LWM.Api.ApplicationServices.Lesson.Queries;
     using LWM.Api.ApplicationServices.Student.Contracts;
     using LWM.Api.DomainServices.GroupService.Contracts;
     using LWM.Api.Dtos.DomainEntities;
@@ -20,6 +21,12 @@
         public async Task<IEnumerable<Group>> Get()
         {
             return await groupQueries.GetGroupsAsync();
+        }
+
+        [HttpGet("{searchString}")]
+        public async Task<IEnumerable<Group>> GetWithFilter(string searchString)
+        {
+            return await groupQueries.GetGroupsBySearchStringAsync(searchString);
         }
 
         [HttpGet("{groupId}/students")]

@@ -5,5 +5,7 @@
     public interface IPersonQueries
     {
         Task<IEnumerable<Person>> GetPersonsAsync();
+
+        Task<IEnumerable<Person>> GetPersonsBySearchStringAsync(string searchString);
     }
 }

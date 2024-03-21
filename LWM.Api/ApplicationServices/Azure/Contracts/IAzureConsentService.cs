@@ -2,6 +2,6 @@
 {
     public interface IAzureConsentService
     {
-        Uri GetConsentUri(string baseUrl);
+        Uri GetConsentUri(string baseUrl, bool forceLogin = false);
     }
 }

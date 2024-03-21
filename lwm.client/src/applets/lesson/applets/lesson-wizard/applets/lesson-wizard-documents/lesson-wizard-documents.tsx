@@ -16,6 +16,7 @@ const LessonWizardDocuments: React.FunctionComponent<Props> = (props) => {
 
         return (
         <Grid
+            isDataLoading={false}
             columns={columns}
             rows={props.documents.map(doc => ({columnData: doc, id: doc.id}))}
             editClicked={(doc: LessonDocument) => window.open(doc.path)}

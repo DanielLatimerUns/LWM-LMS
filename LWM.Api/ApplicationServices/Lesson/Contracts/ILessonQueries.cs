@@ -4,6 +4,8 @@ namespace LWM.Api.ApplicationServices.Lesson.Contracts
 {
     public interface ILessonQueries
     {
-        Task<IEnumerable<Dtos.DomainEntities.Lesson>> GetLessonsAsync(Expression<Func<Data.Models.Lesson, bool>> filter = null);
+        Task<IEnumerable<Dtos.DomainEntities.Lesson>> GetLessonsAsync();
+
+        Task<IEnumerable<Dtos.DomainEntities.Lesson>> GetLessonsBySearchStringAsync(string searchString);
     }
 }

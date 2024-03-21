@@ -15,7 +15,8 @@ interface Props {
         columns.push({name: "name", lable: "Name"});
 
         return (
-        <Grid
+            <Grid
+            isDataLoading={false}
             columns={columns}
             rows={props.students.map(student => ({columnData: student, id: student.id}))}
             editClicked={() => {return;}}
