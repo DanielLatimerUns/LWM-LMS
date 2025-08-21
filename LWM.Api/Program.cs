@@ -26,13 +26,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// need to add con string...
-builder.Services.AddDbContext<CoreContext>(
-    options => options.UseSqlServer(configuration.GetConnectionString("LWM"), 
+builder.Services.AddDbContext<AuthenticationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("LWM"),
     c => c.MigrationsAssembly("LWM.Api")));
 
-// Auth
-builder.Services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("LWM"),
+builder.Services.AddDbContext<CoreContext>(options => options.UseNpgsql(configuration.GetConnectionString("LWM"),
     c => c.MigrationsAssembly("LWM.Api")));
 
 builder.Services.AddMemoryCache();

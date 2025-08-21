@@ -1,6 +1,7 @@
-﻿using LWM.Api.ApplicationServices.Document.Contracts;
-using LWM.Api.DomainServices.DocumentService.Contracts;
-using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.ApplicationServices.Document.Queries;
+using LWM.Api.ApplicationServices.Document.Services;
+using LWM.Api.DomainServices.Document.Contracts;
+using LWM.Api.Dtos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,30 +12,30 @@ namespace LWM.Api.Controllers
     [Route("document")]
     public class DocumentController(
         IDocumentQueries documentQueries,
-        IDocumentCreationService documentCreationService,
+        IDocumentService documentService,
         IDocumentWriteService documentWriteService) : Controller
     {
 
         [HttpGet]
-        public async Task<IEnumerable<LessonDocument>> Get()
+        public async Task<IEnumerable<LessonDocumentModel>> Get()
         {
             return await documentQueries.GetDocumentsAsync();
         }
 
         [HttpGet("{lessonId}")]
-        public async Task<IEnumerable<LessonDocument>> GetForLesson(int lessonId)
+        public async Task<IEnumerable<LessonDocumentModel>> GetForLesson(int lessonId)
         {
             return await documentQueries.GetDocumentsAsync(lessonId);
         }
 
         [HttpPost]
-        public async Task<int> Create([FromForm]LessonDocument document)
+        public async Task<int> Create([FromForm]LessonDocumentModel document)
         {
-            return await documentCreationService.Execute(document);
+            return await documentService.Create(document);
         }
 
         [HttpPut]
-        public async Task Update(LessonDocument document)
+        public async Task Update(LessonDocumentModel document)
         {
             //await _documentWriteService.UpdateAsync(document);
         }
@@ -44,8 +45,6 @@ namespace LWM.Api.Controllers
         {
             await documentWriteService.DeleteAsync(id);
         }
-
-
     }
 }
 

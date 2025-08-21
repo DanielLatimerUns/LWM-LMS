@@ -49,9 +49,9 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
 
     function buildGridConfig() {
         const columns: GridColumn[] = [
-            {lable: "Day", name: "schedualedDayOfWeek"},
-            {lable: "Start Time", name: "schedualedStartTime"},
-            {lable: "End Time", name: "schedualedEndTime"}
+            {lable: "Day", name: "scheduledDayOfWeek"},
+            {lable: "Start Time", name: "scheduledStartTime"},
+            {lable: "End Time", name: "scheduledEndTime"}
         ];
 
         const rows: GridRow[] =
@@ -155,7 +155,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
     }
 
     function handleDeleteSchedule(schedule: Schedule) {
-        RestService.Delete(`lessonschedule/${schedule.id}`).then(() => getSchedules());
+        RestService.Delete(`schedule/${schedule.id}`).then(() => getSchedules());
     }
 
     function handleLessonChange() {
@@ -175,7 +175,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         }
 
         if (selectedSchedule?.id === 0) {
-            RestService.Post('lessonschedule', selectedSchedule).then(data =>
+            RestService.Post('schedule', selectedSchedule).then(data =>
                 {
                     if (data.ok) {
                         data.json().then(handleLessonChange);
@@ -188,7 +188,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             return;
         }
 
-        RestService.Put('lessonschedule', selectedSchedule).then( data => {
+        RestService.Put('schedule', selectedSchedule).then( data => {
                 if (data.ok) {
                     handleLessonChange();
                 } else {
@@ -205,11 +205,11 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
     }
 
     const calanaderView =
-    <ScheduleCalander
-        handleScheduleClicked={handleEditSchedule}
-        handleNewScheduleClicked={handleAddNewSchedule}
-        groups={groups}
-        schedules={schedules}/>;
+        <ScheduleCalander
+            handleScheduleClicked={handleEditSchedule}
+            handleNewScheduleClicked={handleAddNewSchedule}
+            groups={groups}
+            schedules={schedules}/>;
 
     return (
         <Module

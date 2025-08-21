@@ -14,6 +14,7 @@ import lessonIcon from '../../assets/module-icons/books.png';
 import peopleIcon from '../../assets/module-icons/teamwork.png';
 import groupIcon from '../../assets/module-icons/video-conference.png';
 import schedualIcon from '../../assets/module-icons/school.png';
+import TimeTableManager from "../timeTable/time-table-manager.tsx";
 
 interface Props {
     userName: string
@@ -58,10 +59,16 @@ const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
         active: false,
         icon: schedualIcon
     });
+    
+    _options.push({
+        name: 'Time Table',
+        module: <TimeTableManager></TimeTableManager>,
+        active: false,
+        icon: schedualIcon
+    })
 
     const [options, setOptions] = useState<SideBarOption[]>(_options);
-
-
+    
     function renderContent() {
         return (
             options.map(option =>

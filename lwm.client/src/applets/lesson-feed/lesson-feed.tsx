@@ -39,16 +39,13 @@ export default class LessonFeed extends React.Component<LessonFeedProps, LessonF
             </div>
         )
     }
-
-
+    
     private getFeed() {
-        RestService.Get('lessonschedule/feed').then(
+        RestService.Get('schedule/feed').then(
             resoponse => resoponse.json().then(
                 (data: LessonFeedModel) => this.setState(
                     {feed: data})
             ).catch( error => console.error(error))
         );
     }
-
-
 }

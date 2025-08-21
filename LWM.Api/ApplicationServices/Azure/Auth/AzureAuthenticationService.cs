@@ -1,19 +1,26 @@
 ﻿using LWM.Api.ApplicationServices.Azure.Auth;
-using LWM.Api.ApplicationServices.Azure.Contracts;
-using LWM.Api.Dtos.Azure;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using LWM.Api.Dtos.Models.Azure;
 
 namespace LWM.Api.ApplicationServices.Azure
 {
+    public interface IAzureAuthenticationService
+    {
+        Task<AzureAuthResponse> GetAuthTokenForCodeAsync(
+            string code,
+            string host);
+
+        Task<IActionResult> HandleAuthResponseRedirect(string code, string hostUrl);
+    }
+
     public class AzureAuthenticationService(
         IConfiguration configuration, 
         CoreContext context,
         IWebHostEnvironment webHostEnvironment,
-        IAzureConsentService azureConsentService
-        ) : IAzureAuthenticationService
+        IAzureConsentService azureConsentService) : IAzureAuthenticationService
     {
         public async Task<AzureAuthResponse> GetAuthTokenForCodeAsync(
             string code,
@@ -64,7 +71,7 @@ namespace LWM.Api.ApplicationServices.Azure
             try
             {
                 var token = await this.GetAuthTokenForCodeAsync(
-                    code.ToString(),
+                    code,
                     hostUrl);
 
                 if (!webHostEnvironment.IsDevelopment())
@@ -94,7 +101,7 @@ namespace LWM.Api.ApplicationServices.Azure
                                         </script>
                                     </body>
                                     </html>",
-                        ContentType = @"text/html",
+                        ContentType = "text/html",
                     };
                 }
 

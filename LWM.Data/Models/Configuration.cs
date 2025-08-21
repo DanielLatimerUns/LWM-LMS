@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LWM.Data.Models
 {
-    public class Configuration
+    public class Configuration : IDbEntity
     {
         public int Id { get; set; }
 

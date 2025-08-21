@@ -1,7 +1,7 @@
-﻿using LWM.Api.ApplicationServices.Lesson.Queries;
-using LWM.Api.ApplicationServices.Person.Contracts;
-using LWM.Api.ApplicationServices.Student.Contracts;
-using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.ApplicationServices.Person.Queries;
+using LWM.Api.ApplicationServices.Person.Services;
+using LWM.Api.ApplicationServices.Student.Queries;
+using LWM.Api.Dtos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,47 +11,45 @@ namespace LWM.Api.Controllers
     [Authorize]
     [Route("person")]
     public class PersonController(
-        IPersonUpdateService personUpdateService,
-        IPersonCreationService personCreationService,
+        IPersonService personService,
         IPersonQueries personQueries,
-        IPersonDeleteService personDeleteService,
         IStudentQueries studentQueries) : Controller
     {
 
         [HttpGet]
-        public async Task<IEnumerable<Person>> Get()
+        public async Task<IEnumerable<PersonModel>> Get()
         {
             return await personQueries.GetPersonsAsync();
         }
 
         [HttpGet("{searchString}")]
-        public async Task<IEnumerable<Person>> GetWithFilter(string searchString)
+        public async Task<IEnumerable<PersonModel>> GetWithFilter(string searchString)
         {
             return await personQueries.GetPersonsBySearchStringAsync(searchString);
         }
 
         [HttpGet("{personId}/student")]
-        public async Task<IEnumerable<Student>> Get(int personId)
+        public async Task<IEnumerable<StudentModel>> Get(int personId)
         {
             return await studentQueries.GetStudentsByPersonIdAsync(personId);
         }
 
         [HttpPost]
-        public async Task<int> Create(Person person)
+        public async Task<int> Create(PersonModel personModel)
         {
-            return await personCreationService.Execute(person);
+            return await personService.Create(personModel);
         }
 
         [HttpPut]
-        public async Task Update(Person person)
+        public async Task Update(PersonModel personModel)
         {
-            await personUpdateService.Execute(person);
+            await personService.Update(personModel);
         }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            await personDeleteService.Execute(id);
+            await personService.Delete(id);
         }
     }
 }

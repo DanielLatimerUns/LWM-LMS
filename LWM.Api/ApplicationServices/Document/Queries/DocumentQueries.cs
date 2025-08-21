@@ -1,15 +1,21 @@
-﻿namespace LWM.Api.ApplicationServices.Document.Queries
+﻿using LWM.Api.Dtos.Models;
+
+namespace LWM.Api.ApplicationServices.Document.Queries
 {
-    using LWM.Api.ApplicationServices.Document.Contracts;
-    using LWM.Api.Dtos.DomainEntities;
-    using LWM.Data.Contexts;
-    using LWM.Data.Models;
+    using Data.Contexts;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
+
+    public interface IDocumentQueries
+    {
+        Task<IEnumerable<LessonDocumentModel>> GetDocumentsAsync(int lessonId);
+        Task<IEnumerable<LessonDocumentModel>> GetDocumentsAsync();
+    }
 
     public class DocumentQueries(
         CoreContext context) : IDocumentQueries
     {
-        public async Task<IEnumerable<LessonDocument>> GetDocumentsAsync(int lessonId)
+        public async Task<IEnumerable<LessonDocumentModel>> GetDocumentsAsync(int lessonId)
         {
             var query = context.Documents.Include(x => x.Lesson).Where(x => x.Lesson.Id == lessonId);
             var docs = await query.ToListAsync();
@@ -17,7 +23,7 @@
             return docs.Select(MapDto);
         }
 
-        public async Task<IEnumerable<LessonDocument>> GetDocumentsAsync()
+        public async Task<IEnumerable<LessonDocumentModel>> GetDocumentsAsync()
         {
             var query = context.Documents.Include(x => x.Lesson);
             var docs = await query.ToListAsync();
@@ -25,9 +31,9 @@
             return docs.Select(MapDto);
         }
 
-        private static LessonDocument MapDto(Document document)
+        private static LessonDocumentModel MapDto(Data.Models.Document.Document document)
         {
-            return new LessonDocument
+            return new LessonDocumentModel
             {
                 Id = document.Id,
                 LessonId = document.Lesson.Id,

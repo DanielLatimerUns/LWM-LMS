@@ -1,16 +1,22 @@
-﻿using LWM.Api.ApplicationServices.Azure.Contracts;
-using LWM.Api.DomainServices.CurriculumService.Contracts;
-using LWM.Api.DomainServices.DocumentService.Contracts;
-using LWM.Api.DomainServices.LessonService.Contracts;
-using LWM.Api.Dtos.Azure;
+﻿using LWM.Api.DomainServices.Curriculum.Contracts;
+using LWM.Api.DomainServices.Document.Contracts;
+using LWM.Api.DomainServices.Lesson.Contracts;
+using LWM.Api.Dtos.Models;
+using LWM.Api.Dtos.Models.Azure;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using LWM.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph.Models;
+using Curriculum = LWM.Data.Models.Curriculum.Curriculum;
 
 namespace LWM.Api.ApplicationServices.Azure.Services
 {
+    public interface IAzureLessonImportService
+    {
+        Task ImportAsync();
+    }
+
     public class AzureLessonImportService(
         IAzureGraphServiceClientFactory azureGraphServiceClientFactory,
         CoreContext coreContext,
@@ -36,7 +42,7 @@ namespace LWM.Api.ApplicationServices.Azure.Services
                         coreContext.SaveChanges();
 
                         var curriculumId = await curriculumWriteService.CreateAsync(
-                            new Dtos.DomainEntities.Curriculum
+                            new Dtos.Models.CurriculumModel
                             {
                                 Name = entity.Name,
                                 Targetlanguage = "Greek",
@@ -68,7 +74,7 @@ namespace LWM.Api.ApplicationServices.Azure.Services
                         coreContext.AzureObjectLinks.Add(azureLink);
                         coreContext.SaveChanges();
 
-                        var lessonId = await lessonWriteService.CreateAsync(new Dtos.DomainEntities.Lesson
+                        var lessonId = await lessonWriteService.CreateAsync(new Dtos.Models.LessonModel
                         {
                             Name = entity.Name,
                             LessonNo = lessonNo,
@@ -84,7 +90,7 @@ namespace LWM.Api.ApplicationServices.Azure.Services
             }
         }
 
-        private async Task ImportDocumentsForLesson(Data.Models.Lesson lesson, AzureLessonImportEntity azureLessonImportEntity)
+        private async Task ImportDocumentsForLesson(Data.Models.Lesson.Lesson lesson, AzureLessonImportEntity azureLessonImportEntity)
         {
             foreach (var entity in azureLessonImportEntity.Children)
             {
@@ -99,7 +105,7 @@ namespace LWM.Api.ApplicationServices.Azure.Services
                         coreContext.AzureObjectLinks.Add(azureLink);
                         coreContext.SaveChanges();
 
-                        await documentWriteService.CreateAsync(new Dtos.DomainEntities.LessonDocument
+                        await documentWriteService.CreateAsync(new LessonDocumentModel
                         {
                             Name = entity.Name,
                             Path = entity.FilePath,

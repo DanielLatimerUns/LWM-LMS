@@ -1,5 +1,4 @@
-﻿using LWM.Api.Dtos.DomainEntities;
-using LWM.Authentication;
+﻿using LWM.Authentication;
 using LWM.Web.ViewModels;
 
 namespace LWM.Api.Dtos.ViewModels

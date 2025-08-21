@@ -3,8 +3,8 @@ using System;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -17,22 +17,22 @@ namespace LWM.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("LWM.Data.Models.AzureObjectLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AzureId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -43,45 +43,45 @@ namespace LWM.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AzureUserEmail")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("DocumentPath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Configurations");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Curriculum", b =>
+            modelBuilder.Entity("LWM.Data.Models.Curriculum.Curriculum", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AzureObjectLinkId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("NativeLanguage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Targetlanguage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -90,27 +90,29 @@ namespace LWM.Api.Migrations
                     b.ToTable("LessonCurriculums");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Document", b =>
+            modelBuilder.Entity("LWM.Data.Models.Document.Document", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AzureObjectLinkId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("DocumentPath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
-                    b.Property<int>("LessonId")
-                        .HasColumnType("int");
+                    b.Property<int?>("LessonId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.HasKey("Id");
 
@@ -121,23 +123,23 @@ namespace LWM.Api.Migrations
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Group", b =>
+            modelBuilder.Entity("LWM.Data.Models.Group.Group", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CompletedLessonNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("TeacherId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -146,26 +148,26 @@ namespace LWM.Api.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Lesson", b =>
+            modelBuilder.Entity("LWM.Data.Models.Lesson.Lesson", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AzureObjectLinkId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("CurriculumId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("LessonNo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -176,110 +178,51 @@ namespace LWM.Api.Migrations
                     b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.LessonInstance", b =>
+            modelBuilder.Entity("LWM.Data.Models.Person.Person", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LessonScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SchedualedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LessonId");
-
-                    b.HasIndex("LessonScheduleId");
-
-                    b.ToTable("Instances");
-                });
-
-            modelBuilder.Entity("LWM.Data.Models.LessonSchedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Repeat")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SchedualedDayOfWeek")
-                        .HasColumnType("int");
-
-                    b.Property<TimeOnly>("SchedualedEndTime")
-                        .HasColumnType("time");
-
-                    b.Property<TimeOnly>("SchedualedStartTime")
-                        .HasColumnType("time");
-
-                    b.Property<int>("StartWeek")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("LessonSchedule");
-                });
-
-            modelBuilder.Entity("LWM.Data.Models.Person", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EmailAddress1")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Forename")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("PersonType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("PhoneNo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Persons");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Student", b =>
+            modelBuilder.Entity("LWM.Data.Models.Person.Student", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("GroupId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("PersonId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -290,16 +233,16 @@ namespace LWM.Api.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Teacher", b =>
+            modelBuilder.Entity("LWM.Data.Models.Person.Teacher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("PersonId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -308,7 +251,149 @@ namespace LWM.Api.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Curriculum", b =>
+            modelBuilder.Entity("LWM.Data.Models.Schedule.ScheduleInstance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScheduleItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ScheduledDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("ScheduleItemId");
+
+                    b.ToTable("Instances");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Schedule.ScheduleItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Repeat")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScheduledDayOfWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeOnly>("ScheduledEndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly>("ScheduledStartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<int>("StartWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TimeTableEntryId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("TimeTableEntryId");
+
+                    b.ToTable("Schedules");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTable", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeTables");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTableDay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeTableId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TimeTableId");
+
+                    b.ToTable("TimeTableDays");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTableEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeTableDayId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.HasIndex("TimeTableDayId");
+
+                    b.ToTable("TimeTableEntries");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Curriculum.Curriculum", b =>
                 {
                     b.HasOne("LWM.Data.Models.AzureObjectLink", "AzureObjectLink")
                         .WithMany()
@@ -317,26 +402,24 @@ namespace LWM.Api.Migrations
                     b.Navigation("AzureObjectLink");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Document", b =>
+            modelBuilder.Entity("LWM.Data.Models.Document.Document", b =>
                 {
                     b.HasOne("LWM.Data.Models.AzureObjectLink", "AzureObjectLink")
                         .WithMany()
                         .HasForeignKey("AzureObjectLinkId");
 
-                    b.HasOne("LWM.Data.Models.Lesson", "Lesson")
+                    b.HasOne("LWM.Data.Models.Lesson.Lesson", "Lesson")
                         .WithMany("Documents")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LessonId");
 
                     b.Navigation("AzureObjectLink");
 
                     b.Navigation("Lesson");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Group", b =>
+            modelBuilder.Entity("LWM.Data.Models.Group.Group", b =>
                 {
-                    b.HasOne("LWM.Data.Models.Teacher", "Teacher")
+                    b.HasOne("LWM.Data.Models.Person.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -345,13 +428,13 @@ namespace LWM.Api.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Lesson", b =>
+            modelBuilder.Entity("LWM.Data.Models.Lesson.Lesson", b =>
                 {
                     b.HasOne("LWM.Data.Models.AzureObjectLink", "AzureObjectLink")
                         .WithMany()
                         .HasForeignKey("AzureObjectLinkId");
 
-                    b.HasOne("LWM.Data.Models.Curriculum", "Curriculum")
+                    b.HasOne("LWM.Data.Models.Curriculum.Curriculum", "Curriculum")
                         .WithMany("Lessons")
                         .HasForeignKey("CurriculumId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -362,73 +445,127 @@ namespace LWM.Api.Migrations
                     b.Navigation("Curriculum");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.LessonInstance", b =>
+            modelBuilder.Entity("LWM.Data.Models.Person.Student", b =>
                 {
-                    b.HasOne("LWM.Data.Models.Lesson", "Lesson")
+                    b.HasOne("LWM.Data.Models.Group.Group", "Group")
+                        .WithMany("Students")
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("LWM.Data.Models.Person.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Person.Teacher", b =>
+                {
+                    b.HasOne("LWM.Data.Models.Person.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Schedule.ScheduleInstance", b =>
+                {
+                    b.HasOne("LWM.Data.Models.Lesson.Lesson", "Lesson")
                         .WithMany()
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LWM.Data.Models.LessonSchedule", "LessonSchedule")
+                    b.HasOne("LWM.Data.Models.Schedule.ScheduleItem", "ScheduleItem")
                         .WithMany()
-                        .HasForeignKey("LessonScheduleId")
+                        .HasForeignKey("ScheduleItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Lesson");
 
-                    b.Navigation("LessonSchedule");
+                    b.Navigation("ScheduleItem");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.LessonSchedule", b =>
+            modelBuilder.Entity("LWM.Data.Models.Schedule.ScheduleItem", b =>
                 {
-                    b.HasOne("LWM.Data.Models.Group", "Group")
+                    b.HasOne("LWM.Data.Models.Group.Group", "Group")
                         .WithMany()
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("LWM.Data.Models.Student", b =>
-                {
-                    b.HasOne("LWM.Data.Models.Group", "Group")
-                        .WithMany("Students")
-                        .HasForeignKey("GroupId");
-
-                    b.HasOne("LWM.Data.Models.Person", "Person")
+                    b.HasOne("LWM.Data.Models.TimeTable.TimeTableEntry", "TimeTableEntry")
                         .WithMany()
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("TimeTableEntryId");
 
                     b.Navigation("Group");
 
-                    b.Navigation("Person");
+                    b.Navigation("TimeTableEntry");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Teacher", b =>
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTableDay", b =>
                 {
-                    b.HasOne("LWM.Data.Models.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId");
+                    b.HasOne("LWM.Data.Models.TimeTable.TimeTable", "TimeTable")
+                        .WithMany("Days")
+                        .HasForeignKey("TimeTableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Person");
+                    b.Navigation("TimeTable");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Curriculum", b =>
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTableEntry", b =>
+                {
+                    b.HasOne("LWM.Data.Models.Group.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LWM.Data.Models.Person.Teacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LWM.Data.Models.TimeTable.TimeTableDay", "TimeTableDay")
+                        .WithMany("TimeTableEntries")
+                        .HasForeignKey("TimeTableDayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Teacher");
+
+                    b.Navigation("TimeTableDay");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.Curriculum.Curriculum", b =>
                 {
                     b.Navigation("Lessons");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Group", b =>
+            modelBuilder.Entity("LWM.Data.Models.Group.Group", b =>
                 {
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("LWM.Data.Models.Lesson", b =>
+            modelBuilder.Entity("LWM.Data.Models.Lesson.Lesson", b =>
                 {
                     b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTable", b =>
+                {
+                    b.Navigation("Days");
+                });
+
+            modelBuilder.Entity("LWM.Data.Models.TimeTable.TimeTableDay", b =>
+                {
+                    b.Navigation("TimeTableEntries");
                 });
 #pragma warning restore 612, 618
         }

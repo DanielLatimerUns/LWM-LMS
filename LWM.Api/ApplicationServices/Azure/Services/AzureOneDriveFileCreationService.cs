@@ -1,6 +1,4 @@
-﻿using Azure.Core.Extensions;
-using LWM.Api.ApplicationServices.Azure.Contracts;
-using LWM.Api.Dtos.Azure;
+﻿using LWM.Api.Dtos.Models.Azure;
 using LWM.Api.Framework.Exceptions;
 using LWM.Api.Framework.Services;
 using Microsoft.Graph;
@@ -9,18 +7,23 @@ using Microsoft.Graph.Models;
 
 namespace LWM.Api.ApplicationServices.Azure
 {
+    public interface IAzureOneDriveFileCreationService
+    {
+        Task<(string id, string path)> UploadFileAsync(AzureFileEntityModel azureFileEntity);
+    }
+
     public class AzureOneDriveFileCreationService(
         IAzureGraphServiceClientFactory azureGraphServiceClientFactory,
         IApplicationInstanceService applicationInstanceService) : IAzureOneDriveFileCreationService
     {
-        public async Task<(string id, string path)> UploadFileAsync(AzureFileEntity azureFileEntity)
+        public async Task<(string id, string path)> UploadFileAsync(AzureFileEntityModel azureFileEntity)
         {
             var result = await UploadDocument(azureFileEntity);
 
             return (result.Id, result.WebUrl);
 
         }
-        private async Task<DriveItem> UploadDocument(AzureFileEntity azureFileEntity)
+        private async Task<DriveItem> UploadDocument(AzureFileEntityModel azureFileEntity)
         {
             using var memstream = new MemoryStream();
             await azureFileEntity.File.CopyToAsync(memstream);

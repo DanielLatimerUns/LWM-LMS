@@ -32,19 +32,13 @@ namespace LWM.Api.Framework.Services
                 if (serviceImplementation == null)
                     continue;
 
-                if (_scopedServices.Contains(service.Name))
-                {
-                    services.AddScoped(service, serviceImplementation);
-                    continue;
-                }
-
                 if (_singletonServices.Contains(service.Name))
                 {
                     services.AddSingleton(service, serviceImplementation);
                     continue;
                 }
 
-                services.Add(new ServiceDescriptor(service, serviceImplementation, ServiceLifetime.Transient));
+                services.AddScoped(service, serviceImplementation);
             }
         }
     }

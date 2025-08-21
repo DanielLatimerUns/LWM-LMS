@@ -1,0 +1,48 @@
+// vite.config.ts
+import { fileURLToPath, URL } from "node:url";
+import { defineConfig } from "file:///Users/danielunsworth/Dev/LWM-LMS/lwm.client/node_modules/vite/dist/node/index.js";
+import plugin from "file:///Users/danielunsworth/Dev/LWM-LMS/lwm.client/node_modules/@vitejs/plugin-react/dist/index.mjs";
+import fs from "fs";
+import path from "path";
+import child_process from "child_process";
+var __vite_injected_original_import_meta_url = "file:///Users/danielunsworth/Dev/LWM-LMS/lwm.client/vite.config.ts";
+var baseFolder = process.env.APPDATA !== void 0 && process.env.APPDATA !== "" ? `${process.env.APPDATA}/ASP.NET/https` : `${process.env.HOME}/.aspnet/https`;
+var certificateArg = process.argv.map((arg) => arg.match(/--name=(?<value>.+)/i)).filter(Boolean)[0];
+var certificateName = certificateArg ? certificateArg.groups.value : "lwm.client";
+if (!certificateName) {
+  console.error("Invalid certificate name. Run this script in the context of an npm/yarn script or pass --name=<<app>> explicitly.");
+  process.exit(-1);
+}
+var certFilePath = path.join(baseFolder, `${certificateName}.pem`);
+var keyFilePath = path.join(baseFolder, `${certificateName}.key`);
+if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+  const result = child_process.spawnSync("dotnet", [], { stdio: "inherit" }).status;
+  console.log(`dotnet dev-certs https --export-path ${certFilePath} --format PEM --password  --no-password`);
+}
+var vite_config_default = defineConfig({
+  plugins: [plugin()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", __vite_injected_original_import_meta_url))
+    }
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://localhost:7120/",
+        secure: false,
+        rewrite: (path2) => path2.replace(/^\/api/, ""),
+        changeOrigin: true
+      }
+    },
+    port: 5173,
+    https: {
+      key: fs.readFileSync(keyFilePath),
+      cert: fs.readFileSync(certFilePath)
+    }
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvVXNlcnMvZGFuaWVsdW5zd29ydGgvRGV2L0xXTS1MTVMvbHdtLmNsaWVudFwiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9maWxlbmFtZSA9IFwiL1VzZXJzL2RhbmllbHVuc3dvcnRoL0Rldi9MV00tTE1TL2x3bS5jbGllbnQvdml0ZS5jb25maWcudHNcIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfaW1wb3J0X21ldGFfdXJsID0gXCJmaWxlOi8vL1VzZXJzL2RhbmllbHVuc3dvcnRoL0Rldi9MV00tTE1TL2x3bS5jbGllbnQvdml0ZS5jb25maWcudHNcIjtpbXBvcnQgeyBmaWxlVVJMVG9QYXRoLCBVUkwgfSBmcm9tICdub2RlOnVybCc7XG5cbmltcG9ydCB7IGRlZmluZUNvbmZpZyB9IGZyb20gJ3ZpdGUnO1xuaW1wb3J0IHBsdWdpbiBmcm9tICdAdml0ZWpzL3BsdWdpbi1yZWFjdCc7XG5pbXBvcnQgZnMgZnJvbSAnZnMnO1xuaW1wb3J0IHBhdGggZnJvbSAncGF0aCc7XG5pbXBvcnQgY2hpbGRfcHJvY2VzcyBmcm9tICdjaGlsZF9wcm9jZXNzJztcblxuY29uc3QgYmFzZUZvbGRlciA9XG4gICAgcHJvY2Vzcy5lbnYuQVBQREFUQSAhPT0gdW5kZWZpbmVkICYmIHByb2Nlc3MuZW52LkFQUERBVEEgIT09ICcnXG4gICAgICAgID8gYCR7cHJvY2Vzcy5lbnYuQVBQREFUQX0vQVNQLk5FVC9odHRwc2BcbiAgICAgICAgOiBgJHtwcm9jZXNzLmVudi5IT01FfS8uYXNwbmV0L2h0dHBzYDtcblxuY29uc3QgY2VydGlmaWNhdGVBcmcgPSBwcm9jZXNzLmFyZ3YubWFwKGFyZyA9PiBhcmcubWF0Y2goLy0tbmFtZT0oPzx2YWx1ZT4uKykvaSkpLmZpbHRlcihCb29sZWFuKVswXTtcbmNvbnN0IGNlcnRpZmljYXRlTmFtZSA9IGNlcnRpZmljYXRlQXJnID8gY2VydGlmaWNhdGVBcmcuZ3JvdXBzLnZhbHVlIDogXCJsd20uY2xpZW50XCI7XG5cbmlmICghY2VydGlmaWNhdGVOYW1lKSB7XG4gICAgY29uc29sZS5lcnJvcignSW52YWxpZCBjZXJ0aWZpY2F0ZSBuYW1lLiBSdW4gdGhpcyBzY3JpcHQgaW4gdGhlIGNvbnRleHQgb2YgYW4gbnBtL3lhcm4gc2NyaXB0IG9yIHBhc3MgLS1uYW1lPTw8YXBwPj4gZXhwbGljaXRseS4nKVxuICAgIHByb2Nlc3MuZXhpdCgtMSk7XG59XG5cbmNvbnN0IGNlcnRGaWxlUGF0aCA9IHBhdGguam9pbihiYXNlRm9sZGVyLCBgJHtjZXJ0aWZpY2F0ZU5hbWV9LnBlbWApO1xuY29uc3Qga2V5RmlsZVBhdGggPSBwYXRoLmpvaW4oYmFzZUZvbGRlciwgYCR7Y2VydGlmaWNhdGVOYW1lfS5rZXlgKTtcblxuaWYgKCFmcy5leGlzdHNTeW5jKGNlcnRGaWxlUGF0aCkgfHwgIWZzLmV4aXN0c1N5bmMoa2V5RmlsZVBhdGgpKSB7XG4gICAgY29uc3QgcmVzdWx0ID0gY2hpbGRfcHJvY2Vzcy5zcGF3blN5bmMoJ2RvdG5ldCcsIFtcbiAgICBdLCB7IHN0ZGlvOiAnaW5oZXJpdCcsIH0pLnN0YXR1cztcbiAgICBjb25zb2xlLmxvZyhgZG90bmV0IGRldi1jZXJ0cyBodHRwcyAtLWV4cG9ydC1wYXRoICR7Y2VydEZpbGVQYXRofSAtLWZvcm1hdCBQRU0gLS1wYXNzd29yZCAgLS1uby1wYXNzd29yZGApO1xufVxuXG4vLyBodHRwczovL3ZpdGVqcy5kZXYvY29uZmlnL1xuZXhwb3J0IGRlZmF1bHQgZGVmaW5lQ29uZmlnKHtcbiAgICBwbHVnaW5zOiBbcGx1Z2luKCldLFxuICAgIHJlc29sdmU6IHtcbiAgICAgICAgYWxpYXM6IHtcbiAgICAgICAgICAgICdAJzogZmlsZVVSTFRvUGF0aChuZXcgVVJMKCcuL3NyYycsIGltcG9ydC5tZXRhLnVybCkpXG4gICAgICAgIH1cbiAgICB9LFxuICAgIHNlcnZlcjoge1xuICAgICAgICBwcm94eToge1xuICAgICAgICAgICAgJy9hcGknOiB7XG4gICAgICAgICAgICAgICAgdGFyZ2V0OiAnaHR0cHM6Ly9sb2NhbGhvc3Q6NzEyMC8nLFxuICAgICAgICAgICAgICAgIHNlY3VyZTogZmFsc2UsXG4gICAgICAgICAgICAgICAgcmV3cml0ZTogcGF0aCA9PiBwYXRoLnJlcGxhY2UoL15cXC9hcGkvLCAnJyksXG4gICAgICAgICAgICAgICAgY2hhbmdlT3JpZ2luOiB0cnVlXG4gICAgICAgICAgICB9XG4gICAgICAgIH0sXG4gICAgICAgIHBvcnQ6IDUxNzMsXG4gICAgICAgIGh0dHBzOiB7XG4gICAgICAgICAgICBrZXk6IGZzLnJlYWRGaWxlU3luYyhrZXlGaWxlUGF0aCksXG4gICAgICAgICAgICBjZXJ0OiBmcy5yZWFkRmlsZVN5bmMoY2VydEZpbGVQYXRoKSxcbiAgICAgICAgfVxuICAgIH1cbn0pXG4iXSwKICAibWFwcGluZ3MiOiAiO0FBQXNULFNBQVMsZUFBZSxXQUFXO0FBRXpWLFNBQVMsb0JBQW9CO0FBQzdCLE9BQU8sWUFBWTtBQUNuQixPQUFPLFFBQVE7QUFDZixPQUFPLFVBQVU7QUFDakIsT0FBTyxtQkFBbUI7QUFOc0ssSUFBTSwyQ0FBMkM7QUFRalAsSUFBTSxhQUNGLFFBQVEsSUFBSSxZQUFZLFVBQWEsUUFBUSxJQUFJLFlBQVksS0FDdkQsR0FBRyxRQUFRLElBQUksT0FBTyxtQkFDdEIsR0FBRyxRQUFRLElBQUksSUFBSTtBQUU3QixJQUFNLGlCQUFpQixRQUFRLEtBQUssSUFBSSxTQUFPLElBQUksTUFBTSxzQkFBc0IsQ0FBQyxFQUFFLE9BQU8sT0FBTyxFQUFFLENBQUM7QUFDbkcsSUFBTSxrQkFBa0IsaUJBQWlCLGVBQWUsT0FBTyxRQUFRO0FBRXZFLElBQUksQ0FBQyxpQkFBaUI7QUFDbEIsVUFBUSxNQUFNLG1IQUFtSDtBQUNqSSxVQUFRLEtBQUssRUFBRTtBQUNuQjtBQUVBLElBQU0sZUFBZSxLQUFLLEtBQUssWUFBWSxHQUFHLGVBQWUsTUFBTTtBQUNuRSxJQUFNLGNBQWMsS0FBSyxLQUFLLFlBQVksR0FBRyxlQUFlLE1BQU07QUFFbEUsSUFBSSxDQUFDLEdBQUcsV0FBVyxZQUFZLEtBQUssQ0FBQyxHQUFHLFdBQVcsV0FBVyxHQUFHO0FBQzdELFFBQU0sU0FBUyxjQUFjLFVBQVUsVUFBVSxDQUNqRCxHQUFHLEVBQUUsT0FBTyxVQUFXLENBQUMsRUFBRTtBQUMxQixVQUFRLElBQUksd0NBQXdDLFlBQVkseUNBQXlDO0FBQzdHO0FBR0EsSUFBTyxzQkFBUSxhQUFhO0FBQUEsRUFDeEIsU0FBUyxDQUFDLE9BQU8sQ0FBQztBQUFBLEVBQ2xCLFNBQVM7QUFBQSxJQUNMLE9BQU87QUFBQSxNQUNILEtBQUssY0FBYyxJQUFJLElBQUksU0FBUyx3Q0FBZSxDQUFDO0FBQUEsSUFDeEQ7QUFBQSxFQUNKO0FBQUEsRUFDQSxRQUFRO0FBQUEsSUFDSixPQUFPO0FBQUEsTUFDSCxRQUFRO0FBQUEsUUFDSixRQUFRO0FBQUEsUUFDUixRQUFRO0FBQUEsUUFDUixTQUFTLENBQUFBLFVBQVFBLE1BQUssUUFBUSxVQUFVLEVBQUU7QUFBQSxRQUMxQyxjQUFjO0FBQUEsTUFDbEI7QUFBQSxJQUNKO0FBQUEsSUFDQSxNQUFNO0FBQUEsSUFDTixPQUFPO0FBQUEsTUFDSCxLQUFLLEdBQUcsYUFBYSxXQUFXO0FBQUEsTUFDaEMsTUFBTSxHQUFHLGFBQWEsWUFBWTtBQUFBLElBQ3RDO0FBQUEsRUFDSjtBQUNKLENBQUM7IiwKICAibmFtZXMiOiBbInBhdGgiXQp9Cg==

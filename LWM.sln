@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LWM.Data", "LWM.Data\LWM.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWM.Authentication", "LWM.Authentication\LWM.Authentication.csproj", "{A1B6FCBA-2BEF-4A86-AD17-7FA7004F4636}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWM.Api.Tests", "LWM.Api.Tests\LWM.Api.Tests.csproj", "{72634D66-B40A-4BDD-8EB9-03821F8B1C70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{A1B6FCBA-2BEF-4A86-AD17-7FA7004F4636}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1B6FCBA-2BEF-4A86-AD17-7FA7004F4636}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1B6FCBA-2BEF-4A86-AD17-7FA7004F4636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72634D66-B40A-4BDD-8EB9-03821F8B1C70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72634D66-B40A-4BDD-8EB9-03821F8B1C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72634D66-B40A-4BDD-8EB9-03821F8B1C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72634D66-B40A-4BDD-8EB9-03821F8B1C70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

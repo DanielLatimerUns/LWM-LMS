@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LWM.Data.Models
+﻿namespace LWM.Data.Models
 {
-    public class AzureObjectLink
+    public class AzureObjectLink : IDbEntity
     {
         public int Id { get; set; }
 

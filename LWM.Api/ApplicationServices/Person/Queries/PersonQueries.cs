@@ -1,22 +1,26 @@
 ﻿namespace LWM.Api.ApplicationServices.Person.Queries
 {
-    using LWM.Api.ApplicationServices.Person.Contracts;
-    using LWM.Api.Dtos.DomainEntities;
-    using LWM.Api.Enums;
-    using LWM.Data.Contexts;
+    using Enums;
+    using Data.Contexts;
     using Microsoft.EntityFrameworkCore;
+
+    public interface IPersonQueries
+    {
+        Task<IEnumerable<Dtos.Models.PersonModel>> GetPersonsAsync();
+        Task<IEnumerable<Dtos.Models.PersonModel>> GetPersonsBySearchStringAsync(string searchString);
+    }
 
     public class PersonQueries(
         CoreContext context) : IPersonQueries
     {
 
-        public async Task<IEnumerable<Person>> GetPersonsAsync()
+        public async Task<IEnumerable<Dtos.Models.PersonModel>> GetPersonsAsync()
         {
             var result = await context.Persons.ToListAsync();
             return result.Select(MapDto);
         }
 
-        public async Task<IEnumerable<Person>> GetPersonsBySearchStringAsync(string searchString)
+        public async Task<IEnumerable<Dtos.Models.PersonModel>> GetPersonsBySearchStringAsync(string searchString)
         {
             var result = await context.Persons.Where(
                 x => x.Forename.Contains(searchString) ||
@@ -27,9 +31,9 @@
             return result.Select(MapDto);
         }
 
-        private static Person MapDto(Data.Models.Person model)
+        private static Dtos.Models.PersonModel MapDto(Data.Models.Person.Person model)
         {
-            return new Person
+            return new Dtos.Models.PersonModel
             {
                 Id = model.Id,
                 Forename = model.Forename,

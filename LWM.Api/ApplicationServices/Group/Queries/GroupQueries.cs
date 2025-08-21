@@ -1,21 +1,25 @@
 ﻿namespace LWM.Api.ApplicationServices.Group.Queries
 {
     using Microsoft.EntityFrameworkCore;
-    using LWM.Api.Dtos.DomainEntities;
-    using LWM.Data.Contexts;
-    using LWM.Api.ApplicationServices.Group.Contracts;
+    using Data.Contexts;
+
+    public interface IGroupQueries
+    {
+        Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsAsync();
+        Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsBySearchStringAsync(string seachString);
+    }
 
     public class GroupQueries(
         CoreContext coreContext) : IGroupQueries
     {
-        public async Task<IEnumerable<Group>> GetGroupsAsync()
+        public async Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsAsync()
         {
             var results = await coreContext.Groups.Include(x => x.Teacher).ToListAsync();
 
             return results.Select(MapModel);
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsBySearchStringAsync(string seachString)
+        public async Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsBySearchStringAsync(string seachString)
         {
             var results = 
                 await coreContext
@@ -30,9 +34,9 @@
             return results.Select(MapModel);
         }
 
-        private Group MapModel(Data.Models.Group model)
+        private Dtos.Models.GroupModel MapModel(Data.Models.Group.Group model)
         {
-            return new Group
+            return new Dtos.Models.GroupModel
             {
                 Id = model.Id,
                 Name = model.Name,

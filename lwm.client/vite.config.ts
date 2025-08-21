@@ -23,7 +23,7 @@ const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
 if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
-    if (0 !== child_process.spawnSync('dotnet', [
+    const result = child_process.spawnSync('dotnet', [
         'dev-certs',
         'https',
         '--export-path',
@@ -31,9 +31,8 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
         '--format',
         'Pem',
         '--no-password',
-    ], { stdio: 'inherit', }).status) {
-        throw new Error("Could not create certificate.");
-    }
+    ], {shell:true, encoding:'utf-8'});
+    console.log(result);
 }
 
 // https://vitejs.dev/config/

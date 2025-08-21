@@ -1,6 +1,5 @@
-﻿using LWM.Api.ApplicationServices.Student.Contracts;
-using LWM.Api.DomainServices.StudentService.Contracts;
-using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.ApplicationServices.Student.Queries;
+using LWM.Api.Dtos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +12,7 @@ namespace LWM.Api.Controllers
         IStudentQueries studentQueries) : Controller
     {
         [HttpGet]
-        public async Task<IEnumerable<Student>> Get()
+        public async Task<IEnumerable<StudentModel>> Get()
         {
             return await studentQueries.GetStudentsAsync();
         }

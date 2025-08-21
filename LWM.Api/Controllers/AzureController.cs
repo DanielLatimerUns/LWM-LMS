@@ -1,7 +1,7 @@
-﻿using LWM.Api.ApplicationServices.Azure.Contracts;
-using LWM.Api.Framework.Exceptions;
+﻿using LWM.Api.ApplicationServices.Azure;
+using LWM.Api.ApplicationServices.Azure.Auth;
+using LWM.Api.ApplicationServices.Azure.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LWM.Api.Controllers
@@ -11,8 +11,7 @@ namespace LWM.Api.Controllers
     public class AzureController(
         IAzureConsentService azureConsentService, 
         IAzureLessonImportService azureLessonImportService,
-        IAzureAuthenticationService azureAuthenticationService,
-        IWebHostEnvironment webHostEnvironment) : Controller
+        IAzureAuthenticationService azureAuthenticationService) : Controller
     {
         [HttpPut]
         [Authorize]
@@ -27,7 +26,7 @@ namespace LWM.Api.Controllers
         [Route("consent")]
         public string GetConsentUrl()
         {
-            return azureConsentService.GetConsentUri(this.Request.Host.Value).ToString();
+            return azureConsentService.GetConsentUri(Request.Host.Value).ToString();
         }
 
         [HttpGet]

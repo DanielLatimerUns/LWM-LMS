@@ -1,12 +1,14 @@
-﻿using LWM.Api.ApplicationServices.Azure.Contracts;
-using LWM.Api.DomainServices.TeacherService.Contracts;
-using LWM.Api.Framework.Services;
-using Microsoft.Extensions.Caching.Memory;
+﻿using LWM.Api.Framework.Services;
 using Microsoft.Graph;
 using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace LWM.Api.ApplicationServices.Azure
 {
+    public interface IAzureGraphServiceClientFactory
+    {
+        Task<BaseGraphServiceClient> CreateGraphClientAsync();
+    }
+
     public class AzureGraphServiceClientFactory(IApplicationInstanceService applicationInstanceService) : IAzureGraphServiceClientFactory
     {
         public async Task<BaseGraphServiceClient> CreateGraphClientAsync()

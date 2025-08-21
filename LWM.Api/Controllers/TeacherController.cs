@@ -1,7 +1,5 @@
-﻿using LWM.Api.ApplicationServices.Teacher.Contracts;
-using LWM.Api.DomainServices.GroupService.Contracts;
-using LWM.Api.DomainServices.TeacherService.Contracts;
-using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.ApplicationServices.Teacher.Queries;
+using LWM.Api.Dtos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +11,8 @@ namespace LWM.Api.Controllers
     public class TeacherController(
         ITeacherQueries teacherQueries) : Controller
     {
-
         [HttpGet]
-        public async Task<IEnumerable<Teacher>> Get()
+        public async Task<IEnumerable<TeacherModel>> Get()
         {
             return await teacherQueries.GetTeachersAsync();
         }

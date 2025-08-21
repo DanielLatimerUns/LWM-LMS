@@ -37,7 +37,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
         const fields: FormField[] = [
             {
                 label: "Day Of Week",
-                id: "schedualedDayOfWeek",
+                id: "scheduledDayOfWeek",
                 value: props.schedule.schedualedDayOfWeek,
                 onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
@@ -47,7 +47,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             },
             {
                 label: "Start Time" ,
-                id: "schedualedStartTime",
+                id: "scheduledStartTime",
                 value: props.schedule.schedualedStartTime,
                 onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,
@@ -57,7 +57,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             },
             {
                 label: "End Time" ,
-                id: "schedualedEndTime",
+                id: "scheduledEndTime",
                 value: props.schedule.schedualedEndTime,
                 onFieldChangedSuccsess: handleFormChange,
                 validationPattern: undefined,

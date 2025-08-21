@@ -1,6 +1,6 @@
-﻿using LWM.Api.ApplicationServices.Lesson.Contracts;
-using LWM.Api.DomainServices.LessonService.Contracts;
-using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.ApplicationServices.Lesson.Queries;
+using LWM.Api.DomainServices.Lesson.Contracts;
+using LWM.Api.Dtos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,25 +16,25 @@ namespace LWM.Api.Controllers
     {
 
         [HttpGet]
-        public async Task<IEnumerable<Lesson>> Get()
+        public async Task<IEnumerable<LessonModel>> Get()
         {
             return await lessonQueries.GetLessonsAsync();
         }
 
         [HttpGet("{searchString}")]
-        public async Task<IEnumerable<Lesson>> GetWithFilter(string searchString)
+        public async Task<IEnumerable<LessonModel>> GetWithFilter(string searchString)
         {
             return await lessonQueries.GetLessonsBySearchStringAsync(searchString);
         }
 
         [HttpPost]
-        public async Task<int> Create(Lesson lesson)
+        public async Task<int> Create(LessonModel lesson)
         {
             return await lessonWriteService.CreateAsync(lesson);
         }
 
         [HttpPut]
-        public async Task Update(Lesson lesson)
+        public async Task Update(LessonModel lesson)
         {
             await lessonWriteService.UpdateAsync(lesson);
         }

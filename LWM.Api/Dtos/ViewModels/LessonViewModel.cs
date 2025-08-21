@@ -1,17 +1,17 @@
-﻿using LWM.Api.Dtos.DomainEntities;
+﻿using LWM.Api.Dtos.Models;
 
 namespace LWM.Api.Dtos.ViewModels
 {
     public class LessonViewModel
     {
-        public Lesson Lesson { get; set; }
+        public LessonModel Lesson { get; set; }
 
-        public LessonSchedule LessonSchedule { get; set; }
+        public ScheduleEntryModel ScheduleEntry { get; set; }
 
-        public IEnumerable<Student> Students { get; set; }
+        public IEnumerable<StudentModel> Students { get; set; }
 
-        public IEnumerable<LessonDocument> Documents { get; set; }
+        public IEnumerable<LessonDocumentModel> Documents { get; set; }
 
-        public Group Group { get; set; }
+        public GroupModel Group { get; set; }
     }
 }
