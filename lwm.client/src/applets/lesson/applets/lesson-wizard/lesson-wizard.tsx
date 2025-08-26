@@ -1,17 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import './lesson-wizard.css';
-import Lesson from "../../../../entities/domainModels/Lesson";
+import {Lesson} from "../../../../entities/domainModels/Lesson";
 import RestService from "../../../../services/network/RestService";
-import LessonDocument from "../../../../entities/framework/LessonDocument";
+import {LessonDocument} from "../../../../entities/framework/LessonDocument";
 import LessonWizardDocuments from "./applets/lesson-wizard-documents/lesson-wizard-documents";
-import FormField from "../../../../entities/framework/formField";
+import {FormField} from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
 
 export interface Props {
     lesson: Lesson;
     onValidationChanged?: Function;
     onChange: Function;
-};
+}
 
 const LessonWizard: React.FunctionComponent<Props> = (props) => {
     const [documents, setDocuments] = useState<LessonDocument[]>([]);
@@ -22,7 +22,7 @@ const LessonWizard: React.FunctionComponent<Props> = (props) => {
             type: "text",
             id: "name" ,
             value: props.lesson.name,
-            onFieldChangedSuccsess: handleFormChange,
+            onFieldChanged: props.onChange,
             required: false,
             validationPattern: undefined,
             selectOptions: undefined
@@ -32,7 +32,7 @@ const LessonWizard: React.FunctionComponent<Props> = (props) => {
             type: "text",
             id: "lessonNo" ,
             value: props.lesson.lessonNo,
-            onFieldChangedSuccsess: handleFormChange,
+            onFieldChanged: props.onChange,
             required: true,
             validationPattern: "[0-9]+",
             selectOptions: undefined
@@ -65,20 +65,10 @@ const LessonWizard: React.FunctionComponent<Props> = (props) => {
     function buildForm() {
         return (
             <Fragment>
-                <Form onFieldValidationChanged={handleFieldValidationChanged} fields={formFields}/>
+                <Form onFieldValidationChanged={handleFieldValidationChanged} 
+                      fields={formFields}
+                formObject={props.lesson}/>
             </Fragment>)
-    }
-
-    function handleFormChange(e: any) {
-        const changedLesson: Lesson = Object.assign({}, props.lesson);
-        const targetField: any = e.target.value;
-
-        for (const field in changedLesson) {
-            if (field === e.target.id) {
-                (changedLesson as any)[field] = targetField;
-            }
-        }
-        props.onChange(changedLesson);
     }
 
     function handleFieldValidationChanged(isValid: boolean) {

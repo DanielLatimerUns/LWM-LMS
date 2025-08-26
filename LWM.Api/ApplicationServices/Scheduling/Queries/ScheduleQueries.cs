@@ -4,7 +4,6 @@ using LWM.Api.Dtos.Models;
 using LWM.Api.Dtos.ViewModels;
 using LWM.Data.Contexts;
 using LWM.Data.Models.Schedule;
-using LWM.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace LWM.Api.ApplicationServices.Scheduling.Queries

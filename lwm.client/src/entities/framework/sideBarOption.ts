@@ -1,4 +1,4 @@
-export default interface SideBarOption {
+export type SideBarOption = {
     name: string;
     module: string | JSX.Element;
     active: boolean;

@@ -61,7 +61,7 @@ export default class RestService {
     }
 
     private static BuildAuthHeader() {
-        const bearer = AuthService.GetAuthToken();
+        const bearer = AuthService.GetCurrentUser();
         if (!bearer) { return { 'Authorization': '' }}
 
         return { 'Authorization':  bearer.token.auth_Token};

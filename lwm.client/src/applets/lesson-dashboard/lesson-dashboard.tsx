@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
-import DashboardModel from "../../entities/app/dashboardModel";
-import GridColumn from "../../entities/framework/gridColumn";
-import Grid from "../../framework/components/grid/grid";
+import { DashboardModel } from "../../entities/app/dashboardModel";
+import Grid, { GridColumn } from "../../framework/components/grid/grid";
 
 import './lesson-dashboard.css';
 

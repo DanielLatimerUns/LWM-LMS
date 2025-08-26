@@ -1,7 +1,6 @@
 import React from "react";
-import GridColumn from "../../../../../../entities/framework/gridColumn";
-import Grid from "../../../../../../framework/components/grid/grid";
-import LessonDocument from "../../../../../../entities/framework/LessonDocument";
+import Grid, { GridColumn } from "../../../../../../framework/components/grid/grid";
+import { LessonDocument } from "../../../../../../entities/framework/LessonDocument";
 import './lesson-wizard-documents.css'
 
 interface Props {

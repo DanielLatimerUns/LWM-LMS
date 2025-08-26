@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import SideBarOption from '../../entities/framework/sideBarOption';
+import { SideBarOption } from '../../entities/framework/sideBarOption';
 import './module-side-bar.css';
 import LessonManager from '../lesson/lesson-manager';
 import PersonManager from '../people/people-manager';
@@ -9,15 +9,12 @@ import LwmButton from '../../framework/components/button/lwm-button';
 import LessonFeed from '../lesson-feed/lesson-feed';
 
 import logo from '../../assets/lwm_logo.jpg';
-import feedIcon from '../../assets/module-icons/bachelor.png';
-import lessonIcon from '../../assets/module-icons/books.png';
-import peopleIcon from '../../assets/module-icons/teamwork.png';
-import groupIcon from '../../assets/module-icons/video-conference.png';
-import schedualIcon from '../../assets/module-icons/school.png';
+import { feedIcon, lessonIcon, peopleIcon, groupIcon, scheduleIcon, controlCenterIcon } from '../../framework/icons';
 import TimeTableManager from "../timeTable/time-table-manager.tsx";
+import ControlCenter from "../controlCenter/control-center.tsx";
+import AuthService from "../../services/network/authentication/authService.ts";
 
 interface Props {
-    userName: string
     onOptionSelectionChanged: Function;
 }
 
@@ -36,7 +33,6 @@ const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
         module: <LessonManager></LessonManager>,
         active: false,
         icon: lessonIcon
-
     });
 
     _options.push({
@@ -57,14 +53,21 @@ const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
         name: 'Schedules',
         module: <ScheduleManager></ScheduleManager>,
         active: false,
-        icon: schedualIcon
+        icon: scheduleIcon
     });
     
     _options.push({
         name: 'Time Table',
         module: <TimeTableManager></TimeTableManager>,
         active: false,
-        icon: schedualIcon
+        icon: scheduleIcon
+    })
+
+    _options.push({
+        name: 'Control Center',
+        module:<ControlCenter/>,
+        active: false,
+        icon: controlCenterIcon
     })
 
     const [options, setOptions] = useState<SideBarOption[]>(_options);
@@ -83,18 +86,19 @@ const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
 
     function renderFooter() {
         const footerOptions: SideBarOption[] = [];
-
         footerOptions.push({
             name: 'Log Out',
             module: <div></div>,
             active: true,
             icon: ''
         });
+        
+        const currentUserName = AuthService.GetCurrentUser()?.user.userName;
 
         return (
             <Fragment>
                 <div className='usernameContainer'>
-                    Kristina
+                    {currentUserName}
                 </div>
                     {(footerOptions.map(option =>
                     <LwmButton

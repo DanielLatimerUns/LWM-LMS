@@ -1,5 +1,5 @@
-import DashboardModel from "./dashboardModel";
+import { DashboardModel } from "./dashboardModel";
 
-export default interface LessonFeedModel {
+export type LessonFeedModel = {
     lessons: DashboardModel[];
 }

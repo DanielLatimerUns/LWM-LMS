@@ -4,9 +4,7 @@ import './people-manager.css';
 import { Person } from "../../entities/domainModels/person";
 import LwmButton from "../../framework/components/button/lwm-button";
 import PeopleWizard from "./applets/people-wizard/people-wizard";
-import Module from "../../framework/components/module/module";
-import GridColumn from "../../entities/framework/gridColumn";
-import GridRow from "../../entities/framework/gridRow";
+import Module, {GridColumn, GridRow} from "../../framework/components/module/module";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 
@@ -22,7 +20,6 @@ const PersonManager: React.FunctionComponent<Props> = () => {
         personType: 1
     });
     const [appletActive, setAppletActive] = useState<boolean>(false);
-    const [hasError, setHasError] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>('All fields required');
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
     const [isGettingData, setIsGettingData] = useState<boolean>(false);
@@ -128,40 +125,35 @@ const PersonManager: React.FunctionComponent<Props> = () => {
         RestService.Delete(`person/${person.id}`).then(() => getPeople());
     };
 
-    function handleLessonChange() {
+    function handleDataChange(response: Response) {
+        if (!response.ok) {
+            setError(response.statusText);
+            return;
+        }
         setRequiresUpdate(true);
-    };
+    }
 
     function handleAppletCancel() {
         setAppletActive(false);
     };
 
     function handleAppletSave() {
-        if (hasError) {
-            setHasError(true);
-            setError("Required fields not set");
+        if (error) {
             return;
         }
 
         if (selectedPerson?.id === 0) {
-            RestService.Post('person', selectedPerson).then(data =>
-                data.json().then(handleLessonChange)
-            ).catch( error =>
+            RestService.Post('person', selectedPerson).then(handleDataChange)
+                .catch( error =>
                 console.error(error)
             )
             return
         }
 
-        RestService.Put('person', selectedPerson).then(
-            handleLessonChange
-        ).catch( error =>
+        RestService.Put('person', selectedPerson).then(handleDataChange).catch( error =>
             console.error(error)
         )
     }
-
-    function handleValidationChanged(isValid: boolean) {
-        setHasError(!isValid);
-    };
 
     const handldeSearchChanged = (searchString: string) => {
         setSearchString(searchString !== '' ? searchString : undefined);
@@ -176,14 +168,13 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             handleCloseClicked={handleAppletCancel}
             handleSaveCloseClicked={handleAppletSave}
             options={buildActionOptions()}
-            hasError={hasError}
             error={error}
             appletActive={appletActive}
             onSearchChnaged={handldeSearchChanged}
             isLoading={isGettingData}>
                 <PeopleWizard
                     onChange={(person: Person) => setSelectedPerson(person)}
-                    onValidationChanged={handleValidationChanged}
+                    onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
                     person={selectedPerson}>
                 </PeopleWizard>
         </Module>

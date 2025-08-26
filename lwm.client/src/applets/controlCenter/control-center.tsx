@@ -36,5 +36,4 @@ export default class ControlCenter extends React.Component<IProps, IState> {
             return { selectedApplet: selectedApplet }
           });
     }
-
 }

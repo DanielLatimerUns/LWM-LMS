@@ -1,8 +1,7 @@
 import React from "react";
-import GridColumn from "../../../../../../entities/framework/gridColumn";
-import Grid from "../../../../../../framework/components/grid/grid";
+import Grid, { GridColumn} from "../../../../../../framework/components/grid/grid";
 import './group-wizard-students.css'
-import Student from "../../../../../../entities/domainModels/student";
+import {Student} from "../../../../../../entities/domainModels/student";
 
 interface Props {
     students: Student[];

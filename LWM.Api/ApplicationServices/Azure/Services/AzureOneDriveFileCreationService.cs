@@ -1,11 +1,12 @@
-﻿using LWM.Api.Dtos.Models.Azure;
+﻿using LWM.Api.ApplicationServices.Azure.Graph;
+using LWM.Api.Dtos.Models.Azure;
 using LWM.Api.Framework.Exceptions;
 using LWM.Api.Framework.Services;
 using Microsoft.Graph;
 using Microsoft.Graph.Drives.Item.Items.Item.CreateUploadSession;
 using Microsoft.Graph.Models;
 
-namespace LWM.Api.ApplicationServices.Azure
+namespace LWM.Api.ApplicationServices.Azure.Services
 {
     public interface IAzureOneDriveFileCreationService
     {

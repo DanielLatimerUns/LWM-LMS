@@ -24,7 +24,7 @@ export default class AuthService {
         localStorage.removeItem(this.AuthTokenKey);
     }
 
-    public static GetAuthToken(): LoginResponseModel | undefined {
+    public static GetCurrentUser(): LoginResponseModel | undefined {
         return this.TryGetCachedAuthToken();
     }
 
@@ -41,5 +41,4 @@ export default class AuthService {
     private static SaveTokenToCache(token: LoginResponseModel) {
         localStorage.setItem(this.AuthTokenKey, JSON.stringify(token));
     }
-
 }

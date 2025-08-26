@@ -1,11 +1,10 @@
-﻿using LWM.Api.ApplicationServices.Azure.Auth;
+﻿using System.IdentityModel.Tokens.Jwt;
+using LWM.Api.Dtos.Models.Azure;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using LWM.Api.Dtos.Models.Azure;
 
-namespace LWM.Api.ApplicationServices.Azure
+namespace LWM.Api.ApplicationServices.Azure.Auth
 {
     public interface IAzureAuthenticationService
     {
@@ -68,6 +67,12 @@ namespace LWM.Api.ApplicationServices.Azure
 
         public async Task<IActionResult> HandleAuthResponseRedirect(string code, string hostUrl)
         {
+            var azureConfiguration = context.Configurations.FirstOrDefault();
+            if (azureConfiguration == null)
+            {
+                return null;
+            }
+            
             try
             {
                 var token = await this.GetAuthTokenForCodeAsync(

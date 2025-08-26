@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import './schedule-wizard.css';
-import Group from "../../../../entities/domainModels/group";
-import Schedule from "../../../../entities/domainModels/schedule";
-import FormField from "../../../../entities/framework/formField";
+import {Group} from "../../../../entities/domainModels/group";
+import {Schedule} from "../../../../entities/domainModels/schedule";
+import {FormField} from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
 
 export interface Props {
@@ -26,7 +26,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             <option value={3}>Wednesday</option>,
             <option value={4}>Thursday</option>,
             <option value={5}>Friday</option>,
-            <option value={6}>Saterday</option>,
+            <option value={6}>Saturday</option>,
             <option value={7}>Sunday</option>
         ];
 
@@ -39,7 +39,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Day Of Week",
                 id: "scheduledDayOfWeek",
                 value: props.schedule.schedualedDayOfWeek,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
@@ -49,7 +49,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Start Time" ,
                 id: "scheduledStartTime",
                 value: props.schedule.schedualedStartTime,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "time",
@@ -59,7 +59,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "End Time" ,
                 id: "scheduledEndTime",
                 value: props.schedule.schedualedEndTime,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "time",
@@ -69,7 +69,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Repeat Weeks (0 for indefinit)" ,
                 id: "repeat",
                 value: props.schedule.repeat,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -79,7 +79,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Start Week" ,
                 id: "startWeek",
                 value: props.schedule.startWeek,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -89,7 +89,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Group",
                 id: "groupId",
                 value: props.schedule.groupId,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
@@ -100,24 +100,12 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
         return(
             <Fragment>
                 <div className="fieldSetHeader">Schedule Record</div>
-                <Form onFieldValidationChanged={handleFieldValidationChanged} fields={fields}/>
+                <Form onFieldValidationChanged={handleFieldValidationChanged} 
+                      fields={fields}
+                formObject={props.schedule}/>
             </Fragment>
         );
     }
-
-    function handleFormChange(e: any) {
-        const changedSchedule = Object.assign({}, props.schedule);
-        const targetField: string = e.target.value;
-
-        for (const field in changedSchedule) {
-            if (field === e.target.id) {
-                (changedSchedule as any)[field] = targetField;
-            }
-        }
-
-        props.onChange(changedSchedule);
-    }
-
     function handleFieldValidationChanged(isValid: boolean) {
         if (props.onValidationChanged) {
             props.onValidationChanged(isValid);

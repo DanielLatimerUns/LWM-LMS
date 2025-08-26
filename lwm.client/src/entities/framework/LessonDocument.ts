@@ -1,4 +1,4 @@
-export default interface LessonDocument {
+export type LessonDocument = {
     id: number,
     name: string,
     path: string

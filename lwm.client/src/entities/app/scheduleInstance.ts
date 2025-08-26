@@ -1,4 +1,4 @@
-export default interface ScheduleInstance {
+export type ScheduleInstance = {
     id: number;
     scheduledDayOfWeek: number;
     scheduledStartTime: string;

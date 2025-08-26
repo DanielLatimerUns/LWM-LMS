@@ -2,18 +2,13 @@ import React, { useEffect, useState } from "react";
 import RestService from "../../services/network/RestService";
 import './group-manager.css';
 import LwmButton from "../../framework/components/button/lwm-button";
-import Module from "../../framework/components/module/module";
-import GridColumn from "../../entities/framework/gridColumn";
-import GridRow from "../../entities/framework/gridRow";
-import Group from "../../entities/domainModels/group";
+import Module, { GridRow, GridColumn} from "../../framework/components/module/module";
+import { Group } from "../../entities/domainModels/group";
 import GroupWizard from "./applets/group-wizard/group-wizard";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 
-
-export interface Props {
-
-}
+export interface Props {}
 
 const GroupManager: React.FunctionComponent<Props> = () => {
     const [groups, setGroups] = useState<Group[]>([]);
@@ -23,7 +18,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         teacherId: -1,
         completedLessonNumber: 0
     });
-    const [hasError, setHasError] = useState<boolean>(false);
+    
     const [error, setError] = useState<string | undefined>('All fields required');
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
@@ -123,42 +118,36 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         RestService.Delete(`group/${group.id}`).then(() => getGroups());
     }
 
-    function handleGroupChange() {
+    function handleDataChange(response: Response) {
+        if (!response.ok) {
+            setError(response.statusText);
+            return;
+        }
         setRequiresUpdate(true);
     }
 
     function handleAppletCancel() {
-        setHasError(false);
+        setError(undefined);
         setAppletActive(false);
     }
 
     function handleAppletSave() {
-        if (hasError) {
-            setHasError(hasError)
-            setError("Required fields not set");
+        if (error) {
             return;
         }
 
         if (selectedGroup?.id === 0) {
-            RestService.Post('group', selectedGroup).then( data =>
-                data.json().then(handleGroupChange)
-            ).catch( error =>
+            RestService.Post('group', selectedGroup).then(handleDataChange).catch( error =>
                 console.error(error)
             )
             return;
         }
 
-        RestService.Put('group', selectedGroup).then(
-            handleGroupChange
-        ).catch( error =>
+        RestService.Put('group', selectedGroup).then(handleDataChange).catch( error =>
             console.error(error)
         )
     }
-
-    function handleValidationChanged(isValid: boolean) {
-        setHasError(!isValid);
-    }
-
+    
     const handldeSearchChanged = (searchString: string) => {
         setSearchString(searchString !== '' ? searchString : undefined);
         setRequiresUpdate(true);
@@ -174,13 +163,12 @@ const GroupManager: React.FunctionComponent<Props> = () => {
             handleCloseClicked={handleAppletCancel}
             handleSaveCloseClicked={handleAppletSave}
             options={buildActionOptions()}
-            hasError={hasError}
             error={error}
             appletActive={appletActive}>
              <GroupWizard
                 onChange={(group: Group) => setSelectedGroup(group)}
-                    onValidationChanged={handleValidationChanged}
-                    group={selectedGroup}>
+                onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
+                group={selectedGroup}>
             </GroupWizard>
         </Module>
     );

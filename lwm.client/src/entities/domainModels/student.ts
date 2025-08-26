@@ -1,4 +1,4 @@
-export default interface Student {
+export type Student = {
     id: number,
     name: string,
     groupId?: number;

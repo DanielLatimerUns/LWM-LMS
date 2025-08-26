@@ -1,7 +1,7 @@
-import Student from "./student";
-import Teacher from "./teacher";
+import {Student} from "./student";
+import {Teacher} from "./teacher";
 
-export interface Person {
+export type Person = {
     id: number;   
     forename: string;
     surname: string;

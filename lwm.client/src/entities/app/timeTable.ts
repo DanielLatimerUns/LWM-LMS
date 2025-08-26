@@ -1,4 +1,4 @@
-export default interface TimeTable {
+export type TimeTable = {
     id: number,
     name: string,
     isPublished: boolean,
@@ -6,13 +6,13 @@ export default interface TimeTable {
     
 }
 
-export interface TimeTableDay {
+export type TimeTableDay = {
     dayOfWeek: number,
     timeTableId: number,
     timeTableEntries: TimeTableEntry[]
 }
 
-export interface TimeTableEntry {
+export type TimeTableEntry = {
     id: number;
     timeTableDayId: number;
     timeTableId: number;

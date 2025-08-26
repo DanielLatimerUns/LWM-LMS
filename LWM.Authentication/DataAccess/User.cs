@@ -6,8 +6,6 @@ namespace LWM.Authentication.DataAccess
     {
         public int PersonId { get; set; }
     }
-    public class Role:IdentityRole
-    {
 
-    }
+    public class Role : IdentityRole;
 }

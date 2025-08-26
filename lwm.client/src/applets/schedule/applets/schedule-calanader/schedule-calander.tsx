@@ -1,22 +1,21 @@
 import React, { Fragment, useState } from "react";
-import Schedule from "../../../../entities/domainModels/schedule";
-import WeekDay from "../../../../entities/app/weekday";
+import { Schedule } from "../../../../entities/domainModels/schedule";
 import './schedule-calander.css';
 import LwmButton from "../../../../framework/components/button/lwm-button";
-import Group from "../../../../entities/domainModels/group";
-import Week from "../../../../entities/app/week";
-import ScheduleInstance from "../../../../entities/app/scheduleInstance";
+import { Group } from "../../../../entities/domainModels/group";
+import { ScheduleInstance } from "../../../../entities/app/scheduleInstance";
 import Moment from "moment";
 import schedulingService from '../../../../services/scheduling/schedulingHelpers';
+import { Week, WeekDay} from "../../../../entities/app/schedule.ts";
 
-interface ScheduleCalanderProps {
+interface Props {
     schedules: Schedule[];
     handleScheduleClicked: Function;
     handleNewScheduleClicked: Function;
     groups: Group[];
 }
 
-const ScheduleCalander: React.FunctionComponent<ScheduleCalanderProps> = (props) => {
+const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
     const [currentWeekInView, setCurrentWeekInView] = useState<Week>({
         weekNumber: Moment().week(),
         displayName: `${Moment().week()}`});
@@ -119,18 +118,18 @@ const ScheduleCalander: React.FunctionComponent<ScheduleCalanderProps> = (props)
         const hourSchedules =
             schedules
                 .filter(x => x.hourStart <= hour && x.hourEnd >= hour )
-                    .sort((a, b) => Number(new Date(b.schedualedStartTime)) - Number(new Date(a.schedualedStartTime)))
+                    .sort((a, b) => Number(new Date(b.scheduledStartTime)) - Number(new Date(a.scheduledStartTime)))
 
         const newSchedule: ScheduleInstance = {
             minuteStart: 0,
             minuteEnd: 0,
             hourStart: hour,
             hourEnd: hour + 1,
-            schedualedDayOfWeek: weekday.dayNumber,
+            scheduledDayOfWeek: weekday.dayNumber,
             weekNumber: weekday.week?.weekNumber ? weekday.week?.weekNumber : 0,
             id:0,
-            schedualedEndTime: "",
-            schedualedStartTime: "",
+            scheduledEndTime: "",
+            scheduledStartTime: "",
             startWeek: weekday.week?.weekNumber ? weekday.week?.weekNumber : 0,
             repeat: 0
         };
@@ -173,16 +172,15 @@ const ScheduleCalander: React.FunctionComponent<ScheduleCalanderProps> = (props)
                 width: `${percentDuration}%`
               };
 
-        return (<Fragment>
-
+        return (
+            <Fragment>
                 <div className="scheduleCalanderScheduleEntryDuration" style={divStyle}>
                 <LwmButton isSelected={false} onClick={() => props.handleScheduleClicked(schedule)}>
                     <div className="scheduleCalanderScheduleEntry">
-                        {group ? group.name : "no group"} {schedule.schedualedStartTime} - {schedule.schedualedEndTime}
+                        {group ? group.name : "no group"} {schedule.scheduledDayOfWeek} - {schedule.scheduledEndTime}
                     </div>
                 </LwmButton>
                 </div>
-
             </Fragment>);
     }
 

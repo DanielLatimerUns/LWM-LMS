@@ -2,7 +2,7 @@
 using Microsoft.Graph;
 using Microsoft.Kiota.Abstractions.Authentication;
 
-namespace LWM.Api.ApplicationServices.Azure
+namespace LWM.Api.ApplicationServices.Azure.Graph
 {
     public interface IAzureGraphServiceClientFactory
     {

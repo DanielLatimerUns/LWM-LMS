@@ -1,4 +1,5 @@
-﻿using LWM.Api.DomainServices.Curriculum.Contracts;
+﻿using LWM.Api.ApplicationServices.Azure.Graph;
+using LWM.Api.DomainServices.Curriculum.Contracts;
 using LWM.Api.DomainServices.Document.Contracts;
 using LWM.Api.DomainServices.Lesson.Contracts;
 using LWM.Api.Dtos.Models;

@@ -1,20 +1,14 @@
 import React from "react";
 import './form.css'
-import FormField from "../../../entities/framework/formField";
+import { FormField } from "../../../entities/framework/formField";
 
 interface Props {
     fields: FormField[];
     onFieldValidationChanged: Function;
+    formObject: any;
 }
 
-
  const Form: React.FunctionComponent<Props> = (props) => {
-
-    // componentDidMount(): void {
-    //     const isFormValid = this.validateAllFields();
-    //     this.props.onFieldValidationChanged(isFormValid);
-    // }
-
     function buildFormField(field: FormField) {
         if (field.type === 'select') {
             return(
@@ -40,7 +34,7 @@ interface Props {
         )
     }
 
-    function handleFormChange(e: any, field: FormField ) {
+    function handleFormChange(e: any, field: FormField) {
         field.value = e.target.value;
 
         const isChangedFieldValid = validateField(field);
@@ -50,9 +44,18 @@ interface Props {
             props.onFieldValidationChanged(validateAllFields(field.id));
         }
 
-        field.onFieldChangedSuccsess(e);
-    }
+        const changedObject = Object.assign({}, props.formObject);
+        const targetField: string = e.target.value;
 
+        for (const key in changedObject) {
+            if (key === e.target.id) {
+                (changedObject as any)[key] = targetField;
+            }
+        }
+        
+        field.onFieldChanged(changedObject);
+    }
+    
     function validateAllFields(fieldToExclude?: string) {
         for (const field of props.fields) {
             if (fieldToExclude && field.id === fieldToExclude) {
@@ -92,7 +95,7 @@ interface Props {
         return true;
     }
 
-    return (
+    const form = (
         <div className="formFieldContainer">
             {props.fields.map(field =>
                 <div className="formField">
@@ -103,6 +106,11 @@ interface Props {
                 </div>)}
         </div>
      );
+    
+    props.onFieldValidationChanged(validateAllFields());
+    
+    return form;
 }
 
 export default Form;
+export type { FormField };

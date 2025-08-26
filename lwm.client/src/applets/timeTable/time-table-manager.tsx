@@ -1,18 +1,41 @@
 import React, { useEffect, useState } from "react";
-import Module from "../../framework/components/module/module.tsx";
-import TimeTable from "../../entities/app/timeTable.ts";
+import Module, {GridColumn, GridRow} from "../../framework/components/module/module.tsx";
+import { TimeTable } from "../../entities/app/timeTable.ts";
 import RestService from "../../services/network/RestService.ts";
-import GridColumn from "../../entities/framework/gridColumn.ts";
+import TimeTableWizard from "./applets/time-table-wizard/time-table-wizard.tsx";
+import LwmButton from "../../framework/components/button/lwm-button.tsx";
+import {newRecordIcon} from "../../framework/icons.ts";
 
 export interface Props {}
 
 const TimeTableManager: React.FunctionComponent<Props> = () => {
     const [timeTables, setTimeTable] = useState<TimeTable[]>([]);
+    const [selectedTimeTable, setSelectedTimeTable] = useState<TimeTable>({
+        name: "",
+        id: 1,
+        isPublished: false,
+        timeTableDays: []
+    });
+    
+    const [appletActive, setAppletActive] = useState<boolean>(false);
+    const [error, setError] = useState<string | undefined>();
+    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+    const [isGettingData, setIsGettingData] = useState<boolean>(false);
+    const [searchString, setSearchString] = useState<string>();
     
     useEffect(() => {
-        getTimetables();
-    })
-    
+        if (requiresUpdate) {
+            setIsGettingData(true);
+            getTimetables();
+            setAppletActive(false);
+            setRequiresUpdate(false);
+        }
+    }, [requiresUpdate]);
+
+    useEffect(() => {
+        setIsGettingData(false);
+    }, [timeTables])
+
     function getTimetables() {
         RestService.Get('timetable').then(
             response => response.json().then(
@@ -27,13 +50,103 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             {lable: "Published", name: "isPublished"},
         ]
         
-        const rows = 
-            timeTables.map(timeTable => ({columnData: timeTable, id: timeTable.id}));
+        const rows: GridRow[] = 
+            timeTables.map(timeTable => ({columnData: timeTable, id: timeTable.id} as GridRow));
         
         return  {
             columns: columns,
             rows: rows,
+            handleEditClicked: handleEdit,
+            handleDeleteClicked: handleDelete,
         }
+    }
+
+    function buildActionOptions() {
+        const options: JSX.Element[] = [
+            (
+                <LwmButton
+                    isSelected={!appletActive}
+                    onClick={() => setAppletActive(false)}
+                    name="Records"
+                    icon={newRecordIcon}>
+                </LwmButton>
+            ),
+            (
+                <LwmButton
+                    isSelected={appletActive}
+                    onClick={handleAdd}
+                    name={(!appletActive ||
+                        selectedTimeTable.id === 0) ? "Add" :
+                        "Edit: " + selectedTimeTable.name}
+                    icon={newRecordIcon}>
+                </LwmButton>
+            )
+        ];
+
+        return options;
+    }
+
+    function handleEdit(timetable: TimeTable) {
+        setSelectedTimeTable(timetable);
+        setAppletActive(true);
+    }
+
+    function handleAdd() {
+        const timetable: TimeTable = {
+            name: "",
+            isPublished: false,
+            id: 0,
+            timeTableDays: []
+        };
+        
+        setError("")
+        setSelectedTimeTable(timetable);
+        setAppletActive(true);
+    }
+
+    function handleDelete(timetable: TimeTable) {
+        RestService.Delete(`timetable/${timetable.id}`).then(() => getTimetables());
+    }
+
+    const handleSearchChanged = (searchString: string) => {
+        setSearchString(searchString !== '' ? searchString : undefined);
+        setRequiresUpdate(true);
+    }
+
+    function handleAppletCancel() {
+        setError(undefined);
+        setAppletActive(false);
+    }
+
+    function handleAppletSave() {
+        if (error) {
+            return;
+        }
+
+        if (selectedTimeTable?.id === 0) {
+            RestService.Post('timetable', selectedTimeTable).then(handleDataChange)
+                .catch(error => {
+                        console.error(error);
+                        setError("Critical error");
+                    }
+                )
+            return;
+        }
+
+        RestService.Put('timetable', selectedTimeTable).then(handleDataChange)
+            .catch(error => {
+                    console.error(error);
+                    setError("Critical error");
+                }
+            )
+    }
+
+    function handleDataChange(response: Response) {
+        if (!response.ok) {
+            setError(response.statusText);
+            return;
+        }
+        setRequiresUpdate(true);
     }
     
     return (
@@ -41,10 +154,18 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             moduleName={'Time Table Manager'}
             moduleEntityName={'TimeTable'}
             gridConfig={buildGridConfig()}
-            isLoading={false}
-            options={[]}
-            hasError={false}
-            appletActive={false}>
+            isLoading={isGettingData}
+            options={buildActionOptions()}
+            error={error}
+            onSearchChnaged={handleSearchChanged}
+            handleCloseClicked={handleAppletCancel}
+            handleSaveCloseClicked={handleAppletSave}
+            appletActive={appletActive}>
+            <TimeTableWizard
+                 onChanged={(timetable: TimeTable) => setSelectedTimeTable(timetable)} 
+                 timeTable={selectedTimeTable}
+                 onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}>
+            </TimeTableWizard>
         </Module>
     );
 };

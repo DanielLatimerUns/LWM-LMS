@@ -1,5 +1,6 @@
 import React from "react";
-import ControlOption from "../../../../../entities/framework/option";
+import {ControlOption} from "../../../../../entities/framework/option";
+import UserManager from "../../UserManager/user-manager.tsx";
 
 interface Props {
     appletChange: Function;
@@ -16,8 +17,8 @@ export default class ControlCenterOptions extends React.Component<Props, State> 
         const options: ControlOption[] = [];
 
         options.push({
-            name: 'Test Applet',
-            applet: 'test'
+            name: 'User Management',
+            applet: <UserManager></UserManager>
         });
         
         this.state = {options};
@@ -40,6 +41,6 @@ export default class ControlCenterOptions extends React.Component<Props, State> 
                     {option.name}
                 </button>
             </div>
-        );;
+        );
     }
 }

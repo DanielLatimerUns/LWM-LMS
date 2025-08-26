@@ -1,4 +1,5 @@
 ﻿using LWM.Api.ApplicationServices.Azure;
+using LWM.Api.ApplicationServices.Azure.Services;
 using LWM.Api.DomainServices.Document.Contracts;
 using LWM.Api.Dtos.Models;
 using LWM.Api.Dtos.Models.Azure;

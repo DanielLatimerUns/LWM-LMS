@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Lesson from "../../entities/domainModels/Lesson";
+import { Lesson } from "../../entities/domainModels/Lesson";
 import RestService from "../../services/network/RestService";
 import './lesson-manager.css';
 import LessonWizard from "./applets/lesson-wizard/lesson-wizard";
 import LwmButton from "../../framework/components/button/lwm-button";
-import Module from "../../framework/components/module/module";
-import GridColumn from "../../entities/framework/gridColumn";
-import GridRow from "../../entities/framework/gridRow";
+import Module, { GridRow, GridColumn } from "../../framework/components/module/module";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 import spinner from '../../assets/loading_spinner.gif';
@@ -22,8 +20,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [selectedLesson, setSelectedLesson] = useState<Lesson>({name: "", lessonNo: "", id: 0});
     const [appletActive, setAppletActive] = useState<boolean>(false);
-    const [hasError, setHasError] = useState<boolean>(false);
-    const [error] = useState<string | undefined>('All fields required');
+    const [error, setError] = useState<string | undefined>('All fields required');
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
     const [isSyncInProgress, setisSyncInProgress] = useState<boolean>();
     const [isDocumentUploadActive, setIsDocumentUploadActive] = useState<boolean>();
@@ -90,7 +87,6 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
                 ),
             )
         }
-
         return options;
     }
 
@@ -167,13 +163,13 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     }
 
     const handleAppletCancel = () => {
-        setHasError(false);
+        setError(undefined);
         setAppletActive(false);
         setIsDocumentUploadActive(false);
     }
 
     const handleAppletSave = () => {
-        if (hasError) {
+        if (error) {
             return;
         }
 
@@ -220,11 +216,6 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
         setSearchString(search !== '' ? search : undefined);
         setRequiresUpdate(true);
     }
-
-    const handleValidationChanged = () => (isValid: boolean) => {
-        setHasError(isValid);
-    }
-
     const syncLessonsWithOneDrive = () => {
         if (!azureAuthService.getCachedAuthToken()) {
             azureAuthService.redirectToAzureUserAuth();
@@ -249,7 +240,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
 
         return <LessonWizard
                     onChange={handleFormChange}
-                    onValidationChanged={handleValidationChanged}
+                    onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
                     lesson={selectedLesson}>
                 </LessonWizard>
     }
@@ -262,7 +253,6 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             handleCloseClicked={handleAppletCancel}
             handleSaveCloseClicked={handleAppletSave}
             options={buildActionOptions()}
-            hasError={hasError}
             error={error}
             appletActive={appletActive}
             onSearchChnaged={handldeSearchChanged}

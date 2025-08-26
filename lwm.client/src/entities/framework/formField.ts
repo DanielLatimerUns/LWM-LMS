@@ -1,8 +1,8 @@
-export default interface FormField {
+export type FormField = {
     label: string,
     type: string,
     id: string,
-    onFieldChangedSuccsess: Function;
+    onFieldChanged: Function;
     value: string | number | undefined;
     required: boolean;
     validationPattern: string | undefined;

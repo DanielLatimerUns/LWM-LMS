@@ -1,18 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import './people-wizard.css';
 import { Person } from "../../../../entities/domainModels/person";
-import Group from "../../../../entities/domainModels/group";
+import { Group } from "../../../../entities/domainModels/group";
 import RestService from "../../../../services/network/RestService";
-import Student from "../../../../entities/domainModels/student";
-import FormField from "../../../../entities/framework/formField";
-import Form from "../../../../framework/components/form/form";
+import { Student } from "../../../../entities/domainModels/student";
+import Form, { FormField } from "../../../../framework/components/form/form";
 import personType from "../../../../entities/enums/personType";
 
 export interface Props {
     person: Person;
     onValidationChanged?: Function;
     onChange: Function;
-};
+}
 
 const PeopleWizard: React.FunctionComponent<Props> = (props) => {
     const [groups, setGroups] = useState<Group[]>([]);
@@ -30,7 +29,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Person Type" ,
                 id: "personType",
                 value: props.person.personType,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
@@ -44,7 +43,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Forename" ,
                 id: "forename",
                 value: props.person.forename,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -54,7 +53,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Surname" ,
                 id: "surname",
                 value: props.person.surname,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -64,7 +63,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Email" ,
                 id: "emailAddress1",
                 value: props.person.emailAddress1,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -74,7 +73,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Phone" ,
                 id: "phoneNo",
                 value: props.person.phoneNo,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: "[0-9]+",
                 required: false,
                 type: "text",
@@ -86,7 +85,9 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             return (
             <Fragment>
                 <div className="fieldSetHeader">Person Record</div>
-                <Form fields={fields} onFieldValidationChanged={handleFieldValidationChanged}/>
+                <Form fields={fields}
+                      formObject={props.person}
+                      onFieldValidationChanged={handleFieldValidationChanged}/>
             </Fragment>);
         }
 
@@ -103,7 +104,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Group",
                 id: "groupId",
                 value: props.person.student?.groupId,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: false,
                 type: "select",
@@ -114,9 +115,9 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
         return (
         <Fragment>
             <div className="fieldSetHeader">Person Record</div>
-            <Form fields={fields} onFieldValidationChanged={handleFieldValidationChanged}/>
+            <Form fields={fields} formObject={props.person} onFieldValidationChanged={handleFieldValidationChanged}/>
             <div className="fieldSetHeader">Student Record</div>
-            <Form fields={studentFields} onFieldValidationChanged={handleFieldValidationChanged}/>
+            <Form fields={studentFields} formObject={props.person.student} onFieldValidationChanged={handleFieldValidationChanged}/>
         </Fragment>)
     }
 
@@ -130,43 +131,22 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
 
     function getStudentRecord() {
         RestService.Get(`person/${props.person.id}/student`).then(
-            resoponse => resoponse.json().then(
+            response => response.json().then(
                 (data: Student[]) => {
                     const updatedPerson = Object.assign({}, props.person);
                     updatedPerson.student = data[0];
 
                     props.onChange(updatedPerson);
                 }
-            ).catch( error => console.error(error))
+            ).catch(error => console.error(error))
         );
     }
 
-    function handleFormChange(e: any) {
-        const changedPerson = Object.assign({}, props.person);
-        const targetField: string = e.target.value;
-
-        for (const field in changedPerson) {
-            if (field === e.target.id) {
-                (changedPerson as any)[field] = targetField;
-            }
-        }
-
-        for (const field in changedPerson.student) {
-            if (field === e.target.id) {
-                (changedPerson.student as any)[field] = targetField;
-            }
-        }
-
-        for (const field in changedPerson.teacher) {
-            if (field === e.target.id) {
-                (changedPerson.teacher as any)[field] = targetField;
-            }
-        }
-
+    function handleFormChange(changedPerson: Person) {
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
 
         if (changedPerson.student) {
-            changedPerson.student.groupId =  Number.parseInt((changedPerson.student.groupId as any));
+            changedPerson.student.groupId = Number.parseInt((changedPerson.student.groupId as any));
         }
 
         props.onChange(changedPerson);

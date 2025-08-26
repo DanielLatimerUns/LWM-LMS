@@ -11,5 +11,7 @@ namespace LWM.Authentication.Dtos
         public string Token { get; set; }
 
         public bool IsSuccss { get; set; }
+        
+        public UserModel UserModel { get; set; }
     }
 }

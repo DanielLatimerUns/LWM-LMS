@@ -1,4 +1,4 @@
-export default interface Group {
+export type Group = {
     id: number,
     name: string,
     teacherId: number,

@@ -1,6 +1,5 @@
-export default interface Lesson {
+export type Lesson = {
     name: string,
     lessonNo: string,
     id: number,
-
 }

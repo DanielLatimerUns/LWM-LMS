@@ -1,6 +1,6 @@
 import React from "react";
 import './login-splash.css';
-import LoginModel from "../../../entities/app/loginModel";
+import {LoginModel} from "../../../entities/app/loginModel";
 import LwmButton from "../../../framework/components/button/lwm-button";
 import AuthService from "../../../services/network/authentication/authService";
 
@@ -13,7 +13,7 @@ interface State {
     error: string;
 }
  
-export default class LoginSpash extends React.Component<Props, State> {
+export default class LoginSplash extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = { loginModel: {username: "", password: ""}, error: "" };
@@ -50,7 +50,7 @@ export default class LoginSpash extends React.Component<Props, State> {
             <div className="loginSpashErrorMessage">
                 {this.state.error}
             </div>
-        </div> );
+        </div>);
     }
 
     private handleFormChange(e: any) {

@@ -84,7 +84,7 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
 
     private void Validate(TimeTable? model)
     {
-        if (model is null || context.TimeTables.Any(x => x.Name == model.Name))
+        if (model is null || (context.TimeTables.Any(x => x.Name == model.Name) && model.Id == 0))
         {
             throw new BadRequestException("Timetable with this name already exists.");
         }

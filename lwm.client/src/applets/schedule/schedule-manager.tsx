@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import RestService from "../../services/network/RestService";
 import LwmButton from "../../framework/components/button/lwm-button";
-import Module from "../../framework/components/module/module";
-import GridColumn from "../../entities/framework/gridColumn";
-import GridRow from "../../entities/framework/gridRow";
-import Schedule from "../../entities/domainModels/schedule";
+import Module, { GridColumn, GridRow } from "../../framework/components/module/module";
+import {Schedule} from "../../entities/domainModels/schedule";
 import ScheduleWizard from "./applets/schedule-wizard/schedule-wizard";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
 import ScheduleCalander from "./applets/schedule-calanader/schedule-calander";
-import Group from "../../entities/domainModels/group";
+import {Group} from "../../entities/domainModels/group";
 import moment from "moment";
-import ScheduleInstance from "../../entities/app/scheduleInstance";
+import {ScheduleInstance} from "../../entities/app/scheduleInstance";
 
 export interface Props {}
 
@@ -32,7 +30,6 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         startWeek: moment().week()});
 
     const [appletActive, setAppletActive] = useState<boolean>(false);
-    const [hasError, setHasError] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>('All fields required');
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
     const [isCalanaderViewActive, setIsCalanaderViewActive] = useState<boolean>(true);
@@ -142,7 +139,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             schedule.schedualedStartTime = moment().hour(instance.hourStart).format("hh:00");
             schedule.schedualedEndTime = moment().hour(instance.hourEnd).format("hh:00");
             schedule.startWeek = instance.weekNumber;
-            schedule.schedualedDayOfWeek = instance.schedualedDayOfWeek;
+            schedule.schedualedDayOfWeek = instance.scheduledDayOfWeek;
         }
 
         setSelectedSchedule(schedule);
@@ -158,50 +155,34 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         RestService.Delete(`schedule/${schedule.id}`).then(() => getSchedules());
     }
 
-    function handleLessonChange() {
+    function handleDataChange(response: Response) {
+        if (!response.ok) {
+            setError(response.statusText);
+            return;
+        }
         setRequiresUpdate(true);
     }
 
     function handleAppletCancel() {
-        setHasError(false);
+        setError(undefined);
         setAppletActive(false);
     }
 
     function handleAppletSave() {
-        if (hasError) {
-            setHasError(true);
-            setError("Required fields not set");
+        if (error) {
             return;
         }
 
         if (selectedSchedule?.id === 0) {
-            RestService.Post('schedule', selectedSchedule).then(data =>
-                {
-                    if (data.ok) {
-                        data.json().then(handleLessonChange);
-                    } else {
-                        data.text().then((response) => handleValidationChanged(false, response));
-                    }
-                },
-                error => handleValidationChanged(true, error.message)
+            RestService.Post('schedule', selectedSchedule).then(handleDataChange).catch(
+                error => console.error(error)
             )
             return;
         }
 
-        RestService.Put('schedule', selectedSchedule).then( data => {
-                if (data.ok) {
-                    handleLessonChange();
-                } else {
-                    data.text().then((response) => handleValidationChanged(false,  response));
-                }
-            },
-            error => handleValidationChanged(true, error.message)
+        RestService.Put('schedule', selectedSchedule).then(handleDataChange).catch(
+            error => console.error(error)
         );
-    }
-
-    function handleValidationChanged(isValid: boolean, error: string ) {
-        setHasError(!isValid);
-        setError(error);
     }
 
     const calanaderView =
@@ -220,14 +201,13 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             handleSaveCloseClicked={handleAppletSave}
             options={buildActionOptions()}
             error={error}
-            hasError={hasError}
             appletActive={appletActive}
             altView={isCalanaderViewActive ? calanaderView : undefined}
             isLoading={false}>
             <ScheduleWizard
                     groups={groups}
                     onChange={(schedule: Schedule) => setSelectedSchedule(schedule)}
-                    onValidationChanged={handleValidationChanged}
+                    onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
                     schedule={selectedSchedule}>
             </ScheduleWizard>
         </Module>

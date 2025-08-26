@@ -37,7 +37,7 @@ namespace LWM.Api.Controllers
             }
 
             return scheduleQueries
-                .GetCurrentLessonForTeacher(new Web.ViewModels.UserViewModel { PersonId = user.PersonId });
+                .GetCurrentLessonForTeacher(new UserViewModel { PersonId = user.PersonId });
         }
 
         [HttpGet("feed")]
@@ -51,7 +51,7 @@ namespace LWM.Api.Controllers
             }
 
             return scheduleQueries
-                .GetCurrentLessonFeedForTeacher(new Web.ViewModels.UserViewModel { PersonId = user.PersonId });
+                .GetCurrentLessonFeedForTeacher(new UserViewModel { PersonId = user.PersonId });
         }
 
         [HttpPost]

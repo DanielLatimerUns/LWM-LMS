@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import './group-wizard.css';
-import Teacher from "../../../../entities/domainModels/teacher";
+import {Teacher} from "../../../../entities/domainModels/teacher";
 import RestService from "../../../../services/network/RestService";
-import Group from "../../../../entities/domainModels/group";
-import Student from "../../../../entities/domainModels/student";
+import {Group} from "../../../../entities/domainModels/group";
+import {Student} from "../../../../entities/domainModels/student";
 import GroupWizardStudents from "./applets/group-wizard-students/group-wizard-students";
-import FormField from "../../../../entities/framework/formField";
+import {FormField} from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
 
 export interface Props {
@@ -36,7 +36,7 @@ const GroupWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Name" ,
                 id: "name",
                 value: props.group.name,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "text",
@@ -46,7 +46,7 @@ const GroupWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Teacher",
                 id: "teacherId",
                 value: props.group.teacherId,
-                onFieldChangedSuccsess: handleFormChange,
+                onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
                 type: "select",
@@ -57,23 +57,16 @@ const GroupWizard: React.FunctionComponent<Props> = (props) => {
         return(
             <Fragment>
                 <div className="fieldSetHeader">Group Record</div>
-                <Form onFieldValidationChanged={handleFieldValidationChanged} fields={fields}/>
+                <Form onFieldValidationChanged={handleFieldValidationChanged} 
+                      formObject={props.group}
+                      fields={fields}/>
             </Fragment>)
     }
 
-    function handleFormChange(e: any) {
-        const changedgroup: Group = Object.assign({}, props.group);
-        const targetField: string = e.target.value;
+    function handleFormChange(changedGroup: Group) {
+        changedGroup.teacherId = (changedGroup.teacherId as number);
 
-        for (const field in changedgroup) {
-            if (field === e.target.id) {
-                (changedgroup as any)[field] = targetField;
-            }
-        }
-
-        changedgroup.teacherId = (changedgroup.teacherId as number);
-
-        props.onChange(changedgroup);
+        props.onChange(changedGroup);
     }
 
     function handleFieldValidationChanged(isValid: boolean) {

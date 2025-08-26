@@ -1,11 +1,10 @@
-    import React from "react";
+import React from "react";
 import RestService from "../../services/network/RestService";
 import './lesson-feed.css';
-import LessonFeedModel from "../../entities/app/lessonFeed";
+import { LessonFeedModel } from "../../entities/app/lessonFeed";
 import LessonDashboard from "../lesson-dashboard/lesson-dashboard";
 
-interface LessonFeedProps {
-}
+interface LessonFeedProps {}
 
 interface LessonFeedState {
     feed: LessonFeedModel;

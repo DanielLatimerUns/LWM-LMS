@@ -1,4 +1,4 @@
-export default interface Teacher {
+export type Teacher = {
     id: number,
     name: string
 }

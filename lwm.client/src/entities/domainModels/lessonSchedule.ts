@@ -1,4 +1,4 @@
-export default interface LessonSchedule {
+export type LessonSchedule = {
     id: number;
     schedualedDayOfWeek: number;
     schedualedStartTime: string;

@@ -1,9 +1,7 @@
 import React, { Fragment } from "react";
 import './module.css';
 import LwmButton from "../../../framework/components/button/lwm-button";
-import GridColumn from "../../../entities/framework/gridColumn";
-import GridRow from "../../../entities/framework/gridRow";
-import Grid from "../grid/grid";
+import Grid, { GridRow, GridColumn } from "../grid/grid";
 
 export interface Props {
     moduleName: string;
@@ -19,7 +17,6 @@ export interface Props {
     options: JSX.Element[];
     children: JSX.Element | JSX.Element[] | undefined;
     error?: string;
-    hasError: boolean;
     altView?: JSX.Element;
     appletActive: boolean;
     onSearchChnaged?: Function;
@@ -29,6 +26,7 @@ export interface Props {
 export interface State {
 }
 
+export type { GridColumn, GridRow }
 export default class Module extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -66,7 +64,7 @@ export default class Module extends React.Component<Props, State> {
     }
 
     private buildError() {
-        if (this.props.hasError) {
+        if (this.props.error) {
             return(
                 <div className="moduleError">
                     {this.props.error}

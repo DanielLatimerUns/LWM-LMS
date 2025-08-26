@@ -25,7 +25,7 @@ public class TimeTableController(ITimeTableService timeTableService, ITimeTableQ
     }
     
     [HttpPost]
-    public async Task Create([FromForm]TimeTableModel timeTable)
+    public async Task Create(TimeTableModel timeTable)
     {
         await timeTableService.Create(timeTable);
     }
