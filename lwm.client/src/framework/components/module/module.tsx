@@ -11,6 +11,7 @@ export interface Props {
         rows: GridRow[],
         handleEditClicked: Function,
         handleDeleteClicked: Function,
+        customButtons?: LwmButton[]
     };
     handleSaveCloseClicked?: Function;
     handleCloseClicked?: Function;
@@ -107,6 +108,7 @@ export default class Module extends React.Component<Props, State> {
                 editClicked={this.props.gridConfig.handleEditClicked}
                 deletClicked={this.props.gridConfig.handleDeleteClicked}
                 columns={this.props.gridConfig.columns}
+                customButtons={this.props.gridConfig.customButtons}
                 rows={this.props.gridConfig.rows}>
             </Grid>
         </div>);

@@ -258,7 +258,8 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
             onSearchChnaged={handldeSearchChanged}
             isLoading={isGettingData}>
             {buildActiveApplet()}
-        </Module>);
+        </Module>
+    );
 };
 
 export default LessonManager;

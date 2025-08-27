@@ -3,7 +3,7 @@ export type FormField = {
     type: string,
     id: string,
     onFieldChanged: Function;
-    value: string | number | undefined;
+    value: string | number | Date | undefined;
     required: boolean;
     validationPattern: string | undefined;
     selectOptions: JSX.Element[] | undefined;

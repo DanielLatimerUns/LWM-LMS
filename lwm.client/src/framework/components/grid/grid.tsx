@@ -9,6 +9,7 @@ export interface Props {
     rows: GridRow[];
     editClicked: Function | undefined;
     deletClicked: Function | undefined;
+    customButtons?: LwmButton[]
     isDataLoading: boolean
 }
 
@@ -28,7 +29,6 @@ export default class Grid extends React.Component<Props, State> {
     }
 
     private renderGrid() {
-
         return(
         <div className="gridOuterContainer">
             <div className="gridContent">
@@ -82,7 +82,7 @@ export default class Grid extends React.Component<Props, State> {
             {
                 if (this.props.columns.map(c => c.name).includes(column[0]) && column[0] !== "id") {
                     columns.push(
-                    <div className="gridContentColumn" title={column[1]}>
+                    <div className="gridContentColumn">
                         {this.generateContent(column, rowId)}
                     </div>);
                 }
@@ -105,7 +105,9 @@ export default class Grid extends React.Component<Props, State> {
         return <LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name={content[1]}/>
     }
 
-    private generateGridButtons(rowId: number) {   const buttons: JSX.Element[] = [];
+    private generateGridButtons(rowId: number) {   
+        const buttons: JSX.Element[] = [];
+        
         if (this.props.editClicked) {
             buttons.push(<LwmButton isSelected={false} onClick={this.handleEditClicked.bind(this, rowId)} name="Edit"></LwmButton>)
         }
@@ -113,6 +115,10 @@ export default class Grid extends React.Component<Props, State> {
         if (this.props.deletClicked) {
             buttons.push(<LwmButton isSelected={false} onClick={this.handleDeleteClicked.bind(this, rowId)} name="Delete"></LwmButton>)
         }
+        
+        this.props.customButtons?.forEach(button => {
+            buttons.push(<LwmButton isSelected={false} onClick={button.props.onClick.bind(this, rowId)} name={button.props.name}></LwmButton>);
+        })
         
         return buttons;
     }

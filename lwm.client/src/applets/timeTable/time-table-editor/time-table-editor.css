@@ -1,0 +1,10 @@
+.timetableTableContainer {
+    display: grid;
+    grid-template-rows: 30px 100%;
+    width: 100%;
+}
+
+.timetableTable {
+    border: 1px solid black;
+    width: 100%;
+}

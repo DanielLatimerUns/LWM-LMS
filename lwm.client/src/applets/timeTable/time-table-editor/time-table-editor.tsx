@@ -1,6 +1,8 @@
 import React from 'react'
+import './time-table-editor.css';
 import {TimeTable, TimeTableDay, TimeTableEntry } from "../../../entities/app/timeTable";
 import Moment from "moment";
+import LwmButton from "../../../framework/components/button/lwm-button.tsx";
 
 export interface Props {
     timetable: TimeTable;
@@ -54,8 +56,15 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
         return builtEntries;
     }
     
+    function handleEntryClicked() {
+        
+    }
+    
     return (
-        <div>
+        <div className="timetableTableContainer">
+            <div className="timetableTableToolbar">
+                <LwmButton onClick={handleEntryClicked} isSelected={false} name="Add entry"></LwmButton>
+            </div>
             {buildTable()}
         </div>
     );

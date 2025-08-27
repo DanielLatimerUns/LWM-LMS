@@ -5,6 +5,7 @@ import RestService from "../../services/network/RestService.ts";
 import TimeTableWizard from "./time-table-wizard/time-table-wizard.tsx";
 import LwmButton from "../../framework/components/button/lwm-button.tsx";
 import {newRecordIcon} from "../../framework/icons.ts";
+import TimeTableEditor from "./time-table-editor/time-table-editor.tsx";
 
 export interface Props {}
 
@@ -22,6 +23,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
     const [isGettingData, setIsGettingData] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>();
+    const [manageTimetableView, setManageTimetableView] = useState<JSX.Element | undefined>(undefined);
     
     useEffect(() => {
         if (requiresUpdate) {
@@ -53,11 +55,18 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         const rows: GridRow[] = 
             timeTables.map(timeTable => ({columnData: timeTable, id: timeTable.id} as GridRow));
         
-        return  {
+        const timeTableEditorButton = new LwmButton({
+            onClick: handleTimetableEditorClicked,
+            name: "Manage Timetable",
+            isSelected: false,
+        })
+        
+        return {
             columns: columns,
             rows: rows,
             handleEditClicked: handleEdit,
             handleDeleteClicked: handleDelete,
+            customButtons: [timeTableEditorButton]
         }
     }
 
@@ -85,6 +94,16 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
 
         return options;
     }
+    
+    function enableTimeTableEditor() {
+        const editorComponent = (
+            <TimeTableEditor
+                timetable={selectedTimeTable}
+            ></TimeTableEditor>
+        );
+        
+        setManageTimetableView(editorComponent);
+    }
 
     function handleEdit(timetable: TimeTable) {
         setSelectedTimeTable(timetable);
@@ -92,6 +111,9 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     }
 
     function handleAdd() {
+        if (manageTimetableView) {
+        }
+        
         const timetable: TimeTable = {
             name: "",
             isPublished: false,
@@ -116,6 +138,11 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     function handleAppletCancel() {
         setError(undefined);
         setAppletActive(false);
+    }
+    
+    function handleTimetableEditorClicked(timeTableId: number) {
+        setSelectedTimeTable(timeTables.find(timeTable => timeTable.id === timeTableId)!);
+        enableTimeTableEditor();
     }
 
     function handleAppletSave() {
@@ -160,6 +187,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             onSearchChnaged={handleSearchChanged}
             handleCloseClicked={handleAppletCancel}
             handleSaveCloseClicked={handleAppletSave}
+            altView={manageTimetableView}
             appletActive={appletActive}>
             <TimeTableWizard
                  onChanged={(timetable: TimeTable) => setSelectedTimeTable(timetable)} 
