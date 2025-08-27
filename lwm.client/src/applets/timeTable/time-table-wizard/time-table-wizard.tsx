@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import Form,{ FormField } from "../../../../framework/components/form/form";
-import {TimeTable} from "../../../../entities/app/timeTable";
+import Form,{ FormField } from "../../../framework/components/form/form";
+import {TimeTable} from "../../../entities/app/timeTable";
 
 export interface Props {
     timeTable: TimeTable,

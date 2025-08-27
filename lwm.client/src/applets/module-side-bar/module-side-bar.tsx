@@ -9,7 +9,7 @@ import LwmButton from '../../framework/components/button/lwm-button';
 import LessonFeed from '../lesson-feed/lesson-feed';
 
 import logo from '../../assets/lwm_logo.jpg';
-import { feedIcon, lessonIcon, peopleIcon, groupIcon, scheduleIcon, controlCenterIcon } from '../../framework/icons';
+import { feedIcon, lessonIcon, peopleIcon, groupIcon, scheduleIcon, controlCenterIcon, timetableIcon } from '../../framework/icons';
 import TimeTableManager from "../timeTable/time-table-manager.tsx";
 import ControlCenter from "../controlCenter/control-center.tsx";
 import AuthService from "../../services/network/authentication/authService.ts";
@@ -25,49 +25,56 @@ const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
         name: 'Feed',
         module: <LessonFeed></LessonFeed>,
         active: true,
-        icon: feedIcon
+        icon: feedIcon,
+        moduleFunction: LessonFeed
     });
 
     _options.push({
         name: 'Lessons',
         module: <LessonManager></LessonManager>,
         active: false,
-        icon: lessonIcon
+        icon: lessonIcon,
+        moduleFunction: LessonManager
     });
 
     _options.push({
         name: 'People',
         module: <PersonManager></PersonManager>,
         active: false,
-        icon: peopleIcon
+        icon: peopleIcon,
+        moduleFunction: PersonManager
     });
 
     _options.push({
         name: 'Groups',
         module: <GroupManager></GroupManager>,
         active: false,
-        icon: groupIcon
+        icon: groupIcon,
+        moduleFunction: GroupManager
     });
 
     _options.push({
         name: 'Schedules',
         module: <ScheduleManager></ScheduleManager>,
         active: false,
-        icon: scheduleIcon
+        icon: scheduleIcon,
+        moduleFunction: ScheduleManager
     });
     
     _options.push({
-        name: 'Time Table',
+        name: 'Timetables',
         module: <TimeTableManager></TimeTableManager>,
         active: false,
-        icon: scheduleIcon
+        icon: timetableIcon,
+        moduleFunction: TimeTableManager
     })
 
     _options.push({
         name: 'Control Center',
         module:<ControlCenter/>,
         active: false,
-        icon: controlCenterIcon
+        icon: controlCenterIcon,
+        moduleFunction: ControlCenter
     })
 
     const [options, setOptions] = useState<SideBarOption[]>(_options);
@@ -90,7 +97,8 @@ const ModuleSideBar: React.FunctionComponent<Props> = (props) => {
             name: 'Log Out',
             module: <div></div>,
             active: true,
-            icon: ''
+            icon: '',
+            moduleFunction: () => <div></div>
         });
         
         const currentUserName = AuthService.GetCurrentUser()?.user.userName;

@@ -1,6 +1,7 @@
 export type SideBarOption = {
     name: string;
-    module: string | JSX.Element;
+    module:JSX.Element;
+    moduleFunction: Function;
     active: boolean;
     icon: string;
 }

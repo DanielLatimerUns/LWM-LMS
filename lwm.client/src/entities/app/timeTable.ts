@@ -8,6 +8,7 @@ export type TimeTable = {
 
 export type TimeTableDay = {
     dayOfWeek: number,
+    dayOfWeekName: string,
     timeTableId: number,
     timeTableEntries: TimeTableEntry[]
 }
@@ -17,6 +18,7 @@ export type TimeTableEntry = {
     timeTableDayId: number;
     timeTableId: number;
     groupId: number;
+    groupName: string;
     startTime: Date;
     endTime: Date;
 }

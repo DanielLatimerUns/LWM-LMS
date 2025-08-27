@@ -108,7 +108,6 @@ interface Props {
      );
     
     props.onFieldValidationChanged(validateAllFields());
-    
     return form;
 }
 

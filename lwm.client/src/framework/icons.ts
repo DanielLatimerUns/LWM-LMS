@@ -6,6 +6,7 @@ import scheduleIcon from '../assets/module-icons/school.png';
 import controlCenterIcon from '../assets/react.svg';
 import newRecordIcon from '../assets/new_icon.png';
 import cloudSyncIcon from '../assets/cloud-sync.png';
+import timetableIcon from '../assets/module-icons/schedule.png'
 
 export {
 feedIcon, 
@@ -15,4 +16,5 @@ groupIcon,
 scheduleIcon, 
 controlCenterIcon,
 newRecordIcon,
-cloudSyncIcon};
+cloudSyncIcon,
+timetableIcon};

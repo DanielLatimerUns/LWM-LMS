@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Module, {GridColumn, GridRow} from "../../framework/components/module/module.tsx";
 import { TimeTable } from "../../entities/app/timeTable.ts";
 import RestService from "../../services/network/RestService.ts";
-import TimeTableWizard from "./applets/time-table-wizard/time-table-wizard.tsx";
+import TimeTableWizard from "./time-table-wizard/time-table-wizard.tsx";
 import LwmButton from "../../framework/components/button/lwm-button.tsx";
 import {newRecordIcon} from "../../framework/icons.ts";
 

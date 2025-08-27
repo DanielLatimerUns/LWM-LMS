@@ -37,9 +37,7 @@ export default class Module extends React.Component<Props, State> {
     render() {
         return (
             <div className="moduleContainer">
-                <div className="moduleHeader">
-                    <div className="moduleHeaderTitle">{this.props.moduleName}</div>
-                </div>
+
                 {this.renderOptionsSection()}
                 <div className="moduleActionSectionContainer">
                     {this.renderView()}

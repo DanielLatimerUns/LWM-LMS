@@ -4,19 +4,28 @@ import ModuleLoader from "../framework/components/modulePanel/module-loader";
 import './app.css';
 import { SideBarOption } from "../entities/framework/sideBarOption";
 import AuthService from "../services/network/authentication/authService";
-import LessonFeed from "../applets/lesson-feed/lesson-feed";
 import LoginSplash from "./authentication/login-spash/login-splash";
 
 interface Props {}
 
  const App: React.FunctionComponent<Props> = () => {
-    const [activeModule, setActiveModule] = useState<string | JSX.Element>(<LessonFeed></LessonFeed>);
+    const [activeModule, setActiveModule] = useState<SideBarOption>();
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(AuthService.isLoggedIn());
+    const [initialisedModules, setInitialisedModules] = useState<JSX.Element[]>([])
 
     addEventListener("app-logout", handleLogout, true);
     
     function onActiveModuleChange (option: SideBarOption) {
-        setActiveModule(option.module);
+        
+        if (initialisedModules.includes(option.module)) {
+            setActiveModule(option);
+            return;
+        }                                                                                                                                                                                                                                                                                  
+        
+        const initialisedModuleList = [...initialisedModules, option.module];
+        setInitialisedModules(initialisedModuleList);
+        
+        setActiveModule(option);
     }
 
     function onLoginComplete() {
@@ -34,8 +43,8 @@ interface Props {}
                  <ModuleSideBar
                      onOptionSelectionChanged={onActiveModuleChange}>
                  </ModuleSideBar>
-                 <ModuleLoader>
-                     {activeModule}
+                 <ModuleLoader activeModule={activeModule}>
+                     {initialisedModules}
                  </ModuleLoader>
              </div>);
      }
