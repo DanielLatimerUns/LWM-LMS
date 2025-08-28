@@ -1,20 +1,38 @@
-import React from 'react'
+import React, {useEffect, useState } from 'react'
 import './time-table-editor.css';
 import {TimeTable, TimeTableDay, TimeTableEntry } from "../../../entities/app/timeTable";
 import Moment from "moment";
 import LwmButton from "../../../framework/components/button/lwm-button.tsx";
+import TimeTableEditorEntry from "./time-table-editor-add-entry/time-table-editor-entry.tsx";
+import RestService from "../../../services/network/RestService.ts";
+import {Group} from "../../../entities/domainModels/group.ts";
 
 export interface Props {
-    timetable: TimeTable;
+    timetable?: TimeTable;
 }
 
 const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
+
+    const [groups, setGroups] = useState<Group[]>([]);
+    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+    const [selectedEntry, setSelectedEntry] = useState<TimeTableEntry>();
+
+    useEffect(() => {
+        if (requiresUpdate) {
+            getGroups();
+            setRequiresUpdate(false);
+        }
+    }, [requiresUpdate])
     
     function buildTable() {
+        if (!props.timetable) {
+            return;
+        }
+        
         const builtDays: JSX.Element[] = [];
         
-        for (const day of props.timetable.timeTableDays) {
-            builtDays.push(buildtableDay(day));
+        for (const day of props.timetable.days) {
+            builtDays.push(buildDay(day));
         }
         
         return (
@@ -24,7 +42,7 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
         );
     }
     
-    function buildtableDay(timeTableDay: TimeTableDay) {
+    function buildDay(timeTableDay: TimeTableDay) {
         return (
             <div className="timetableTableDay">
                 <div className="timetableTableDayHeader">
@@ -35,6 +53,21 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
                 </div>
             </div>
         );
+    }
+    
+    function buildEntrySection() {
+        if (!selectedEntry) {
+            return;
+        }
+        
+        return (     
+            <TimeTableEditorEntry groups={groups}
+                                  timetable={props.timetable}
+                                  timetableEntry={selectedEntry}
+                                  onValidationChanged={() => {}}
+                                  onChange={() => {}}
+                                  
+            />)
     }
     
     function buildTableEntries(timeTableEntries: TimeTableEntry[]) {
@@ -57,7 +90,23 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
     }
     
     function handleEntryClicked() {
-        
+        setSelectedEntry({
+            timeTableId: props.timetable?.id ?? 0,
+            startTime: new Date(Date.now()),
+            endTime: new Date(Date.now()),
+            groupId: -1,
+            timeTableDayId: 0,
+            id: 0,
+            groupName: ""
+        })
+    }
+
+    function getGroups() {
+        RestService.Get('group').then(
+            resoponse => resoponse.json().then(
+                (data: Group[]) => setGroups(data)
+            ).catch( error => console.error(error))
+        );
     }
     
     return (
@@ -65,7 +114,12 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
             <div className="timetableTableToolbar">
                 <LwmButton onClick={handleEntryClicked} isSelected={false} name="Add entry"></LwmButton>
             </div>
-            {buildTable()}
+            <div className="timetableTableEntrySection">
+                {buildEntrySection()}
+            </div>
+            <div className="timetableTableSection">
+                {buildTable()}
+            </div>
         </div>
     );
 }

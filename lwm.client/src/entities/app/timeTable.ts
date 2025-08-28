@@ -2,7 +2,7 @@ export type TimeTable = {
     id: number,
     name: string,
     isPublished: boolean,
-    timeTableDays: TimeTableDay[],
+    days: TimeTableDay[],
     
 }
 

@@ -49,7 +49,6 @@
     color: red;
     padding: 10px;
     width: 100%;
-    grid-column: 2;
     overflow: auto;
 }
 
@@ -63,18 +62,34 @@
     backdrop-filter: blur(5px);
 }
 
-.moduleActionSectionAppletContent {
+.moduleActionSectionAppletContent,
+.moduleActionSectionAppletContentFullWidth
+{
     background: rgb(62 62 62 / 100%);
     padding: 0 10px 0 10px;
     border-radius: 4px;
+    display: grid;
+    grid-template-rows: auto 100px;
 }
 
-.moduleActionSectionAppletHeader {
+.moduleActionSectionAppletContentFullWidth {
+    width: 100%;   
+}
+
+.moduleActionSectionAppletFooter {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+}
+
+.moduleActionSectionAppletFooterButtons {
     display: flex;
     gap: 20px;
     padding-top: 10px;
     justify-content: space-around;
     border-bottom: 1px solid rgba(247 242 242 / 10%);
+    align-content: flex-end;
 }
 
 .fieldSetHeader  {

@@ -1,21 +1,22 @@
 .formFieldContainer {
     display: flex;
     flex-direction: column;
-    gap: 40px;
-    padding: 20px;
+    gap: 10px;
+    padding: 10px;
 }
 
 .formField {
-    display: flex;
     justify-content: space-between;
-    gap: 60px;
     align-items: end;
     padding-bottom: 10px;
 }
 
 .formField label {
     font-size: 18px;
-   
+}
+
+.formFieldInput {
+   padding-top: 5px;
 }
 
 .formFieldInput > input,

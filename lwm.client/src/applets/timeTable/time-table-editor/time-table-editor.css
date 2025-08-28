@@ -1,6 +1,14 @@
 .timetableTableContainer {
-    display: grid;
-    grid-template-rows: 30px 100%;
+    display: flex;
+    width: auto;
+}
+
+.timetableTableEntrySection {
+    
+}
+
+.timetableTableSection {
+    display: flex;
     width: 100%;
 }
 

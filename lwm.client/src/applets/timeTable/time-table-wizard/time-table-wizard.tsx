@@ -3,7 +3,7 @@ import Form,{ FormField } from "../../../framework/components/form/form";
 import {TimeTable} from "../../../entities/app/timeTable";
 
 export interface Props {
-    timeTable: TimeTable,
+    timeTable?: TimeTable,
     onChanged: Function;
     onValidationChanged?: Function;
 }
@@ -17,6 +17,10 @@ const TimeTableWizard: React.FunctionComponent<Props> = (props) => {
     }
     
     function buildForm() {
+        if (!props.timeTable) {
+            return;
+        }
+        
         const fields: FormField[] = [
             {
                 label: "Name",

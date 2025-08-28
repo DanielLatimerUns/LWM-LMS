@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import './app.css';
 import ModuleSideBar from "../applets/module-side-bar/module-side-bar";
 import ModuleLoader from "../framework/components/modulePanel/module-loader";
-import './app.css';
 import { SideBarOption } from "../entities/framework/sideBarOption";
 import AuthService from "../services/network/authentication/authService";
 import LoginSplash from "./authentication/login-spash/login-splash";
@@ -54,5 +54,4 @@ interface Props {}
              <LoginSplash onLoginSuccsess={onLoginComplete}/>
          </div>);
 }
-
 export default App;

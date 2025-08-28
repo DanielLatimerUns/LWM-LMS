@@ -20,6 +20,7 @@ export interface Props {
     error?: string;
     altView?: JSX.Element;
     appletActive: boolean;
+    fullWidthApplet?: boolean;
     onSearchChnaged?: Function;
     isLoading: boolean;
 }
@@ -52,12 +53,14 @@ export default class Module extends React.Component<Props, State> {
 
         return (
             <div className="moduleActionSectionApplet">
-                <div className="moduleActionSectionAppletContent">
-                    <div className="moduleActionSectionAppletHeader">
-                        {this.renderSaveClose()}
-                    </div>
+                <div className={this.props.fullWidthApplet ? "moduleActionSectionAppletContentFullWidth" : "moduleActionSectionAppletContent"}>
                     {this.props.children}
-                    {this.buildError()}
+                    <div className="moduleActionSectionAppletFooter">
+                        {this.buildError()}
+                        <div className="moduleActionSectionAppletFooterButtons">
+                            {this.renderSaveClose()}
+                        </div>
+                    </div>
                 </div>
             </div>)
     }
