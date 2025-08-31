@@ -1,5 +1,5 @@
 import './control-center.css'
-import React from 'react';
+import React, {JSX} from 'react';
 import ControlCenterAppletHost from './framework/control-center-applet-host';
 import ControlCenterOptions from './applets/controlCenterOptions/applet/control-center-options';
 

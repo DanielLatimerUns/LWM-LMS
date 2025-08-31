@@ -24,7 +24,7 @@ public class TimeTableQueries(CoreContext context) : ITimeTableQueries
     public async Task<TimeTableModel> GetTimeTableByIdAsync(int id)
     {
         var timetable = await context.TimeTables
-            .Include(x => x.Days).ThenInclude(x => x.TimeTableEntries)
+            .Include(x => x.TimeTableEntries)
             .FirstOrDefaultAsync(x => x.Id == id);
         
         if (timetable is null)

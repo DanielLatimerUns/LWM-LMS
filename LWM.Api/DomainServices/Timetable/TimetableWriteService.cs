@@ -18,11 +18,6 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
             Name = model.Name
         };
         
-        model.Days.ForEach(x => entity.Days.Add(new TimeTableDay
-        {
-            DayOfWeek = x.DayOfWeek
-        }));
-        
         context.Add(entity);
         
         Validate(entity);
@@ -32,33 +27,11 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
     public async Task UpdateAsync(TimeTableModel model)
     {
         var timetable = context.TimeTables
-            .Include(x => x.Days)
-            .ThenInclude(x => x.TimeTableEntries)
             .FirstOrDefault(x => x.Id == model.Id);
         
         Validate(timetable);
         
         timetable!.Name = model.Name;
-
-        foreach (var day in model.Days)
-        {
-            if (timetable.Days.Any(x => x.DayOfWeek == day.DayOfWeek)) 
-                continue;
-            
-            timetable.Days.Add(new TimeTableDay
-            {
-                DayOfWeek = day.DayOfWeek
-            });
-        }
-
-        foreach (var day in timetable.Days)
-        {
-            if (model.Days.Any(x => x.DayOfWeek == day.DayOfWeek)) 
-                continue;
-            
-            day.TimeTableEntries.Clear();
-            timetable.Days.Remove(day);
-        }
         
         await context.SaveChangesAsync();
     }
@@ -66,17 +39,11 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
     public async Task DeleteAsync(int id)
     {
         var timetable = context.TimeTables
-            .Include(x => x.Days)
-            .ThenInclude(x => x.TimeTableEntries)
+            .Include(x => x.TimeTableEntries)
             .FirstOrDefault(x => x.Id == id);
         Validate(timetable);
         
-        foreach (var timeTableDay in timetable.Days)
-        {
-            timeTableDay.TimeTableEntries.Clear();
-        }
-        
-        timetable.Days.Clear();
+        timetable?.TimeTableEntries.Clear();
         context.TimeTables.Remove(timetable);
         
         await context.SaveChangesAsync();

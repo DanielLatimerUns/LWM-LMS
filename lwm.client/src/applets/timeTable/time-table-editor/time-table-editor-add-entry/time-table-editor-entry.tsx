@@ -1,20 +1,30 @@
 import React from 'react'
+import './time-table-editor-entry.css';
 import {TimeTable, TimeTableEntry } from "../../../../entities/app/timeTable";
 import Form, {FormField} from "../../../../framework/components/form/form";
 import {Group} from "../../../../entities/domainModels/group";
+import LwmButton from "../../../../framework/components/button/lwm-button.tsx";
+import {Teacher} from "../../../../entities/domainModels/teacher.ts";
 
 export interface Props {
     timetable: TimeTable;
     onChange: Function;
     timetableEntry: TimeTableEntry;
     groups: Group[];
+    teachers: Teacher[];
     onValidationChanged: Function;
+    onSave: Function;
+    onClose: Function;
 }
 
 const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
     function buildForm() {
         const groups: JSX.Element[] = [
             <option value={undefined}>Select a Group</option>
+        ];
+
+        const teachers: JSX.Element[] = [
+            <option value={undefined}>Select a Teacher</option>
         ];
 
         const daysOfWeek: JSX.Element[] = [
@@ -29,13 +39,17 @@ const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
         ];
 
         props.groups.map(group => groups.push(
-            <option value={group.id}>{group.name}</option>))
+            <option value={group.id}>{group.name}</option>));
+        
+        props.teachers.map(teacher => teachers.push(
+            <option value={teacher.id}>{teacher.name}</option>
+        ));
 
         const fields: FormField[] = [
             {
                 label: "Day Of Week",
-                id: "timeTableDayId",
-                value: props.timetableEntry.timeTableDayId,
+                id: "dayNumber",
+                value: props.timetableEntry.dayNumber,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
@@ -44,7 +58,7 @@ const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
             },
             {
                 label: "Start Time" ,
-                id: "scheduledStartTime",
+                id: "startTime",
                 value: props.timetableEntry.startTime,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
@@ -54,13 +68,23 @@ const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
             },
             {
                 label: "End Time" ,
-                id: "scheduledEndTime",
+                id: "endTime",
                 value: props.timetableEntry.endTime,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
                 type: "time",
                 selectOptions: undefined
+            },
+            {
+                label: "Teacher",
+                id: "teacherId",
+                value: props.timetableEntry.teacherId,
+                onFieldChanged: props.onChange,
+                validationPattern: undefined,
+                required: true,
+                type: "select",
+                selectOptions: teachers
             },
             {
                 label: "Group",
@@ -82,6 +106,10 @@ const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
             <Form formObject={props.timetableEntry}  
                   onFieldValidationChanged={props.onValidationChanged}
                   fields={buildForm()}/>
+            <div className="timetableTableFormButtons">
+                <LwmButton onClick={props.onSave} isSelected={false} name={"Save changes"}/>
+                <LwmButton onClick={props.onClose} isSelected={false} name={"Close"}/>
+            </div>
         </div>
     );
 }

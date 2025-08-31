@@ -15,6 +15,15 @@ export default class RestService {
         });
     }
 
+    public static GetWithType<t>(requestUrl: string) : Promise<t> {
+        return fetch(this.BaseApiUrl + requestUrl, {
+            headers: {
+                "Authorization": 'Bearer ' + this.BuildAuthHeader().Authorization,
+                "AZURE_TOKEN": azureAuthService.getCachedAuthToken()?.token ?? ''
+            }
+        }).then(response => response.json().then(data => data as t));
+    }
+
     public static Post(requestUrl: string, payload: any) : Promise<Response> {
         const authHeader = this.BuildAuthHeader().Authorization;
         return fetch(this.BaseApiUrl + requestUrl, {

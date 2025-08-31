@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {JSX, useState} from "react";
 import Module, {GridColumn, GridRow} from "../../framework/components/module/module.tsx";
 import { TimeTable } from "../../entities/app/timeTable.ts";
 import RestService from "../../services/network/RestService.ts";
@@ -6,40 +6,19 @@ import TimeTableWizard from "./time-table-wizard/time-table-wizard.tsx";
 import LwmButton from "../../framework/components/button/lwm-button.tsx";
 import {newRecordIcon} from "../../framework/icons.ts";
 import TimeTableEditor from "./time-table-editor/time-table-editor.tsx";
+import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
 
 const TimeTableManager: React.FunctionComponent<Props> = () => {
-    const [timeTables, setTimeTable] = useState<TimeTable[]>([]);
     const [selectedTimeTable, setSelectedTimeTable] = useState<TimeTable>();
     
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
-    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
-    const [isGettingData, setIsGettingData] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>();
     const [timetableEditorEnabled, setTimetableEditorEnabled] = useState<boolean>(false);
     
-    useEffect(() => {
-        if (requiresUpdate) {
-            setIsGettingData(true);
-            getTimetables();
-            setAppletActive(false);
-            setRequiresUpdate(false);
-        }
-    }, [requiresUpdate]);
-
-    useEffect(() => {
-        setIsGettingData(false);
-    }, [timeTables])
-
-    function getTimetables() {
-        RestService.Get('timetable').then(
-            response => response.json().then(
-                (data: TimeTable[]) => setTimeTable(data)
-            ).catch(error => console.error(error))
-        )
-    }
+    const timetableQuery = useQueryLwm<TimeTable[]>('timetables', 'timetable');
     
     function buildGridConfig(){
         const columns: GridColumn[] = [
@@ -48,7 +27,8 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         ]
         
         const rows: GridRow[] = 
-            timeTables.map(timeTable => ({columnData: timeTable, id: timeTable.id} as GridRow));
+            timetableQuery.data?.map(timeTable => ({columnData: timeTable, id: timeTable.id} as GridRow)) 
+            ?? [];
         
         const timeTableEditorButton = new LwmButton({
             onClick: handleTimetableEditorClicked,
@@ -102,7 +82,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     function buildTimeTableEditor() {
         return (
             <TimeTableEditor
-                timetable={selectedTimeTable}
+                timetableId={selectedTimeTable?.id ?? 0}
             ></TimeTableEditor>
         );
     }
@@ -127,7 +107,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             name: "",
             isPublished: false,
             id: 0,
-            days: []
+            entries: []
         };
         
         setTimetableEditorEnabled(false);
@@ -137,7 +117,8 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     }
 
     function handleTimetableEditorClicked(timeTableId: number) {
-        const timetable = timeTables.find(timeTable => timeTable.id === timeTableId);
+        const timetable = 
+            timetableQuery.data?.find(timeTable => timeTable.id === timeTableId);
 
         if (!timetable) {
             return;
@@ -147,15 +128,15 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         setTimetableEditorEnabled(true);
         setAppletActive(true);
     }
-
-
+    
     function handleDelete(timetable: TimeTable) {
-        RestService.Delete(`timetable/${timetable.id}`).then(() => getTimetables());
+        RestService.Delete(`timetable/${timetable.id}`)
+            .then(() => timetableQuery.refetch());
     }
 
     const handleSearchChanged = (searchString: string) => {
         setSearchString(searchString !== '' ? searchString : undefined);
-        setRequiresUpdate(true);
+        timetableQuery.refetch();
     }
 
     function handleAppletCancel() {
@@ -169,7 +150,8 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         }
 
         if (selectedTimeTable?.id === 0) {
-            RestService.Post('timetable', selectedTimeTable).then(handleDataChange)
+            RestService.Post('timetable', selectedTimeTable)
+                .then(() => timetableQuery.refetch())
                 .catch(error => {
                         console.error(error);
                         setError("Critical error");
@@ -178,20 +160,13 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             return;
         }
 
-        RestService.Put('timetable', selectedTimeTable).then(handleDataChange)
+        RestService.Put('timetable', selectedTimeTable)
+            .then(() => timetableQuery.refetch())
             .catch(error => {
                     console.error(error);
                     setError("Critical error");
                 }
             )
-    }
-
-    function handleDataChange(response: Response) {
-        if (!response.ok) {
-            setError(response.statusText);
-            return;
-        }
-        setRequiresUpdate(true);
     }
     
     return (
@@ -199,12 +174,12 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             moduleName={'Time Table Manager'}
             moduleEntityName={'TimeTable'}
             gridConfig={buildGridConfig()}
-            isLoading={isGettingData}
+            isLoading={timetableQuery.isPending}
             options={buildActionOptions()}
             error={error}
             onSearchChnaged={handleSearchChanged}
             handleCloseClicked={handleAppletCancel}
-            handleSaveCloseClicked={handleAppletSave}
+            handleSaveCloseClicked={timetableEditorEnabled ? undefined : handleAppletSave}
             appletActive={appletActive}
             fullWidthApplet={timetableEditorEnabled}
             children={buildApplet()}>

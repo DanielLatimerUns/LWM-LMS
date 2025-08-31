@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, {Fragment, JSX} from "react";
 import './module.css';
 import LwmButton from "../../../framework/components/button/lwm-button";
 import Grid, { GridRow, GridColumn } from "../grid/grid";
@@ -120,21 +120,24 @@ export default class Module extends React.Component<Props, State> {
     private renderSaveClose() {
         if (!this.props.children)
             return;
-
-        if (!this.props.handleSaveCloseClicked || !this.props.handleCloseClicked) {
-            return "";
+        
+        const buttons: JSX.Element[] = [];
+        
+        if (this.props.handleSaveCloseClicked) {
+            buttons.push(<LwmButton
+                name="Save & Close"
+                onClick={this.props.handleSaveCloseClicked.bind(this)}
+                isSelected={false}/>);
+        }
+        
+        if (this.props.handleCloseClicked) {
+            buttons.push(                    <LwmButton
+                name="Close"
+                onClick={this.props.handleCloseClicked.bind(this)}
+                isSelected={false}/>);
         }
 
-        return <Fragment>
-                    <LwmButton
-                        name="Save & Close"
-                        onClick={this.props.handleSaveCloseClicked.bind(this)}
-                        isSelected={false}/>
-                    <LwmButton
-                        name="Cancel & Close"
-                        onClick={this.props.handleCloseClicked.bind(this)}
-                        isSelected={false}/>
-                </Fragment>;
+        return (<Fragment>{buttons}</Fragment>);
     }
 
     private handleSearchChanged(searchEvent: any) {

@@ -24,7 +24,6 @@ namespace LWM.Data.Contexts
         public DbSet<Configuration> Configurations { get; set; }
         public DbSet<Curriculum> LessonCurriculums { get; set; }
         public DbSet<TimeTable> TimeTables { get; set; }
-        public DbSet<TimeTableDay> TimeTableDays { get; set; }
         public DbSet<TimeTableEntry> TimeTableEntries { get; set; }
 
         public CoreContext(DbContextOptions<CoreContext> options)

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, {Fragment, JSX, useEffect, useState} from "react";
 import './people-wizard.css';
 import { Person } from "../../../../entities/domainModels/person";
 import { Group } from "../../../../entities/domainModels/group";
@@ -104,7 +104,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 label: "Group",
                 id: "groupId",
                 value: props.person.student?.groupId,
-                onFieldChanged: handleFormChange,
+                onFieldChanged: handleStudentFormChange,
                 validationPattern: undefined,
                 required: false,
                 type: "select",
@@ -113,12 +113,13 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
         ]
 
         return (
-        <Fragment>
-            <div className="fieldSetHeader">Person Record</div>
-            <Form fields={fields} formObject={props.person} onFieldValidationChanged={handleFieldValidationChanged}/>
-            <div className="fieldSetHeader">Student Record</div>
-            <Form fields={studentFields} formObject={props.person.student} onFieldValidationChanged={handleFieldValidationChanged}/>
-        </Fragment>)
+            <Fragment>
+                <div className="fieldSetHeader">Person Record</div>
+                <Form fields={fields} formObject={props.person} onFieldValidationChanged={handleFieldValidationChanged}/>
+                <div className="fieldSetHeader">Student Record</div>
+                <Form fields={studentFields} formObject={props.person.student} onFieldValidationChanged={handleFieldValidationChanged}/>
+            </Fragment>
+        )
     }
 
     function getGroups() {
@@ -146,10 +147,23 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
 
         if (changedPerson.student) {
+            changedPerson.student = Object.assign({}, changedPerson.student);
             changedPerson.student.groupId = Number.parseInt((changedPerson.student.groupId as any));
         }
 
         props.onChange(changedPerson);
+    }
+
+    function handleStudentFormChange(changedStudent: Student) {
+
+        const updatedPerson = Object.assign({}, props.person);
+        const updatedStudent = Object.assign({}, updatedPerson.student);
+        updatedPerson.student = updatedStudent;
+        
+        updatedStudent.groupId = Number.parseInt((changedStudent.groupId as any));
+        
+
+        props.onChange(updatedPerson);
     }
 
     function handleFieldValidationChanged(isValid: boolean) {

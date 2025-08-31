@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, {Fragment, JSX} from "react";
 import './schedule-wizard.css';
 import {Group} from "../../../../entities/domainModels/group";
 import {Schedule} from "../../../../entities/domainModels/schedule";

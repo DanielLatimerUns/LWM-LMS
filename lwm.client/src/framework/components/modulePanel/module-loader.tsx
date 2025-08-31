@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {JSX} from 'react'
 import './module-loader.css'
 import {SideBarOption} from "../../../entities/framework/sideBarOption.ts";
 

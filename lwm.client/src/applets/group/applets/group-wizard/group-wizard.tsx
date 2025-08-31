@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, {Fragment, JSX, useEffect, useState} from "react";
 import './group-wizard.css';
 import {Teacher} from "../../../../entities/domainModels/teacher";
 import RestService from "../../../../services/network/RestService";

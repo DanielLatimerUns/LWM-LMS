@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {JSX, useEffect, useState} from "react";
 import RestService from "../../services/network/RestService";
 import LwmButton from "../../framework/components/button/lwm-button";
 import Module, { GridColumn, GridRow } from "../../framework/components/module/module";

@@ -7,7 +7,6 @@ interface Props {
     students: Student[];
 }
 
-
  const GroupWizardStudents: React.FunctionComponent<Props> = (props) => {
     function renderGrid() {
         const columns: GridColumn[] = [];

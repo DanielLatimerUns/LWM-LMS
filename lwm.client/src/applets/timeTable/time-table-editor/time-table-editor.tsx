@@ -1,37 +1,36 @@
-import React, {useEffect, useState } from 'react'
+import React, {JSX, useState} from 'react'
 import './time-table-editor.css';
-import {TimeTable, TimeTableDay, TimeTableEntry } from "../../../entities/app/timeTable";
-import Moment from "moment";
+import {TimeTable, TimeTableEntry, getTimetableDayName } from "../../../entities/app/timeTable";
 import LwmButton from "../../../framework/components/button/lwm-button.tsx";
 import TimeTableEditorEntry from "./time-table-editor-add-entry/time-table-editor-entry.tsx";
 import RestService from "../../../services/network/RestService.ts";
 import {Group} from "../../../entities/domainModels/group.ts";
+import {Teacher} from "../../../entities/domainModels/teacher.ts";
+import {useQueryLwm} from "../../../services/network/queryLwm.ts";
 
 export interface Props {
-    timetable?: TimeTable;
+    timetableId: number;
 }
 
 const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
-
-    const [groups, setGroups] = useState<Group[]>([]);
-    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
+    
     const [selectedEntry, setSelectedEntry] = useState<TimeTableEntry>();
-
-    useEffect(() => {
-        if (requiresUpdate) {
-            getGroups();
-            setRequiresUpdate(false);
-        }
-    }, [requiresUpdate])
+    
+    const groupQuery = 
+        useQueryLwm<Group[]>('group','group');
+    const teachersQuery = 
+        useQueryLwm<Teacher[]>('teacher','teacher');
+    const timetableQuery = 
+        useQueryLwm<TimeTable>('timetable', `timetable/${props.timetableId}`);
     
     function buildTable() {
-        if (!props.timetable) {
+        if (!timetableQuery.data) {
             return;
         }
         
         const builtDays: JSX.Element[] = [];
         
-        for (const day of props.timetable.days) {
+        for (let day = 1; day <= 7; day++) {
             builtDays.push(buildDay(day));
         }
         
@@ -42,45 +41,52 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
         );
     }
     
-    function buildDay(timeTableDay: TimeTableDay) {
+    function buildDay(dayNumber: number) {
         return (
             <div className="timetableTableDay">
                 <div className="timetableTableDayHeader">
-                    {timeTableDay.dayOfWeekName}
+                    {getTimetableDayName(dayNumber)}
                 </div>
                 <div className="timetableTableDayEnties">
-                    {buildTableEntries(timeTableDay.timeTableEntries)}
+                    {buildTableEntries(dayNumber)}
+                    {buildAddEntryButton(dayNumber)}
                 </div>
             </div>
         );
     }
     
     function buildEntrySection() {
-        if (!selectedEntry) {
+        if (!selectedEntry || !timetableQuery.data) {
             return;
         }
         
-        return (     
-            <TimeTableEditorEntry groups={groups}
-                                  timetable={props.timetable}
+        return (
+            <TimeTableEditorEntry groups={groupQuery.data ?? []}
+                                  teachers={teachersQuery.data ?? []}
+                                  timetable={timetableQuery.data}
                                   timetableEntry={selectedEntry}
                                   onValidationChanged={() => {}}
-                                  onChange={() => {}}
-                                  
-            />)
+                                  onSave={handleEntrySave}
+                                  onChange={handEntryChanged}
+                                  onClose={handleEntryClose}/>
+        )
     }
     
-    function buildTableEntries(timeTableEntries: TimeTableEntry[]) {
+    function buildTableEntries(dayNumber: number) {
         const builtEntries: JSX.Element[] = [];
         
-        timeTableEntries.forEach(timeTableEntry => {
+        if (!timetableQuery.data) {
+            return ;
+        }
+        
+        timetableQuery.data.entries.filter(x => x.dayNumber === dayNumber).forEach(timeTableEntry => {
             builtEntries.push(
-                <div className="timetableTableEntry">
+                <div className={selectedEntry === timeTableEntry ? "timetableTableEntrySelected" : "timetableTableEntry"} onClick={() => setSelectedEntry(timeTableEntry)}>
                     <div className={ "timetableTableEntryHeader"}>
-                        {timeTableEntry.groupName}
+                        {groupQuery.data?.find(x => x.id === timeTableEntry.groupId)?.name}
                     </div>
                     <div className="timetableTableEntryBody">
-                        {Moment(timeTableEntry.startTime).format("HH:mm")} - {Moment(timeTableEntry.endTime).format("HH:mm")}
+                        {timeTableEntry.startTime} - {timeTableEntry.endTime}
                     </div>
                 </div>
             )
@@ -89,31 +95,69 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
         return builtEntries;
     }
     
-    function handleEntryClicked() {
+    function buildAddEntryButton(dayNumber: number) {
+        return (
+            <div className="timetableTableToolbar">
+                <LwmButton onClick={() => handleEntryClicked(dayNumber)} isSelected={false} name="Add new entry"></LwmButton>
+            </div>
+        )
+    }
+    
+    function handleEntryClicked(dayNumber: number) {
         setSelectedEntry({
-            timeTableId: props.timetable?.id ?? 0,
-            startTime: new Date(Date.now()),
-            endTime: new Date(Date.now()),
+            timeTableId: timetableQuery.data?.id ?? 0,
+            startTime: "",
+            endTime: "",
             groupId: -1,
-            timeTableDayId: 0,
+            dayNumber: dayNumber,
             id: 0,
-            groupName: ""
+            groupName: "",
+            teacherId: 0
         })
     }
-
-    function getGroups() {
-        RestService.Get('group').then(
-            resoponse => resoponse.json().then(
-                (data: Group[]) => setGroups(data)
-            ).catch( error => console.error(error))
-        );
+    
+    function handEntryChanged(entry: TimeTableEntry) {
+        setSelectedEntry(entry);
+    }
+    
+    function handleEntryClose() {
+        setSelectedEntry(undefined);
+    }
+    
+    function handleEntrySave() {
+        if (!selectedEntry) {
+            return;
+        }
+        
+        if (selectedEntry.id === 0) {
+            RestService.Post('timetable/entry', selectedEntry).then(
+                response => {
+                    if (!response.ok) {
+                        return;
+                    }
+                    timetableQuery.refetch();
+                    handleEntryClicked(selectedEntry.dayNumber);
+                }
+            ).catch(error => console.error(error));
+            return;
+        }
+        
+        RestService.Put('timetable/entry', selectedEntry).then(
+            response => {
+                if (!response.ok) {
+                    return;
+                }
+                timetableQuery.refetch();
+            }
+        ).catch(error => console.error(error));
+    }
+    
+    if (timetableQuery.isPending) {
+        return ("Building timetable...");
     }
     
     return (
         <div className="timetableTableContainer">
-            <div className="timetableTableToolbar">
-                <LwmButton onClick={handleEntryClicked} isSelected={false} name="Add entry"></LwmButton>
-            </div>
             <div className="timetableTableEntrySection">
                 {buildEntrySection()}
             </div>

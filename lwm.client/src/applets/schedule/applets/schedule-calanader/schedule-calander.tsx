@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, {Fragment, JSX, useState} from "react";
 import { Schedule } from "../../../../entities/domainModels/schedule";
 import './schedule-calander.css';
 import LwmButton from "../../../../framework/components/button/lwm-button";

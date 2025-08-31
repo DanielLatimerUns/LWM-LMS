@@ -1,4 +1,4 @@
-import React from "react";
+import React, {JSX} from "react";
 import { GridRow, GridColumn } from "../../../entities/framework/grid.ts";
 import './grid.css';
 import LwmButton from "../button/lwm-button";

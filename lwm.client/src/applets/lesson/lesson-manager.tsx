@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {JSX, useEffect, useState} from "react";
 import { Lesson } from "../../entities/domainModels/Lesson";
 import RestService from "../../services/network/RestService";
 import './lesson-manager.css';

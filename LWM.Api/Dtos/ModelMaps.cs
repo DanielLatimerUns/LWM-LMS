@@ -13,19 +13,15 @@ public static class ModelMaps
             Name = model.Name,
             IsPublished = model.IsPublished,
             Id = model.Id,
-            Days = model.Days.Select(x => new TimeTableDayModel
+            Entries = model.TimeTableEntries.Select(x => new TimeTableEntryModel
             {
                 Id = x.Id,
-                DayOfWeek = x.DayOfWeek,
-                TimeTableId = x.TimeTableId,
-                TimeTableEntries = x.TimeTableEntries.Select(x => new TimeTableEntryModel
-                {
-                    Id = x.Id,
-                    GroupId = x.GroupId,
-                    StartTime = x.StartTime,
-                    EndTime = x.EndTime,
-                    TimeTableDayId = x.TimeTableDayId
-                }).ToList()
+                GroupId = x.GroupId,
+                StartTime = x.StartTime.ToString("HH:mm"),
+                EndTime = x.EndTime.ToString("HH:mm"),
+                DayNumber = x.DayNumber,
+                TeacherId = x.TeacherId
+                
             }).ToList()
         };
     }

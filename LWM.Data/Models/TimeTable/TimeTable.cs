@@ -6,5 +6,5 @@ public class TimeTable : IDbEntity
     public required string Name { get; set; }
     
     public bool IsPublished { get; set; }
-    public ICollection<TimeTableDay> Days { get; set; } = [];
+    public ICollection<TimeTableEntry> TimeTableEntries { get; set; } = [];
 }

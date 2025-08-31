@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {JSX, useEffect, useState} from "react";
 import RestService from "../../services/network/RestService";
 import './people-manager.css';
 import { Person } from "../../entities/domainModels/person";

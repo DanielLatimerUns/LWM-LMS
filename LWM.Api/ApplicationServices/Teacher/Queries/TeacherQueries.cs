@@ -15,7 +15,9 @@ namespace LWM.Api.ApplicationServices.Teacher.Queries
     {
         public async Task<IEnumerable<Dtos.Models.TeacherModel>> GetTeachersAsync()
         {
-            return await coreContext.Teachers.Select(
+            return await coreContext.Teachers
+                .Include(x => x.Person)
+                .Select(
                 x => x.ToModel()).ToListAsync();
         }
     }

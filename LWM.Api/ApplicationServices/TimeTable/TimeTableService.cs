@@ -63,8 +63,7 @@ public class TimeTableService(ITimetableWriteService timetableWriteService,
         
         var timeTable = await
             context.TimeTables
-                .Include(x => x.Days)
-                .ThenInclude(x => x.TimeTableEntries)
+                .Include(x => x.TimeTableEntries)
                 .FirstOrDefaultAsync(x => x.Id == timeTableId);
 
         if (timeTable is null)
@@ -74,11 +73,11 @@ public class TimeTableService(ITimetableWriteService timetableWriteService,
         await DetectClashingSchedules(timeTable, response);
         
         var schedules = 
-            timeTable.Days.SelectMany(x => x.TimeTableEntries)
+            timeTable.TimeTableEntries
                 .Select(x => new ScheduleEntryModel
                 {
                     GroupId = x.GroupId,
-                    SchedualedDayOfWeek = x.TimeTableDay.DayOfWeek,
+                    SchedualedDayOfWeek = x.DayNumber,
                     SchedualedStartTime = x.StartTime.ToString("HH:mm"),
                     SchedualedEndTime = x.EndTime.ToString("HH:mm"),
                     StartWeek = DateTime.Now.YearWeek(),
@@ -99,27 +98,30 @@ public class TimeTableService(ITimetableWriteService timetableWriteService,
 
     private async Task DetectClashingSchedules(Data.Models.TimeTable.TimeTable timeTable, List<TimeTablePublishResponse> response)
     {
-        foreach (var day in timeTable.Days)
+        foreach (var entry in timeTable.TimeTableEntries)
         {
             var repeatedExistingDaySchedules =
                 await context.Schedules
                     .Include(x => x.Group)
-                    .Where(x => x.ScheduledDayOfWeek == day.DayOfWeek && x.StartWeek >= DateTime.Now.YearWeek() &&
+                    .Where(x => x.ScheduledDayOfWeek == entry.DayNumber && x.StartWeek >= DateTime.Now.YearWeek() &&
                                 x.Repeat == 0)
                     .ToListAsync();
-
-            foreach (var schedule in repeatedExistingDaySchedules)
-            {
-                var clashes = day.TimeTableEntries.Where(x => x.TeacherId == schedule.Group.TeacherId &&
-                                                              x.StartTime >= schedule.ScheduledStartTime &&
-                                                              x.EndTime <= schedule.ScheduledEndTime).ToList();
-                
-                response.AddRange(clashes.Select(x => new TimeTablePublishResponse
-                {
-                    ClashingScheduleId = schedule.Id,
-                    Message = "Clash with repeated schedule, consider fixing this in the schedular."
-                }));
-            }
+            
+            
+            //TODO: Implement this
+            // foreach (var schedule in repeatedExistingDaySchedules)
+            // {
+            //     var clashes = timeTable.TimeTableEntries
+            //         .Where(x => x.TeacherId == schedule.Group.TeacherId &&
+            //                                                   x.StartTime >= schedule.ScheduledStartTime &&
+            //                                                   x.EndTime <= schedule.ScheduledEndTime).ToList();
+            //     
+            //     response.AddRange(clashes.Select(x => new TimeTablePublishResponse
+            //     {
+            //         ClashingScheduleId = schedule.Id,
+            //         Message = "Clash with repeated schedule, consider fixing this in the schedular."
+            //     }));
+            // }
         }
     }
 }

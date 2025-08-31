@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import './app.css';
 import ModuleSideBar from "../applets/module-side-bar/module-side-bar";
 import ModuleLoader from "../framework/components/modulePanel/module-loader";
@@ -36,17 +37,21 @@ interface Props {}
         AuthService.Logout();
         setIsAuthenticated(false);
     }
+    
+    const queryClient = new QueryClient();
 
      if (isAuthenticated) {
          return (
-             <div className="appOuterContainer">
-                 <ModuleSideBar
-                     onOptionSelectionChanged={onActiveModuleChange}>
-                 </ModuleSideBar>
-                 <ModuleLoader activeModule={activeModule}>
-                     {initialisedModules}
-                 </ModuleLoader>
-             </div>);
+             <QueryClientProvider client={queryClient}>
+                 <div className="appOuterContainer">
+                     <ModuleSideBar
+                         onOptionSelectionChanged={onActiveModuleChange}>
+                     </ModuleSideBar>
+                     <ModuleLoader activeModule={activeModule}>
+                         {initialisedModules}
+                     </ModuleLoader>
+                </div>
+             </QueryClientProvider>);
      }
 
      return (

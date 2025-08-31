@@ -7,9 +7,7 @@ public class TimeTableEntry : IDbEntity
     public int Id { get; set; }
     public required TimeOnly StartTime { get; set; }
     public required TimeOnly EndTime { get; set; }
-    
-    public TimeTableDay TimeTableDay { get; set; }
-    public int TimeTableDayId { get; set; }
+    public int DayNumber { get; set; }
     
     public Group.Group Group { get; set; }
     public int GroupId { get; set; }
