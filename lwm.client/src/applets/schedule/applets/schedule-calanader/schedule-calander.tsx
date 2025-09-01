@@ -69,7 +69,7 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
     }
 
     function buildDay(weekday: WeekDay) {
-        if(!weekday.week) {
+        if (!weekday.week) {
             return <div></div>;
         }
 

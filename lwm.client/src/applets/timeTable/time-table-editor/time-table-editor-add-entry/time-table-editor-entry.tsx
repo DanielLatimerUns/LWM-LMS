@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {JSX} from 'react'
 import './time-table-editor-entry.css';
 import {TimeTable, TimeTableEntry } from "../../../../entities/app/timeTable";
 import Form, {FormField} from "../../../../framework/components/form/form";

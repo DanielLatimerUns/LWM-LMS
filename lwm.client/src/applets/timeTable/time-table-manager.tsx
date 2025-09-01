@@ -11,6 +11,7 @@ import {useQueryLwm} from "../../services/network/queryLwm.ts";
 export interface Props {}
 
 const TimeTableManager: React.FunctionComponent<Props> = () => {
+    
     const [selectedTimeTable, setSelectedTimeTable] = useState<TimeTable>();
     
     const [appletActive, setAppletActive] = useState<boolean>(false);
@@ -30,11 +31,11 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             timetableQuery.data?.map(timeTable => ({columnData: timeTable, id: timeTable.id} as GridRow)) 
             ?? [];
         
-        const timeTableEditorButton = new LwmButton({
+        const timeTableEditorButton = {
             onClick: handleTimetableEditorClicked,
             name: "Manage Timetable",
             isSelected: false,
-        })
+        };
         
         return {
             columns: columns,

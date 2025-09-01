@@ -1,7 +1,6 @@
-import ScheduleInstance from "../../entities/app/scheduleInstance";
-import Week from "../../entities/app/week";
-import WeekDay from "../../entities/app/weekday";
-import Schedule from "../../entities/domainModels/schedule";
+import {ScheduleInstance} from "../../entities/app/scheduleInstance";
+import {WeekDay, Week} from "../../entities/app/schedule";
+import {Schedule} from "../../entities/domainModels/schedule";
 
 const schedulingService = () => {
     const weekDays = (): WeekDay[] => {
@@ -11,6 +10,8 @@ const schedulingService = () => {
             {dayNumber: 3, displayName: "Wednesday"},
             {dayNumber: 4, displayName: "Thursday"},
             {dayNumber: 5, displayName: "Friday"},
+            {dayNumber: 6, displayName: "Saturday"},
+            {dayNumber: 7, displayName: "Sunday"},
         ]
     }
 

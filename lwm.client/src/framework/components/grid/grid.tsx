@@ -117,7 +117,7 @@ export default class Grid extends React.Component<Props, State> {
         }
         
         this.props.customButtons?.forEach(button => {
-            buttons.push(<LwmButton isSelected={false} onClick={button.props.onClick.bind(this, rowId)} name={button.props.name}></LwmButton>);
+            buttons.push(<LwmButton isSelected={false} onClick={button.onClick.bind(this, rowId)} name={button.name}></LwmButton>);
         })
         
         return buttons;

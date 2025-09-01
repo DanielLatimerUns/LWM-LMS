@@ -9,29 +9,23 @@ interface Props {
     icon?: string;
 }
 
-interface State {
-}
-
-export default class LwmButton extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-    }
-
-    render() {
-        return (
-        <div
-            className={this.props.isSelected ? "lwmButton-selected" : "lwmButton"}
-            onClick={this.props.onClick.bind(this)}>
-            {this.buildIcon()}
-            {this.props.name ?? this.props.children}
-        </div> );
-    }
-
-    private buildIcon() {
-        if (this.props.icon) {
-            return <img src={this.props.icon}></img>;
+const LwmButton: React.FunctionComponent<Props> = (props: Props) => {
+   function buildIcon() {
+        if (props.icon) {
+            return <img src={props.icon}></img>;
         }
 
         return "";
     }
+    
+    return (
+            <div
+                className={props.isSelected ? "lwmButton-selected" : "lwmButton"}
+                onClick={props.onClick.bind(this)}>
+                {buildIcon()}
+                {props.name ?? props.children}
+            </div> 
+    );
 }
+
+export default LwmButton;

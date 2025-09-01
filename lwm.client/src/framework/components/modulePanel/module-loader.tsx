@@ -1,45 +1,36 @@
-import React, {JSX} from 'react'
+import React from 'react'
 import './module-loader.css'
-import {SideBarOption} from "../../../entities/framework/sideBarOption.ts";
+import {GetModules, ModuleDefinition} from "../../../entities/framework/moduleDefinition.ts";
+import {Outlet, useRouteLoaderData} from "react-router";
 
-interface Props {
-    children: JSX.Element[];
-    activeModule: SideBarOption
-}
- 
-interface State {
+interface Props {}
+
+const TimeTableModuleLoaderEditorEntry: React.FunctionComponent<Props> = () => {
+    let module: ModuleDefinition | undefined = undefined;
     
-}
- 
-export default class ModuleLoader extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = { };
-    }
-    
-    buildModuleList() {
-        const elements: JSX.Element[] = [];
+    for (const _module of GetModules()) {
+        const activeModule = useRouteLoaderData(_module.name) as ModuleDefinition;
         
-        for (const element of this.props.children) {
-            elements.push(
-                <div className={element === this.props.activeModule.module ? "moduleLoaderModule-active    " : "moduleLoaderModule"}>
-                    <div className="moduleLoaderHeader">
-                        <img src={this.props.activeModule.icon}/>
-                        <h2>{this.props.activeModule.name}</h2>
-                    </div>
-                    {element}
-                </div>
-            );
+        if (activeModule) {
+            module = activeModule;
         }
-        
-        return elements;
     }
-
-    render() { 
-        return ( 
-            <div className="moduleLoaderContainer">
-                {this.buildModuleList()}
+    
+    if (!module) {
+        return;
+    }
+    
+    return (
+        <div className="moduleLoaderContainer">
+            <div className={"moduleLoaderModule"}>
+                <div className="moduleLoaderHeader">
+                    <img src={module.icon}/>
+                    <h2>{module.name}</h2>
+                </div>
+                <Outlet/>
             </div>
-         );
-    }
+        </div>
+    );
 }
+
+export default TimeTableModuleLoaderEditorEntry;

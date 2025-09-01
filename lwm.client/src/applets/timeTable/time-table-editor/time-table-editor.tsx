@@ -13,7 +13,6 @@ export interface Props {
 }
 
 const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
-    
     const [selectedEntry, setSelectedEntry] = useState<TimeTableEntry>();
     
     const groupQuery = 
