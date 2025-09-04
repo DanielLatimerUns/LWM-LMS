@@ -82,7 +82,10 @@ const UserManager: React.FunctionComponent<Props> = () => {
             RestService.Get(`user/${searchString}`).then(
                 response => response.json().then(
                     (data: User[]) => setUsers(data)
-                ).catch(error => console.error(error))
+                ).catch(error => {
+                    setError(error);
+                    return;
+                })
             );
             return;
         }
@@ -90,7 +93,10 @@ const UserManager: React.FunctionComponent<Props> = () => {
         RestService.Get('user').then(
             response => response.json().then(
                 (data: User[]) => setUsers(data)
-            ).catch(error => console.error(error))
+            ).catch(error => {
+                setError(error);
+                return;
+            })
         );
     }
 

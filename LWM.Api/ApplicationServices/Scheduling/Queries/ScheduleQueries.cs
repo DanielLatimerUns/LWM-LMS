@@ -26,25 +26,47 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
             var query = context.Schedules
                 .Include(x => x.Group);
 
+            var timeTabledEntries =
+                context.TimeTables
+                    .Include(x => x.TimeTableEntries)
+                    .Where(x => x.IsPublished).SelectMany(x => x.TimeTableEntries).ToList();
+
             if (filter != null)
                 query.Where(filter);
 
-            return query.Select(x => new ScheduleEntryModel
+            var schedules = query.Select(x => new ScheduleEntryModel
             {
                 Id = x.Id,
                 GroupId = x.Group.Id,
-                SchedualedDayOfWeek = x.ScheduledDayOfWeek,
-                SchedualedStartTime = x.ScheduledStartTime.ToString("HH:mm"),
-                SchedualedEndTime = x.ScheduledEndTime.ToString("HH:mm"),
+                ScheduledDayOfWeek = x.ScheduledDayOfWeek,
+                ScheduledStartTime = x.ScheduledStartTime.ToString("HH:mm"),
+                ScheduledEndTime = x.ScheduledEndTime.ToString("HH:mm"),
                 HourStart = x.ScheduledStartTime.Hour,
                 HourEnd = x.ScheduledEndTime.Hour,
                 MinuteStart = x.ScheduledStartTime.Minute,
                 MinuteEnd = x.ScheduledEndTime.Minute,
                 DurationMinutes = (x.ScheduledEndTime - x.ScheduledStartTime).TotalMinutes,
-                SchedualedDayOfWeekName = ((DayOfWeek)x.ScheduledDayOfWeek).ToString(),
+                ScheduledDayOfWeekName = ((DayOfWeek)x.ScheduledDayOfWeek).ToString(),
                 Repeat = x.Repeat,
                 StartWeek = x.StartWeek
-            });
+            }).ToList();
+            
+            schedules.AddRange(timeTabledEntries.Select(x => new ScheduleEntryModel
+            {
+                TimeTableEntryId = x.Id,
+                GroupId = x.GroupId,
+                ScheduledDayOfWeek = x.DayNumber,
+                ScheduledStartTime = x.StartTime.ToString("HH:mm"),
+                ScheduledEndTime = x.EndTime.ToString("HH:mm"),
+                HourStart = x.StartTime.Hour,
+                HourEnd = x.EndTime.Hour,
+                MinuteStart = x.StartTime.Minute,
+                MinuteEnd = x.EndTime.Minute,
+                DurationMinutes = (x.EndTime - x.StartTime).TotalMinutes,
+                ScheduledDayOfWeekName = ((DayOfWeek)x.DayNumber).ToString(),
+            }));
+            
+            return schedules;
         }
 
         public LessonViewModel GetCurrentLessonForTeacher(UserViewModel userViewModel)
@@ -83,8 +105,8 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                     new ScheduleEntryModel
                     { 
                         Id = lessonSchedule.Id,
-                        SchedualedEndTime = lessonSchedule.ScheduledEndTime.ToString(),
-                        SchedualedStartTime = lessonSchedule.ScheduledStartTime.ToString()
+                        ScheduledEndTime = lessonSchedule.ScheduledEndTime.ToString(),
+                        ScheduledStartTime = lessonSchedule.ScheduledStartTime.ToString()
                     },
                 Lesson =
                     new LessonModel
@@ -152,8 +174,8 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                     new ScheduleEntryModel
                     {
                         Id = lessonSchedule.Id,
-                        SchedualedEndTime = lessonSchedule.ScheduledEndTime.ToString(),
-                        SchedualedStartTime = lessonSchedule.ScheduledStartTime.ToString()
+                        ScheduledEndTime = lessonSchedule.ScheduledEndTime.ToString(),
+                        ScheduledStartTime = lessonSchedule.ScheduledStartTime.ToString()
                     },
                     Lesson =
                     new Dtos.Models.LessonModel

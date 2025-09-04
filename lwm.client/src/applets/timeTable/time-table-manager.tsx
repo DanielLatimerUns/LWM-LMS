@@ -7,13 +7,12 @@ import LwmButton from "../../framework/components/button/lwm-button.tsx";
 import {newRecordIcon} from "../../framework/icons.ts";
 import TimeTableEditor from "./time-table-editor/time-table-editor.tsx";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
+import {ButtonConfig} from "../../entities/framework/lwmButton.ts";
 
 export interface Props {}
 
 const TimeTableManager: React.FunctionComponent<Props> = () => {
-    
     const [selectedTimeTable, setSelectedTimeTable] = useState<TimeTable>();
-    
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
     const [searchString, setSearchString] = useState<string>();
@@ -31,10 +30,9 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             timetableQuery.data?.map(timeTable => ({columnData: timeTable, id: timeTable.id} as GridRow)) 
             ?? [];
         
-        const timeTableEditorButton = {
+        const timeTableEditorButton: ButtonConfig = {
             onClick: handleTimetableEditorClicked,
             name: "Manage Timetable",
-            isSelected: false,
         };
         
         return {
@@ -154,20 +152,22 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             RestService.Post('timetable', selectedTimeTable)
                 .then(() => timetableQuery.refetch())
                 .catch(error => {
-                        console.error(error);
-                        setError("Critical error");
+                        setError(error);
+                        return;
                     }
                 )
+            setAppletActive(false);
             return;
         }
 
         RestService.Put('timetable', selectedTimeTable)
             .then(() => timetableQuery.refetch())
             .catch(error => {
-                    console.error(error);
-                    setError("Critical error");
+                    setError(error);
+                    return
                 }
             )
+        setAppletActive(false);
     }
     
     return (

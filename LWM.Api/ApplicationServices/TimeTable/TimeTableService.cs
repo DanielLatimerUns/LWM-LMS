@@ -77,9 +77,9 @@ public class TimeTableService(ITimetableWriteService timetableWriteService,
                 .Select(x => new ScheduleEntryModel
                 {
                     GroupId = x.GroupId,
-                    SchedualedDayOfWeek = x.DayNumber,
-                    SchedualedStartTime = x.StartTime.ToString("HH:mm"),
-                    SchedualedEndTime = x.EndTime.ToString("HH:mm"),
+                    ScheduledDayOfWeek = x.DayNumber,
+                    ScheduledStartTime = x.StartTime.ToString("HH:mm"),
+                    ScheduledEndTime = x.EndTime.ToString("HH:mm"),
                     StartWeek = DateTime.Now.YearWeek(),
                     Repeat = 0,
                     TimeTableEntryId = x.Id

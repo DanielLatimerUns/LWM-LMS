@@ -1,4 +1,4 @@
-import React, {JSX, useEffect, useState} from "react";
+import React, {JSX, useState} from "react";
 import RestService from "../../services/network/RestService";
 import './group-manager.css';
 import LwmButton from "../../framework/components/button/lwm-button";
@@ -7,36 +7,18 @@ import { Group } from "../../entities/domainModels/group";
 import GroupWizard from "./applets/group-wizard/group-wizard";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
+import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
 
 const GroupManager: React.FunctionComponent<Props> = () => {
-    const [groups, setGroups] = useState<Group[]>([]);
-    const [selectedGroup, setSelectedGroup] = useState<Group>({
-        name: "",
-        id: 0,
-        teacherId: -1,
-        completedLessonNumber: 0
-    });
+    const [selectedGroup, setSelectedGroup] = useState<Group>();
     
     const [error, setError] = useState<string | undefined>('All fields required');
     const [appletActive, setAppletActive] = useState<boolean>(false);
-    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
-    const [isGettingData, setIsGettingData] = useState<boolean>(false);
-    const [searchString, setSearchString] = useState<string>();
-
-    useEffect(() => {
-        if (requiresUpdate) {
-            setIsGettingData(true);
-            getGroups();
-            setRequiresUpdate(false);
-            setAppletActive(false);
-        }
-    }, [requiresUpdate]);
-
-    useEffect(() => {
-        setIsGettingData(false);
-    }, [groups])
+    const [searchString, setSearchString] = useState<string>("");
+    
+    const groupQuery = useQueryLwm<Group[]>(`groups_${searchString}`, `group/${searchString}`);
 
     function buildGridConfig() {
         const columns: GridColumn[] = [
@@ -44,16 +26,14 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         ];
 
         const rows: GridRow[] =
-        groups.map(group => ({columnData: group, id: group.id}));
+        groupQuery.data?.map(group => ({columnData: group, id: group.id})) ?? [];
 
-        const gridConfig = {
-                columns: columns,
-                rows: rows,
-                handleEditClicked: handleEditGroup,
-                handleDeleteClicked: handleDeleteGroup,
-            };
-
-        return gridConfig;
+        return {
+            columns: columns,
+            rows: rows,
+            handleEditClicked: handleEditGroup,
+            handleDeleteClicked: handleDeleteGroup,
+        };
     }
 
     function buildActionOptions() {
@@ -80,23 +60,6 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         return options;
     }
 
-    function getGroups() {
-        if (searchString) {
-            RestService.Get(`group/${searchString}`).then(
-                resoponse => resoponse.json().then(
-                    (data: Group[]) => setGroups(data)
-                ).catch( error => console.error(error))
-            );
-            return;
-        }
-
-        RestService.Get('group').then(
-            resoponse => resoponse.json().then(
-                (data: Group[]) => setGroups(data)
-            ).catch( error => console.error(error))
-        );
-    }
-
     function handleAddNewGroup() {
         const group: Group = {
             name: "",
@@ -115,17 +78,9 @@ const GroupManager: React.FunctionComponent<Props> = () => {
     }
 
     function handleDeleteGroup(group: Group) {
-        RestService.Delete(`group/${group.id}`).then(() => getGroups());
+        RestService.Delete(`group/${group.id}`).then(() => groupQuery.refetch());
     }
-
-    function handleDataChange(response: Response) {
-        if (!response.ok) {
-            setError(response.statusText);
-            return;
-        }
-        setRequiresUpdate(true);
-    }
-
+    
     function handleAppletCancel() {
         setError(undefined);
         setAppletActive(false);
@@ -137,27 +92,27 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         }
 
         if (selectedGroup?.id === 0) {
-            RestService.Post('group', selectedGroup).then(handleDataChange).catch( error =>
-                console.error(error)
+            RestService.Post('group', selectedGroup).then(() => groupQuery.refetch()).catch( error => {
+                    setError(error);
+                    return;
+                }
             )
+            setAppletActive(false);
             return;
         }
 
-        RestService.Put('group', selectedGroup).then(handleDataChange).catch( error =>
-            console.error(error)
+        RestService.Put('group', selectedGroup).then(() => groupQuery.refetch()).catch( error => {
+                setError(error);
+                return;
+            }
         )
     }
     
-    const handldeSearchChanged = (searchString: string) => {
-        setSearchString(searchString !== '' ? searchString : undefined);
-        setRequiresUpdate(true);
-    }
-
     return (
         <Module
             gridConfig={buildGridConfig()}
-            isLoading={isGettingData}
-            onSearchChnaged={handldeSearchChanged}
+            isLoading={groupQuery.isPending}
+            onSearchChnaged={() => setSearchString(searchString)}
             moduleName="Group Center"
             moduleEntityName="Group"
             handleCloseClicked={handleAppletCancel}

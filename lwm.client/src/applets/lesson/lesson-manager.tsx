@@ -116,18 +116,27 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
     const getLessons = () => {
         if (searchString) {
             RestService.Get(`lesson/${searchString}`).then(
-                resoponse => resoponse.json().then(
+                response => response.json().then(
                     (data: Lesson[]) => {setLessons(data);}
-                ).catch(error => console.error(error))
+                ).catch(error => {
+                    setError(error);
+                    return;
+                })
             );
+            setAppletActive(false);
             return;
         }
 
         RestService.Get('lesson').then(
-            resoponse => resoponse.json().then(
+            response => response.json().then(
                 (data: Lesson[]) => {setLessons(data);}
-            ).catch(error => console.error(error))
+            ).catch(error => {
+                setError(error);
+                return;
+            })
         );
+        
+        setAppletActive(false);
     }
 
     const handleActionOptionClicked = (action: string) => {

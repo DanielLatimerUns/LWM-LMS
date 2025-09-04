@@ -19,9 +19,6 @@ const schedulingService = () => {
         const builtSchedules: ScheduleInstance[] = [];
 
         for (const schedule of schedules) {
-            if (!schedule.startWeek || !schedule.repeat) {
-                continue;
-            }
 
             // starts this week
             if (schedule.startWeek === week.weekNumber) {
@@ -38,7 +35,6 @@ const schedulingService = () => {
             // repeat and start week is this week or this week is in repeat range
             if ((schedule.repeat + schedule.startWeek) > week.weekNumber && week.weekNumber >= (schedule.startWeek)) {
                 builtSchedules.push(createScheduleInstance(schedule));
-                continue;
             }
         }
 
@@ -47,9 +43,9 @@ const schedulingService = () => {
 
     function createScheduleInstance(schedule: Schedule): ScheduleInstance {
         return {
-            schedualedStartTime: schedule.schedualedStartTime,
-            schedualedEndTime: schedule.schedualedEndTime,
-            schedualedDayOfWeek: schedule.schedualedDayOfWeek,
+            scheduledStartTime: schedule.scheduledStartTime,
+            scheduledEndTime: schedule.scheduledEndTime,
+            scheduledDayOfWeek: schedule.scheduledDayOfWeek,
             hourEnd: schedule.hourEnd,
             hourStart: schedule.hourStart,
             id: schedule.id,
@@ -59,7 +55,8 @@ const schedulingService = () => {
             repeat: schedule.repeat ?? 0,
             startWeek: schedule.startWeek ?? 0,
             minuteEnd: schedule.minuteEnd,
-            minuteStart: schedule.minuteStart
+            minuteStart: schedule.minuteStart,
+            timeTableEntryId: schedule.timeTableEntryId,
         }
     }
 

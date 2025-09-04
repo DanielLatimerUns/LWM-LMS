@@ -1,4 +1,4 @@
-import React, {JSX, useEffect, useState} from "react";
+import React, {JSX, useState} from "react";
 import RestService from "../../services/network/RestService";
 import LwmButton from "../../framework/components/button/lwm-button";
 import Module, { GridColumn, GridRow } from "../../framework/components/module/module";
@@ -10,39 +10,18 @@ import ScheduleCalander from "./applets/schedule-calanader/schedule-calander";
 import {Group} from "../../entities/domainModels/group";
 import moment from "moment";
 import {ScheduleInstance} from "../../entities/app/scheduleInstance";
+import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
 
 const ScheduleManager: React.FunctionComponent<Props> = () => {
-    const [schedules, setSchedules] = useState<Schedule[]>([]);
-    const [selectedSchedule, setSelectedSchedule] = useState<Schedule>({
-        durationMinutes: 0,
-        minuteStart: 0,
-        minuteEnd: 0,
-        hourStart: moment().hour(),
-        hourEnd: moment().hour() + 1,
-        id: 0,
-        schedualedStartTime: "",
-        schedualedEndTime: "",
-        schedualedDayOfWeek: -1,
-        groupId: -1,
-        repeat: 0,
-        startWeek: moment().week()});
-
+    const [selectedSchedule, setSelectedSchedule] = useState<Schedule>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>('All fields required');
-    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
     const [isCalanaderViewActive, setIsCalanaderViewActive] = useState<boolean>(true);
-    const [groups, setGroups] = useState<Group[]>([]);
-
-    useEffect(() => {
-        if (requiresUpdate) {
-            getSchedules();
-            getGroups();
-            setAppletActive(false);
-            setRequiresUpdate(false);
-        }
-    }, [requiresUpdate])
+    
+    const groupsQuery = useQueryLwm<Group[]>('groups', 'group');
+    const schedulesQuery = useQueryLwm<Schedule[]>('schedules', 'schedule');
 
     function buildGridConfig() {
         const columns: GridColumn[] = [
@@ -52,7 +31,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         ];
 
         const rows: GridRow[] =
-        schedules.map(schedule => ({columnData: schedule, id: schedule.id}));
+        schedulesQuery.data?.map(schedule => ({columnData: schedule, id: schedule.id}) as GridRow) ?? [];
 
         const gridConfig = {
                 columns: columns,
@@ -88,7 +67,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
                     onClick={() => handleAddNewSchedule(undefined)}
                     name={(!appletActive ||
                         selectedSchedule?.id === 0) ? "Add" :
-                        "Edit: " + selectedSchedule?.schedualedStartTime}
+                        "Edit: " + selectedSchedule?.scheduledStartTime}
                     icon={newIcon}>
                 </LwmButton>
             ),
@@ -96,23 +75,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
 
         return options;
     }
-
-    function getSchedules() {
-        RestService.Get('lessonschedule').then(
-            resoponse => resoponse.json().then(
-                (data: Schedule[]) => setSchedules(data)
-            ).catch(error => console.error(error))
-        );
-    }
-
-    function getGroups() {
-        RestService.Get('group').then(
-            resoponse => resoponse.json().then(
-                (data: Group[]) => setGroups(data)
-            ).catch( error => console.error(error))
-        );
-    }
-
+    
     function handleSwitchView() {
         setIsCalanaderViewActive(true);
     }
@@ -125,9 +88,9 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             hourStart: moment().hour(),
             hourEnd: moment().hour() + 1,
             id: 0,
-            schedualedStartTime: "",
-            schedualedEndTime: "",
-            schedualedDayOfWeek: -1,
+            scheduledStartTime: "",
+            scheduledEndTime: "",
+            scheduledDayOfWeek: -1,
             groupId: -1,
             repeat: 0,
             startWeek: moment().week()
@@ -136,10 +99,10 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         if (instance) {
             if(!instance?.hourEnd || !instance?.hourStart)  {return;}
 
-            schedule.schedualedStartTime = moment().hour(instance.hourStart).format("hh:00");
-            schedule.schedualedEndTime = moment().hour(instance.hourEnd).format("hh:00");
+            schedule.scheduledStartTime = moment().hour(instance.hourStart).format("hh:00");
+            schedule.scheduledEndTime = moment().hour(instance.hourEnd).format("hh:00");
             schedule.startWeek = instance.weekNumber;
-            schedule.schedualedDayOfWeek = instance.scheduledDayOfWeek;
+            schedule.scheduledDayOfWeek = instance.scheduledDayOfWeek;
         }
 
         setSelectedSchedule(schedule);
@@ -152,15 +115,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
     }
 
     function handleDeleteSchedule(schedule: Schedule) {
-        RestService.Delete(`schedule/${schedule.id}`).then(() => getSchedules());
-    }
-
-    function handleDataChange(response: Response) {
-        if (!response.ok) {
-            setError(response.statusText);
-            return;
-        }
-        setRequiresUpdate(true);
+        RestService.Delete(`schedule/${schedule.id}`).then(() => schedulesQuery.refetch());
     }
 
     function handleAppletCancel() {
@@ -174,23 +129,32 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         }
 
         if (selectedSchedule?.id === 0) {
-            RestService.Post('schedule', selectedSchedule).then(handleDataChange).catch(
-                error => console.error(error)
+            RestService.Post('schedule', selectedSchedule).then(() => schedulesQuery.refetch()).catch(
+                error => {
+                    setError(error);
+                    return;
+                }
             )
+            setAppletActive(false);
             return;
         }
 
-        RestService.Put('schedule', selectedSchedule).then(handleDataChange).catch(
-            error => console.error(error)
+        RestService.Put('schedule', selectedSchedule).then(() => schedulesQuery.refetch()).catch(
+            error => {
+                setError(error);
+                return;
+            }
         );
+        
+        setAppletActive(false);
     }
 
     const calanaderView =
         <ScheduleCalander
             handleScheduleClicked={handleEditSchedule}
             handleNewScheduleClicked={handleAddNewSchedule}
-            groups={groups}
-            schedules={schedules}/>;
+            groups={groupsQuery.data ?? []}
+            schedules={schedulesQuery.data ?? []}/>;
 
     return (
         <Module
@@ -205,7 +169,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             altView={isCalanaderViewActive ? calanaderView : undefined}
             isLoading={false}>
             <ScheduleWizard
-                    groups={groups}
+                    groups={groupsQuery.data ?? []}
                     onChange={(schedule: Schedule) => setSelectedSchedule(schedule)}
                     onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
                     schedule={selectedSchedule}>

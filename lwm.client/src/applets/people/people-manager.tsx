@@ -1,4 +1,4 @@
-import React, {JSX, useEffect, useState} from "react";
+import React, {JSX, useState} from "react";
 import RestService from "../../services/network/RestService";
 import './people-manager.css';
 import { Person } from "../../entities/domainModels/person";
@@ -7,49 +7,30 @@ import PeopleWizard from "./applets/people-wizard/people-wizard";
 import Module, {GridColumn, GridRow} from "../../framework/components/module/module";
 import newIcon from '../../assets/new_icon.png';
 import recordIcon from '../../assets/record_icon.png';
+import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
 
 const PersonManager: React.FunctionComponent<Props> = () => {
-    const [persons, setPersons] = useState<Person[]>([]);
-    const [selectedPerson, setSelectedPerson] = useState<Person>({
-        forename: "",
-        surname: "", id: 0,
-        emailAddress1: "",
-        phoneNo: "",
-        personType: 1
-    });
+    const [selectedPerson, setSelectedPerson] = useState<Person>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>('All fields required');
-    const [requiresUpdate, setRequiresUpdate] = useState<boolean>(true);
-    const [isGettingData, setIsGettingData] = useState<boolean>(false);
-    const [searchString, setSearchString] = useState<string>();
-
-    useEffect(() => {
-        if (requiresUpdate) {
-            setIsGettingData(true);
-            getPeople();
-            setAppletActive(false);
-            setRequiresUpdate(false);
-        }
-    }, [requiresUpdate]);
-
-    useEffect(() => {
-        setIsGettingData(false);
-    }, [persons])
-
-
-
+    const [searchString, setSearchString] = useState<string>("");
+    
+    const personQuery = 
+        useQueryLwm<Person[]>(`persons_${searchString}`, `person/${searchString}`);
+    
     function buildGridConfig() {
         const columns: GridColumn[] = [
             {lable: "Forename", name: "forename"},
             {lable: "Surname", name: "surname"},
             {lable: "Email", name: "emailAddress1"},
             {lable: "Phone", name: "phoneNo"},
+            {lable: "Group", name: "group"},
         ];
-
+        
         const rows: GridRow[] =
-        persons.map(person => ({columnData: person, id: person.id}));
+        personQuery.data?.map(person => ({columnData: person, id: person.id})) ?? [];
 
         const gridConfig = {
                 columns: columns,
@@ -59,7 +40,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             };
 
         return gridConfig;
-    };
+    }
 
     function buildActionOptions() {
         const options: JSX.Element[] = [
@@ -76,32 +57,15 @@ const PersonManager: React.FunctionComponent<Props> = () => {
                     isSelected={appletActive}
                     onClick={handleAddNewPerson}
                     name={(!appletActive ||
-                        selectedPerson.id === 0) ? "Add" :
-                        "Edit: " + selectedPerson.forename}
+                        selectedPerson?.id === 0) ? "Add" :
+                        "Edit: " + selectedPerson?.forename}
                     icon={newIcon}>
                 </LwmButton>
             )
         ];
 
         return options;
-    };
-
-    function getPeople() {
-        if(searchString) {
-            RestService.Get(`person/${searchString}`).then(
-                resoponse => resoponse.json().then(
-                    (data: Person[]) => setPersons(data)
-                ).catch( error => console.error(error))
-            );
-            return;
-        }
-
-        RestService.Get('person').then(
-            resoponse => resoponse.json().then(
-                (data: Person[]) => setPersons(data)
-            ).catch( error => console.error(error))
-        );
-    };
+    }
 
     function handleAddNewPerson() {
         const person: Person = {
@@ -114,28 +78,20 @@ const PersonManager: React.FunctionComponent<Props> = () => {
 
         setSelectedPerson(person);
         setAppletActive(true);
-    };
+    }
 
     function handleEditPerson(person: Person) {
         setSelectedPerson(person);
         setAppletActive(true);
-    };
+    }
 
     function handleDeletePerson(person: Person) {
-        RestService.Delete(`person/${person.id}`).then(() => getPeople());
-    };
-
-    function handleDataChange(response: Response) {
-        if (!response.ok) {
-            setError(response.statusText);
-            return;
-        }
-        setRequiresUpdate(true);
+        RestService.Delete(`person/${person.id}`).then(() => personQuery.refetch());
     }
 
     function handleAppletCancel() {
         setAppletActive(false);
-    };
+    }
 
     function handleAppletSave() {
         if (error) {
@@ -143,23 +99,24 @@ const PersonManager: React.FunctionComponent<Props> = () => {
         }
 
         if (selectedPerson?.id === 0) {
-            RestService.Post('person', selectedPerson).then(handleDataChange)
-                .catch( error =>
-                console.error(error)
+            RestService.Post('person', selectedPerson).then(() => personQuery.refetch())
+                .catch( error => {
+                    setError(error)
+                    return;
+                }
             )
-            return
+            setAppletActive(false);
+            return;
         }
 
-        RestService.Put('person', selectedPerson).then(handleDataChange).catch( error =>
-            console.error(error)
+        RestService.Put('person', selectedPerson).then(() => personQuery.refetch()).catch( error => {
+                setError(error)
+                return;
+            }
         )
+        setAppletActive(false);
     }
-
-    const handldeSearchChanged = (searchString: string) => {
-        setSearchString(searchString !== '' ? searchString : undefined);
-        setRequiresUpdate(true);
-    }
-
+    
     return (
         <Module
             gridConfig={buildGridConfig()}
@@ -170,8 +127,8 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             options={buildActionOptions()}
             error={error}
             appletActive={appletActive}
-            onSearchChnaged={handldeSearchChanged}
-            isLoading={isGettingData}>
+            onSearchChnaged={(searchString: string) => setSearchString(searchString)}
+            isLoading={personQuery.isPending}>
                 <PeopleWizard
                     onChange={(person: Person) => setSelectedPerson(person)}
                     onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}

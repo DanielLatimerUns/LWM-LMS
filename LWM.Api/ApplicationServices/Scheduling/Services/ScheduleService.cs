@@ -39,16 +39,16 @@ namespace LWM.Api.ApplicationServices.Scheduling.Services
             if (scheduleEntry is null)
                 throw new BadRequestException("No Lesson Schedule Provided.");
 
-            if (scheduleEntry.SchedualedDayOfWeek is null)
+            if (scheduleEntry.ScheduledDayOfWeek is null)
                 throw new BadRequestException("Missing Day of week.");
 
             if (scheduleEntry.GroupId is null)
                 throw new BadRequestException("Missing Group.");
 
-            if (scheduleEntry.SchedualedStartTime is null)
+            if (scheduleEntry.ScheduledStartTime is null)
                 throw new BadRequestException("Missing Start Time.");
 
-            if (scheduleEntry.SchedualedEndTime is null)
+            if (scheduleEntry.ScheduledEndTime is null)
                 throw new BadRequestException("Missing End Time.");
 
             // TODO: why am I not using the result

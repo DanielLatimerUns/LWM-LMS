@@ -1,86 +1,62 @@
-.scheduleCalanderContainer {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.scheduleCalanderWeekContainer {
-    display: flex;
-    align-content: space-evenly;
-    gap: 15px;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.scheduleCalanderDayContainer {
-    display: flex;
-    flex-direction: column;
+.scheduleContainer {
+    display: grid;
     gap: 10px;
     width: 100%;
 }
 
-.scheduleCalanderDayHeader {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-
+.scheduleWeekContainer {
+    overflow: scroll;
+    display: grid;
+    grid-template-columns:  80px repeat(7, 1fr);
+    grid-template-rows: repeat(23, 60px);
 }
 
-.scheduleCalanderHourContainer {
-    display: flex;
-    gap:15px;
-    align-items: center;
-    padding-left: 5px;
-    padding-right: 5px;
-
+.scheduleWeekHeader {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
 }
 
-.scheduleCalanderHoursScheduleContainer {
-    border: 2px solid rgba(247 242 242 / 10%);
-    width: 100%;
-    padding: 5px;
-}
-
-.scheduleCalanderDayHours {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    border-radius: 5px;
-    width: 100%;
-}
-
-.scheduleCalanderHours {
-    display: flex;
-    gap: 10px;
-    justify-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.scheduleCalanderScheduleEntry {
-    display: flex;
-    font-size: 13px;
-    border-radius: 5px;
-    padding-right: 2px;
-    padding-left: 5px;
-}
-
-.scheduleCalanderScheduleAdd {
-    font-size: 10px;
-}
-
-.scheduleCalanderWeekSelection {
+.scheduleWeekSelection {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
-.currentDay {
-    border: green 2px solid;
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: solid 1px rgb(247 242 242 / 20%);
+    border-right: solid 1px rgb(247 242 242 / 20%);
 }
 
-.scheduleCalanderScheduleEntryDuration {
-    background: green;
+.cell:hover {
+    background: rgba(247 242 242 / 50%);
+    cursor: pointer;
+}
+
+.scheduleWeekDay {
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.scheduleWeekHour {
+    grid-column: 1;
+}
+
+.schedule {
     border-radius: 5px;
+    justify-items: center;
+    background: #646cff;
+    color: black;
+    margin-right: 5px;
+}
+
+.schedule:hover {
+    border: 2px solid black !important;
+    cursor: pointer;
 }

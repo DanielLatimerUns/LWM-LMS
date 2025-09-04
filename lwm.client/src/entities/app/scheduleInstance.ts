@@ -12,4 +12,5 @@ export type ScheduleInstance = {
     startWeek: number;
     minuteStart: number;
     minuteEnd: number;
+    timeTableEntryId?: number;
 }

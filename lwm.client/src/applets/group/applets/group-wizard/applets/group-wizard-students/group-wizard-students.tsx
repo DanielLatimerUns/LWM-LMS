@@ -18,7 +18,7 @@ interface Props {
             columns={columns}
             rows={props.students.map(student => ({columnData: student, id: student.id}))}
             editClicked={() => {return;}}
-            deletClicked={() => {return;}}>
+            deleteClicked={() => {return;}}>
         </Grid>)
     }
 

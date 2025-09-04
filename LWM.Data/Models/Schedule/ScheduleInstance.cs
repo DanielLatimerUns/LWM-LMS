@@ -1,4 +1,6 @@
-﻿namespace LWM.Data.Models.Schedule
+﻿using LWM.Data.Models.TimeTable;
+
+namespace LWM.Data.Models.Schedule
 {
     public class ScheduleInstance : IDbEntity
     {
@@ -12,5 +14,7 @@
 
         public DateTime ScheduledDateTime { get; set; }
         public bool IsCancelled { get; set; }
-    }
+        
+        public TimeTableEntry? TimeTableEntry { get; set; }
+        public int? TimeTableEntryId { get; set; }    }
 }

@@ -21,6 +21,19 @@ interface Props {
                 </select>
             )
         }
+        
+        if (field.type === 'checkbox') {
+            return(
+                <input
+                    type={field.type}
+                    id={field.id}
+                    checked={field.value}
+                    onChange={(e: any) => handleFormChange(e, field)}
+                    pattern={field.validationPattern}
+                    className={!validateField(field) ?  "invalid-input" : ""}
+                    required/>
+            )
+        }
 
         return(
             <input
@@ -35,7 +48,7 @@ interface Props {
     }
 
     function handleFormChange(e: any, field: FormField) {
-        field.value = e.target.value;
+        field.value = field.type === 'checkbox' ? (e.target.value === "on") : e.target.value;
 
         const isChangedFieldValid = validateField(field);
         props.onFieldValidationChanged(isChangedFieldValid);
@@ -45,7 +58,7 @@ interface Props {
         }
 
         const changedObject = Object.assign({}, props.formObject);
-        const targetField: string = e.target.value;
+        const targetField = field.value
 
         for (const key in changedObject) {
             if (key === e.target.id) {

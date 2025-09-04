@@ -9,12 +9,16 @@ import {FormField} from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
 
 export interface Props {
-    group: Group;
+    group?: Group;
     onValidationChanged?: Function;
     onChange: Function;
 }
 
 const GroupWizard: React.FunctionComponent<Props> = (props) => {
+    if (!props.group) {
+        return;
+    }
+    
     const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [assignedStudents, setAssignedStudents] = useState<Student[]>([]);
 
@@ -35,7 +39,7 @@ const GroupWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Name" ,
                 id: "name",
-                value: props.group.name,
+                value: props.group?.name,
                 onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
@@ -45,7 +49,7 @@ const GroupWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Teacher",
                 id: "teacherId",
-                value: props.group.teacherId,
+                value: props.group?.teacherId,
                 onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
@@ -84,10 +88,10 @@ const GroupWizard: React.FunctionComponent<Props> = (props) => {
     }
 
     function getAssigneStudents() {
-        if (props.group.id === 0 )
+        if (props.group?.id === 0 )
             return;
 
-        RestService.Get(`group/${props.group.id}/students`).then(
+        RestService.Get(`group/${props.group?.id}/students`).then(
             resoponse => resoponse.json().then(
                 (data: Student[]) => setAssignedStudents(data)
             ).catch( error => console.error(error))

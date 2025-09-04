@@ -6,29 +6,28 @@ import RestService from "../../../../services/network/RestService";
 import { Student } from "../../../../entities/domainModels/student";
 import Form, { FormField } from "../../../../framework/components/form/form";
 import personType from "../../../../entities/enums/personType";
+import {useQueryLwm} from "../../../../services/network/queryLwm.ts";
 
 export interface Props {
-    person: Person;
+    person?: Person;
     onValidationChanged?: Function;
     onChange: Function;
 }
 
 const PeopleWizard: React.FunctionComponent<Props> = (props) => {
-    const [groups, setGroups] = useState<Group[]>([]);
-
-    useEffect(() => {
-        if (props.person.personType === personType.Student) {
-            getGroups();
-            getStudentRecord();
-        }
-    }, []);
+    if (!props.person) {
+        return ;
+    }
+    
+    const groupsQuery = 
+        useQueryLwm<Group[]>('groups', 'group');
 
     function renderForms() {
         const fields: FormField[] = [
             {
                 label: "Person Type" ,
                 id: "personType",
-                value: props.person.personType,
+                value: props.person?.personType,
                 onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
@@ -42,7 +41,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Forename" ,
                 id: "forename",
-                value: props.person.forename,
+                value: props.person?.forename,
                 onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
@@ -52,7 +51,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Surname" ,
                 id: "surname",
-                value: props.person.surname,
+                value: props.person?.surname,
                 onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
@@ -62,7 +61,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Email" ,
                 id: "emailAddress1",
-                value: props.person.emailAddress1,
+                value: props.person?.emailAddress1,
                 onFieldChanged: handleFormChange,
                 validationPattern: undefined,
                 required: true,
@@ -72,7 +71,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Phone" ,
                 id: "phoneNo",
-                value: props.person.phoneNo,
+                value: props.person?.phoneNo,
                 onFieldChanged: handleFormChange,
                 validationPattern: "[0-9]+",
                 required: false,
@@ -81,7 +80,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             }
         ];
 
-        if (props.person.personType !== personType.Student) {
+        if (props.person?.personType !== personType.Student) {
             return (
             <Fragment>
                 <div className="fieldSetHeader">Person Record</div>
@@ -95,7 +94,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             <option value={-1}>Select a Group</option>
         ];
 
-        groups.map(group => builtGroups.push(
+        groupsQuery.data?.map(group => builtGroups.push(
             <option value={group.id}>{group.name}</option>)
         );
 
@@ -121,28 +120,7 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
             </Fragment>
         )
     }
-
-    function getGroups() {
-        RestService.Get('group').then(
-            resoponse => resoponse.json().then(
-                (data: Group[]) => setGroups(data)
-            ).catch( error => console.error(error))
-        );
-    }
-
-    function getStudentRecord() {
-        RestService.Get(`person/${props.person.id}/student`).then(
-            response => response.json().then(
-                (data: Student[]) => {
-                    const updatedPerson = Object.assign({}, props.person);
-                    updatedPerson.student = data[0];
-
-                    props.onChange(updatedPerson);
-                }
-            ).catch(error => console.error(error))
-        );
-    }
-
+    
     function handleFormChange(changedPerson: Person) {
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
 

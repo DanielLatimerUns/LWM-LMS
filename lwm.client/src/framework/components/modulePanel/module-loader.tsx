@@ -22,13 +22,11 @@ const TimeTableModuleLoaderEditorEntry: React.FunctionComponent<Props> = () => {
     
     return (
         <div className="moduleLoaderContainer">
-            <div className={"moduleLoaderModule"}>
                 <div className="moduleLoaderHeader">
                     <img src={module.icon}/>
                     <h2>{module.name}</h2>
                 </div>
                 <Outlet/>
-            </div>
         </div>
     );
 }

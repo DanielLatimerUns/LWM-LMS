@@ -137,7 +137,9 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
                     timetableQuery.refetch();
                     handleEntryClicked(selectedEntry.dayNumber);
                 }
-            ).catch(error => console.error(error));
+            ).catch(error => {
+                console.error(error)
+            });
             return;
         }
         
@@ -149,6 +151,8 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
                 timetableQuery.refetch();
             }
         ).catch(error => console.error(error));
+        
+        setSelectedEntry(undefined);
     }
     
     if (timetableQuery.isPending) {

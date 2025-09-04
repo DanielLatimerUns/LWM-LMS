@@ -31,6 +31,16 @@ const TimeTableWizard: React.FunctionComponent<Props> = (props) => {
                 required: true,
                 validationPattern: undefined,
                 selectOptions: undefined,
+            },
+            {
+                label: "Published",
+                id: "isPublished",
+                value: props.timeTable.isPublished,
+                onFieldChanged: props.onChanged,
+                type: "checkbox",
+                required: true,
+                validationPattern: undefined,
+                selectOptions: undefined,
             }
         ];
         

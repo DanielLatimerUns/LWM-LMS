@@ -74,7 +74,7 @@ const ModuleSideBar: React.FunctionComponent<Props> = () => {
         }
     }
 
-    return(
+    return (
         <div className='panelOuterContainer'>
             <div className='panelHeaderContainer'>
                 <div className='panelHeaderLogo'>

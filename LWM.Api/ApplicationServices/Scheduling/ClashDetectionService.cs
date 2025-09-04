@@ -13,21 +13,21 @@ namespace LWM.Api.ApplicationServices.Scheduling
     {
         public ScheduleEntryModel FindClash(ScheduleEntryModel scheduleEntry)
         {
-            if (scheduleEntry.SchedualedStartTime is null || scheduleEntry.SchedualedEndTime is null)
+            if (scheduleEntry.ScheduledStartTime is null || scheduleEntry.ScheduledEndTime is null)
                 throw new BadRequestException("Missing start or end time.");
 
-            if (scheduleEntry.SchedualedDayOfWeek is null)
+            if (scheduleEntry.ScheduledDayOfWeek is null)
                 throw new BadRequestException("Missing day of week.");
 
-            var parsedStartTime = TimeOnly.Parse(scheduleEntry.SchedualedStartTime);
-            var parsedEndTime = TimeOnly.Parse(scheduleEntry.SchedualedEndTime);
+            var parsedStartTime = TimeOnly.Parse(scheduleEntry.ScheduledStartTime);
+            var parsedEndTime = TimeOnly.Parse(scheduleEntry.ScheduledEndTime);
 
             if (parsedEndTime < parsedStartTime)
                 throw new BadRequestException("End time before start time.");
 
             var potentialClashes =
                 context.Schedules.Where(
-                    x => x.ScheduledDayOfWeek == scheduleEntry.SchedualedDayOfWeek &&
+                    x => x.ScheduledDayOfWeek == scheduleEntry.ScheduledDayOfWeek &&
                          ((x.StartWeek == scheduleEntry.StartWeek) || 
                           ((x.StartWeek + x.Repeat) <= (scheduleEntry.StartWeek + scheduleEntry.Repeat)) ||
                                 (x.StartWeek > scheduleEntry.StartWeek && scheduleEntry.Repeat == 0) ||
@@ -47,10 +47,10 @@ namespace LWM.Api.ApplicationServices.Scheduling
                     return new ScheduleEntryModel
                     {
                         Id = potentialClash.Id,
-                        SchedualedStartTime = potentialClash.ScheduledStartTime.ToString(),
-                        SchedualedEndTime = potentialClash.ScheduledEndTime.ToString(),
-                        SchedualedDayOfWeek = potentialClash.ScheduledDayOfWeek,
-                        SchedualedDayOfWeekName = ((DayOfWeek)potentialClash.ScheduledDayOfWeek).ToString()
+                        ScheduledStartTime = potentialClash.ScheduledStartTime.ToString(),
+                        ScheduledEndTime = potentialClash.ScheduledEndTime.ToString(),
+                        ScheduledDayOfWeek = potentialClash.ScheduledDayOfWeek,
+                        ScheduledDayOfWeekName = ((DayOfWeek)potentialClash.ScheduledDayOfWeek).ToString()
                     };
                 }
             }

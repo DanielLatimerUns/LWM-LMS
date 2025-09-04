@@ -2,6 +2,7 @@ import React, {Fragment, JSX} from "react";
 import './module.css';
 import LwmButton from "../../../framework/components/button/lwm-button";
 import Grid, { GridRow, GridColumn } from "../grid/grid";
+import {ButtonConfig} from "../../../entities/framework/lwmButton.ts";
 
 export interface Props {
     moduleName: string;
@@ -11,7 +12,7 @@ export interface Props {
         rows: GridRow[],
         handleEditClicked: Function,
         handleDeleteClicked: Function,
-        customButtons?: LwmButton[]
+        customButtons?: ButtonConfig[]
     };
     handleSaveCloseClicked?: Function;
     handleCloseClicked?: Function;
@@ -109,7 +110,7 @@ export default class Module extends React.Component<Props, State> {
             <Grid
                 isDataLoading={this.props.isLoading}
                 editClicked={this.props.gridConfig.handleEditClicked}
-                deletClicked={this.props.gridConfig.handleDeleteClicked}
+                deleteClicked={this.props.gridConfig.handleDeleteClicked}
                 columns={this.props.gridConfig.columns}
                 customButtons={this.props.gridConfig.customButtons}
                 rows={this.props.gridConfig.rows}>

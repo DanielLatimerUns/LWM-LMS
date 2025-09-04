@@ -13,13 +13,12 @@ namespace LWM.Api.DomainServices.Schedule
         {
             var model = new ScheduleItem
             {
-                ScheduledDayOfWeek = scheduleEntry.SchedualedDayOfWeek.Value,
-                ScheduledStartTime = TimeOnly.Parse(scheduleEntry.SchedualedStartTime),
-                ScheduledEndTime = TimeOnly.Parse(scheduleEntry.SchedualedEndTime),
+                ScheduledDayOfWeek = scheduleEntry.ScheduledDayOfWeek.Value,
+                ScheduledStartTime = TimeOnly.Parse(scheduleEntry.ScheduledStartTime),
+                ScheduledEndTime = TimeOnly.Parse(scheduleEntry.ScheduledEndTime),
                 Group = await context.Groups.FirstAsync(x => x.Id == scheduleEntry.GroupId),
                 StartWeek = scheduleEntry.StartWeek,
                 Repeat = scheduleEntry.Repeat,
-                TimeTableEntryId = scheduleEntry.TimeTableEntryId
             };
 
             context.Schedules.Add(model);
@@ -46,9 +45,9 @@ namespace LWM.Api.DomainServices.Schedule
 
             Validate(model);
 
-            model.ScheduledDayOfWeek = scheduleEntry.SchedualedDayOfWeek.Value;
-            model.ScheduledStartTime = TimeOnly.Parse(scheduleEntry.SchedualedStartTime);
-            model.ScheduledEndTime = TimeOnly.Parse(scheduleEntry.SchedualedEndTime);
+            model.ScheduledDayOfWeek = scheduleEntry.ScheduledDayOfWeek.Value;
+            model.ScheduledStartTime = TimeOnly.Parse(scheduleEntry.ScheduledStartTime);
+            model.ScheduledEndTime = TimeOnly.Parse(scheduleEntry.ScheduledEndTime);
             model.Group = await context.Groups.FirstAsync(x => x.Id == scheduleEntry.GroupId);
             model.Repeat = scheduleEntry.Repeat;
             model.StartWeek = scheduleEntry.StartWeek;

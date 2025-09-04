@@ -23,9 +23,9 @@
         public async Task<IEnumerable<Dtos.Models.PersonModel>> GetPersonsBySearchStringAsync(string searchString)
         {
             var result = await context.Persons.Where(
-                x => x.Forename.Contains(searchString) ||
-                x.Surname.Contains(searchString) ||
-                x.EmailAddress1.Contains(searchString)
+                x => x.Forename.ToUpper().Contains(searchString.ToUpper()) ||
+                x.Surname.ToUpper().Contains(searchString.ToUpper()) ||
+                x.EmailAddress1.ToUpper().Contains(searchString.ToUpper())
                 ).ToListAsync();
 
             return result.Select(MapDto);

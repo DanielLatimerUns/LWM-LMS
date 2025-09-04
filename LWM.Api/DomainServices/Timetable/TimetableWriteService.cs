@@ -15,7 +15,8 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
     {
         var entity = new TimeTable
         {
-            Name = model.Name
+            Name = model.Name,
+            IsPublished = model.IsPublished,
         };
         
         context.Add(entity);
@@ -32,6 +33,7 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
         Validate(timetable);
         
         timetable!.Name = model.Name;
+        timetable.IsPublished = model.IsPublished;
         
         await context.SaveChangesAsync();
     }

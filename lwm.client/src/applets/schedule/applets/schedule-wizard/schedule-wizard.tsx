@@ -6,7 +6,7 @@ import {FormField} from "../../../../entities/framework/formField";
 import Form from "../../../../framework/components/form/form";
 
 export interface Props {
-    schedule: Schedule;
+    schedule?: Schedule;
     onValidationChanged?: Function;
     groups: Group[];
     onChange: Function;
@@ -15,6 +15,10 @@ export interface Props {
 const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
 
     function renderForms() {
+        if (props.schedule === undefined) {
+            return;
+        }
+        
         const groups: JSX.Element[] = [
             <option value={undefined}>Select a Group</option>
         ];
@@ -38,7 +42,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Day Of Week",
                 id: "scheduledDayOfWeek",
-                value: props.schedule.schedualedDayOfWeek,
+                value: props.schedule.scheduledDayOfWeek,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
@@ -48,7 +52,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Start Time" ,
                 id: "scheduledStartTime",
-                value: props.schedule.schedualedStartTime,
+                value: props.schedule.scheduledStartTime,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,
@@ -58,7 +62,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "End Time" ,
                 id: "scheduledEndTime",
-                value: props.schedule.schedualedEndTime,
+                value: props.schedule.scheduledEndTime,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: true,

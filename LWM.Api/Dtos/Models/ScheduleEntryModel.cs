@@ -3,10 +3,10 @@
     public class ScheduleEntryModel
     {
         public int Id { get; set; }
-        public int? SchedualedDayOfWeek { get; set; }
-        public string? SchedualedDayOfWeekName { get; set; }
-        public string? SchedualedStartTime { get; set; }
-        public string SchedualedEndTime { get; set; }
+        public int? ScheduledDayOfWeek { get; set; }
+        public string? ScheduledDayOfWeekName { get; set; }
+        public string? ScheduledStartTime { get; set; }
+        public string ScheduledEndTime { get; set; }
         public int? GroupId { get; set; }
         public int HourStart { get; set; }
         public int HourEnd { get; set; }
