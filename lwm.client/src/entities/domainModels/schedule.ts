@@ -12,4 +12,7 @@ export type Schedule = {
     repeat: number;
     startWeek: number;
     timeTableEntryId?: number;
+    title: string;
+    description: string;
+    isCancelled: boolean;
 }

@@ -10,7 +10,7 @@ public interface ITimeTableQueries
 {
     Task<List<TimeTableModel>> GetTimeTablesAsync();
     Task<TimeTableModel> GetTimeTableByIdAsync(int id);
-    Task<Data.Models.TimeTable.TimeTable?> GetPublishedTimeTable();
+    Task<Data.Models.TimeTable.TimeTable?> GetPublishedTimeTableForWeek(int week);
 }
 
 public class TimeTableQueries(CoreContext context) : ITimeTableQueries
@@ -34,12 +34,26 @@ public class TimeTableQueries(CoreContext context) : ITimeTableQueries
         return timetable.ToModel();
     }
     
-    public async Task<Data.Models.TimeTable.TimeTable?> GetPublishedTimeTable()
+    public async Task<Data.Models.TimeTable.TimeTable?> GetPublishedTimeTableForWeek(int week)
     {
-        var timeTable = await context.TimeTables
+        var timetable = await context.TimeTables.FirstOrDefaultAsync(x => x.IsPublished);
+        if (timetable is null)
+        {
+            return null;
+        }
+
+        var timeTablePublishedWeek = timetable.PublishedFrom.YearWeek();
+
+        if (timeTablePublishedWeek > week)
+        {
+            return null;
+        }
+        
+        var timeTableWithEntries = await context.TimeTables
             .Include(x => x.TimeTableEntries)
+            .ThenInclude(y => y.ScheduleInstances.Where(x => x.WeekNumber == week))
             .FirstOrDefaultAsync(x => x.IsPublished);
 
-        return timeTable ?? null;
+        return timeTableWithEntries ?? null;
     }
 }

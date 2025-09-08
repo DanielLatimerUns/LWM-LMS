@@ -16,7 +16,8 @@ interface Props {
                     id={field.id}
                     value={field.value}
                     className={!validateField(field) ?  "invalid-input" : ""}
-                    onChange={(e: any) => handleFormChange(e, field)}>
+                    onChange={(e: any) => handleFormChange(e, field)}
+                    disabled={field.isReadOnly}>
                         {field.selectOptions}
                 </select>
             )
@@ -31,7 +32,8 @@ interface Props {
                     onChange={(e: any) => handleFormChange(e, field)}
                     pattern={field.validationPattern}
                     className={!validateField(field) ?  "invalid-input" : ""}
-                    required/>
+                    required={field.required}
+                    disabled={field.isReadOnly}/>
             )
         }
 
@@ -43,7 +45,8 @@ interface Props {
                 onChange={(e: any) => handleFormChange(e, field)}
                 pattern={field.validationPattern}
                 className={!validateField(field) ?  "invalid-input" : ""}
-                required/>
+                required={field.required}
+                disabled={field.isReadOnly}/>
         )
     }
 
@@ -111,7 +114,7 @@ interface Props {
     const form = (
         <div className="formFieldContainer">
             {props.fields.map(field =>
-                <div className="formField">
+                <div className="formField" hidden={field.isHidden}>
                     <label>{field.label}</label>
                     <div className="formFieldInput">
                         {buildFormField(field)}

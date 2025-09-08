@@ -3,7 +3,7 @@ import './index.css'
 import App from './app/app'
 import {createBrowserRouter, RouterProvider} from "react-router";
 import {GetModules} from "./entities/framework/moduleDefinition.ts";
-import ScheduleManager from "./applets/schedule/schedule-manager.tsx";
+import ScheduleManager from "./modules/schedule/schedule-manager.tsx";
 
 const routes = GetModules()
     .map(module => ({
@@ -13,12 +13,16 @@ const routes = GetModules()
         id: module.name,
     }));
 
-routes.push({
-    path: "/",
-    Component:() => (<ScheduleManager/>),
-    loader: () => GetModules().find(x => x.name === 'Schedules'),
-    id: "_default"
-})
+const defaultModule = GetModules().find(x => x.isDefault);
+
+if (defaultModule) {
+    routes.push({
+        path: "/",
+        Component:() => (<ScheduleManager/>),
+        loader: () => defaultModule,
+        id: "_default"
+    })
+}
 
 let router = createBrowserRouter([
     {

@@ -13,6 +13,7 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
     {
         Task<IEnumerable<ScheduleEntryModel>> GetScheduleEntries(
             Expression<Func<ScheduleItem, bool>> filter = null);
+        Task<IEnumerable<ScheduleEntryModel>> GetScheduleForWeek(int week);
 
         LessonViewModel GetCurrentLessonForTeacher(UserViewModel userViewModel);
         LessonFeedViewModel GetCurrentLessonFeedForTeacher(UserViewModel userViewModel);
@@ -44,40 +45,21 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                 DurationMinutes = (x.ScheduledEndTime - x.ScheduledStartTime).TotalMinutes,
                 ScheduledDayOfWeekName = ((DayOfWeek)x.ScheduledDayOfWeek).ToString(),
                 Repeat = x.Repeat,
-                StartWeek = x.StartWeek
+                StartWeek = x.StartWeek,
+                Title = x.Title,
+                Description = x.Description,
             }).ToList();
-
-            var timetable = await timeTableQueries.GetPublishedTimeTable();
-
-            if (timetable is null)
-            {
-                return schedules;
-            }
-            
-            schedules.AddRange(timetable.TimeTableEntries.Select(x => new ScheduleEntryModel
-            {
-                TimeTableEntryId = x.Id,
-                GroupId = x.GroupId,
-                ScheduledDayOfWeek = x.DayNumber,
-                ScheduledStartTime = x.StartTime.ToString("HH:mm"),
-                ScheduledEndTime = x.EndTime.ToString("HH:mm"),
-                HourStart = x.StartTime.Hour,
-                HourEnd = x.EndTime.Hour,
-                MinuteStart = x.StartTime.Minute,
-                MinuteEnd = x.EndTime.Minute,
-                StartWeek = timetable.PublishedFrom.YearWeek(),
-                DurationMinutes = (x.EndTime - x.StartTime).TotalMinutes,
-                ScheduledDayOfWeekName = ((DayOfWeek)x.DayNumber).ToString(),
-            }));
             
             return schedules;
         }
 
-        public async Task<IEnumerable<ScheduleEntryModel>> GetScheduleEntriesForWeek(int week)
+        public async Task<IEnumerable<ScheduleEntryModel>> GetScheduleForWeek(int week)
         {
-            var query = context.Schedules
+            var query = await context.Schedules
                 .Include(x => x.Group)
-                .Where(x => (x.StartWeek == week && x.Repeat > 0) || (x.StartWeek <= week && x.Repeat == 0));
+                .Include(x => x.ScheduleInstances.Where(y => y.WeekNumber == week))
+                .Where(x => (x.StartWeek == week && x.Repeat > 0) || (x.StartWeek <= week && x.Repeat == 0))
+                .ToListAsync();
 
             var schedules = query.Select(x => new ScheduleEntryModel
             {
@@ -93,10 +75,15 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                 DurationMinutes = (x.ScheduledEndTime - x.ScheduledStartTime).TotalMinutes,
                 ScheduledDayOfWeekName = ((DayOfWeek)x.ScheduledDayOfWeek).ToString(),
                 Repeat = x.Repeat,
-                StartWeek = x.StartWeek
+                StartWeek = x.StartWeek,
+                ScheduleInstanceId = x.GetScheduledInstanceForWeek(week)?.Id ?? 0,
+                Title = x.Title,
+                Description = x.Description,
+                InstanceWeekNumber = week,
+                IsCancelled = x.GetScheduledInstanceForWeek(week)?.IsCancelled ?? false,
             }).ToList();
 
-            var timetable = await timeTableQueries.GetPublishedTimeTable();
+            var timetable = await timeTableQueries.GetPublishedTimeTableForWeek(week);
 
             if (timetable is null)
             {
@@ -117,6 +104,9 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                 StartWeek = timetable.PublishedFrom.YearWeek(),
                 DurationMinutes = (x.EndTime - x.StartTime).TotalMinutes,
                 ScheduledDayOfWeekName = ((DayOfWeek)x.DayNumber).ToString(),
+                ScheduleInstanceId = x.GetScheduledInstanceForWeek(week)?.Id ?? 0,
+                InstanceWeekNumber = week,
+                IsCancelled = x.GetScheduledInstanceForWeek(week)?.IsCancelled ?? false
             }));
             
             return schedules;

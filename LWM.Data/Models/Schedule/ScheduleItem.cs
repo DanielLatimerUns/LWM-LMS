@@ -12,5 +12,13 @@ namespace LWM.Data.Models.Schedule
         public TimeOnly ScheduledEndTime { get; set; }
         public required Group.Group Group { get; set; }
         public int GroupId { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public ICollection<ScheduleInstance> ScheduleInstances { get; set; } = [];
+        
+        public ScheduleInstance? GetScheduledInstanceForWeek(int weekNumber)
+        {
+            return ScheduleInstances.FirstOrDefault(x => x.WeekNumber == weekNumber);
+        }
     }
 }

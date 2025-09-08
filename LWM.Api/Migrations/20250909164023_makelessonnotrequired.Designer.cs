@@ -3,6 +3,7 @@ using System;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LWM.Api.Migrations
 {
     [DbContext(typeof(CoreContext))]
-    partial class CoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250909164023_makelessonnotrequired")]
+    partial class makelessonnotrequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,7 +265,7 @@ namespace LWM.Api.Migrations
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("LessonId")
+                    b.Property<int>("LessonId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Notes")
@@ -470,7 +473,9 @@ namespace LWM.Api.Migrations
                 {
                     b.HasOne("LWM.Data.Models.Lesson.Lesson", "Lesson")
                         .WithMany()
-                        .HasForeignKey("LessonId");
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("LWM.Data.Models.Schedule.ScheduleItem", "ScheduleItem")
                         .WithMany("ScheduleInstances")

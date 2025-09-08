@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {NavLink} from "react-router";
 import { ModuleDefinition, GetModules } from '../../entities/framework/moduleDefinition.ts';
-import './module-side-bar.css';
+import './menu-bar.css';
 import LwmButton from '../../framework/components/button/lwm-button';
 import {getActiveModule} from "../../services/network/modules/moduleService.ts";
 
 interface Props {}
 
-const ModuleSideBar: React.FunctionComponent<Props> = () => {
+const MenuBar: React.FunctionComponent<Props> = () => {
     const [options] = useState<ModuleDefinition[]>(GetModules());
 
     const module: ModuleDefinition = getActiveModule();
@@ -40,4 +40,4 @@ const ModuleSideBar: React.FunctionComponent<Props> = () => {
     )
 }
 
-export default ModuleSideBar;
+export default MenuBar;

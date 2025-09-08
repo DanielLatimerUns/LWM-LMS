@@ -1,14 +1,14 @@
 import React from 'react'
 import './module-loader.css'
 import {Outlet} from "react-router";
-import {getActiveModule} from "../../../services/network/modules/moduleService.ts";
-import {ModuleDefinition} from "../../../entities/framework/moduleDefinition.ts";
-import AuthService from "../../../services/network/authentication/authService.ts";
-import LwmButton from "../button/lwm-button.tsx";
+import {ModuleDefinition} from "../../entities/framework/moduleDefinition.ts";
+import {getActiveModule} from "../../services/network/modules/moduleService.ts";
+import AuthService from "../../services/network/authentication/authService.ts";
+import LwmButton from "../../framework/components/button/lwm-button.tsx";
 
 interface Props {}
 
-const TimeTableModuleLoaderEditorEntry: React.FunctionComponent<Props> = () => {
+const ModuleLoader: React.FunctionComponent<Props> = () => {
     const module: ModuleDefinition = getActiveModule();
 
     function renderAccountSection() {
@@ -51,4 +51,4 @@ const TimeTableModuleLoaderEditorEntry: React.FunctionComponent<Props> = () => {
     );
 }
 
-export default TimeTableModuleLoaderEditorEntry;
+export default ModuleLoader;

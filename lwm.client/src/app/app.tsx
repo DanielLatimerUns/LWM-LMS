@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 import './app.css';
-import ModuleSideBar from "../applets/module-side-bar/module-side-bar";
-import ModuleLoader from "../framework/components/modulePanel/module-loader";
 import AuthService from "../services/network/authentication/authService";
 import LoginSplash from "./authentication/login-spash/login-splash";
+import ModuleLoader from "./modulePanel/module-loader.tsx";
+import MenuBar from "./menuBar/menu-bar.tsx";
 
 interface Props {}
 
@@ -28,7 +28,7 @@ interface Props {}
          return (
              <QueryClientProvider client={queryClient}>
                  <div className="appOuterContainer">
-                     <ModuleSideBar/>
+                     <MenuBar/>
                      <ModuleLoader/>
                 </div>
              </QueryClientProvider>);

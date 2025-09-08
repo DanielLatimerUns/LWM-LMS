@@ -19,11 +19,16 @@ namespace LWM.Api.Controllers
         IClashDetectionService clashDetectionService,
         UserManager<User> userManager)  : Controller
     {
-
         [HttpGet]
         public async Task<IEnumerable<ScheduleEntryModel>> Get()
         {
             return await scheduleQueries.GetScheduleEntries();
+        }
+        
+        [HttpGet("{week}")]
+        public async Task<IEnumerable<ScheduleEntryModel>> GetForWeek(int week)
+        {
+            return await scheduleQueries.GetScheduleForWeek(week);
         }
 
         [HttpGet("current")]

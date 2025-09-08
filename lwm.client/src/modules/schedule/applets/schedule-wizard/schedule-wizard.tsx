@@ -37,8 +37,21 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
         props.groups.map(group => groups.push(
         <option value={group.id}>{group.name}</option>))
 
+        const isReadOnly: boolean = props.schedule?.timeTableEntryId ? props.schedule?.timeTableEntryId > 0 : false;
 
         const fields: FormField[] = [
+            {
+                label: "Title" ,
+                id: "title",
+                value: props.schedule.title,
+                onFieldChanged: props.onChange,
+                validationPattern: undefined,
+                required: false,
+                type: "text",
+                selectOptions: undefined,
+                isReadOnly: isReadOnly,
+                isHidden: isReadOnly,
+            },
             {
                 label: "Day Of Week",
                 id: "scheduledDayOfWeek",
@@ -47,7 +60,8 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 validationPattern: undefined,
                 required: true,
                 type: "select",
-                selectOptions: daysOfWeek
+                selectOptions: daysOfWeek,
+                isReadOnly: isReadOnly,
             },
             {
                 label: "Start Time" ,
@@ -57,7 +71,8 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 validationPattern: undefined,
                 required: true,
                 type: "time",
-                selectOptions: undefined
+                selectOptions: undefined,
+                isReadOnly: isReadOnly,
             },
             {
                 label: "End Time" ,
@@ -67,7 +82,8 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 validationPattern: undefined,
                 required: true,
                 type: "time",
-                selectOptions: undefined
+                selectOptions: undefined,
+                isReadOnly: isReadOnly,
             },
             {
                 label: "Repeat Weeks (0 for indefinit)" ,
@@ -77,7 +93,9 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 validationPattern: undefined,
                 required: true,
                 type: "text",
-                selectOptions: undefined
+                selectOptions: undefined,
+                isReadOnly: isReadOnly,
+                isHidden: isReadOnly,
             },
             {
                 label: "Group",
@@ -87,13 +105,38 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 validationPattern: undefined,
                 required: true,
                 type: "select",
-                selectOptions: groups
+                selectOptions: groups,
+                isReadOnly: isReadOnly,
+            },
+            {
+                label: "Description" ,
+                id: "description",
+                value: props.schedule.description,
+                onFieldChanged: props.onChange,
+                validationPattern: undefined,
+                required: false,
+                type: "text",
+                selectOptions: undefined,
+                isReadOnly: isReadOnly,
+                isHidden: isReadOnly,
+            },
+            {
+                label: "Cancelled",
+                id: "isCancelled",
+                value: props.schedule.isCancelled,
+                onFieldChanged: props.onChange,
+                validationPattern: undefined,
+                required: false,
+                type: "checkbox",
+                selectOptions: undefined,
+                isHidden: props.schedule.id == 0,
             },
         ];
 
         return(
             <Fragment>
-                <div className="fieldSetHeader">Schedule Record</div>
+                <div className="fieldSetHeader">{
+                    props.schedule.timeTableEntryId ? "Timetable Entry (Manage from timetables)" :  "Schedule Entry"}</div>
                 <Form onFieldValidationChanged={handleFieldValidationChanged} 
                       fields={fields}
                 formObject={props.schedule}/>

@@ -1,18 +1,18 @@
 .formFieldContainer {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     padding: 10px;
 }
 
 .formField {
+    display: flex;
     justify-content: space-between;
-    align-items: end;
-    padding-bottom: 10px;
 }
 
 .formField label {
     font-size: 18px;
+    width: 200px;
 }
 
 .formFieldInput {

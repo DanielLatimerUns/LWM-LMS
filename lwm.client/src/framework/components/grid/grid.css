@@ -1,6 +1,4 @@
 .gridContent {
-    padding: 5px 5px 5px 0px;
-    border-bottom: 0px;
     color: black;
     display: flex;
     flex-direction: column;
@@ -11,6 +9,9 @@
 .gridContentHeader {
     display: grid;
     grid-auto-columns: 1fr;
+    background: rgba(247 242 242 / 20%);
+    border-radius: 2px;
+    padding-left: 10px;
 }
 
 .gridContentRow {
@@ -18,6 +19,7 @@
     height: 50px;
     display: grid;
     grid-auto-columns: 1fr;
+    border-bottom: 1px solid rgba(247 242 242 / 20%);
 }
 
 .gridContentRow:hover {
@@ -25,20 +27,14 @@
     cursor: pointer;
 }
 
-.gridContentRow:nth-child(even) {
-    border-left: 0;
-    background: rgba(247 242 242 / 20%);
-}
-
 .gridHeaderColumn {
     grid-row: 2;
     display: flex;
-    align-items: center;
     gap: 10px;
     color: white;
-    padding-bottom: 10px;
-    padding-left: 10px;
     font-weight: 600;
+    height: 40px;
+    align-items: center;
 }
 
 .gridHeaderColumn:last-child {

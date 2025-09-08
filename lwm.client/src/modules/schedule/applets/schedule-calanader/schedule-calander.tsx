@@ -6,14 +6,13 @@ import { Group } from "../../../../entities/domainModels/group";
 import Moment from "moment";
 import schedulingService from '../../../../services/scheduling/schedulingHelpers';
 import { Week} from "../../../../entities/app/schedule.ts";
-import {ScheduleInstance} from "../../../../entities/app/scheduleInstance.ts";
-import moment from "moment/moment";
+import {useQueryLwm} from "../../../../services/network/queryLwm.ts";
 
 interface Props {
-    schedules: Schedule[];
     handleScheduleClicked: Function;
     handleNewScheduleClicked: Function;
     groups: Group[];
+    onWeekChanged: Function;
 }
 
 const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
@@ -21,13 +20,17 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
         weekNumber: Moment().week(),
         displayName: `${Moment().week()}`});
 
-
+    const scheduleWeekQuery = 
+        useQueryLwm<Schedule[]>(`weekSchedule_${currentWeekInView.weekNumber}`, `schedule/${currentWeekInView.weekNumber}`);
+    
     function handlePreviousWeekClicked() {
+        props.onWeekChanged(currentWeekInView.weekNumber -1);
         setCurrentWeekInView(
             {weekNumber: currentWeekInView.weekNumber - 1, displayName: `${currentWeekInView.weekNumber - 1}`});
     }
 
     function handleNextWeekClicked() {
+        props.onWeekChanged(currentWeekInView.weekNumber + 1);
         setCurrentWeekInView(
             {weekNumber: currentWeekInView.weekNumber + 1, displayName: `${currentWeekInView.weekNumber + 1}`});
     }
@@ -52,7 +55,6 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
                 </div>
                 <div className="scheduleWeekContainer">
                     {buildGridCells()}
-                  
                     {buildWeekHours()}
                     {buildSchedules()}
                 </div>
@@ -85,9 +87,13 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
                     scheduledStartTime: "",
                     scheduledEndTime: "",
                     scheduledDayOfWeek:j -1,
+                    timeTableEntryId: 0,
+                    title: "",
+                    description: "",
                     groupId: -1,
                     repeat: 0,
                     startWeek: currentWeekInView.weekNumber,
+                    isCancelled: false,
                 };
                 
                 cells.push(
@@ -112,7 +118,7 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
 
             days.push(
                 <div className="scheduleWeekDay" style={dayStyle}>
-                    {day.displayName} {Moment().week(currentWeekInView.weekNumber ?? 0).day(day.dayNumber).format("DD")}
+                    {day.displayName} {Moment().week(currentWeekInView.weekNumber ?? 0).day(day.dayNumber).format("D")}
                 </div>)
         }
         
@@ -138,9 +144,13 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
     function buildSchedules() {
         const schedules: JSX.Element[] = [];
         
-        for (const schedule of schedulingService.generateShedulesForWeek(currentWeekInView, props.schedules)) {
+        if (!scheduleWeekQuery.data) {
+            return [];
+        }
+        
+        for (const schedule of scheduleWeekQuery.data) {
 
-            const isOverlapped = props.schedules.find(
+            const isOverlapped = scheduleWeekQuery.data?.find(
                 x => x.id !== schedule.id 
                     && x.scheduledDayOfWeek === schedule.scheduledDayOfWeek 
                     && (x.hourStart < schedule.hourStart && x.hourEnd > schedule.hourEnd))
@@ -158,16 +168,19 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
                 gridRowStart: schedule.hourStart,
                 gridRowEnd: schedule.hourEnd + (halfHalfHour ? 1 : 0),
                 zIndex: isOverlapped ? 100 : 0,
-                border: isOverlapped ? "2px solid yellow" : "1px solid white",
+                border: schedule.isCancelled ? "red 1px solid" : isOverlapped ? "2px solid yellow" : "1px solid white",
                 height: `${height}px`,
                 alignSelf: halfHalfHour ? "center" : (startsOnHour ? "start" : "end"),
-                background: schedule.timeTableEntryId ? "green" : "#646cff"
+                background: schedule.isCancelled ? "rgb(0,0,0,20%)" : schedule.timeTableEntryId ? "green" : "#646cff",
             }
             
             const group = props.groups.find(group => group.id === schedule.groupId);
             
             schedules.push(
                 <div className="schedule" style={style} onClick={() => props.handleScheduleClicked(schedule)}>
+                    <div>
+                        {schedule.title}{schedule.isCancelled ? " (Cancelled)" : ""}
+                    </div>
                     <div>
                         {group?.name}
                     </div>

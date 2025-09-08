@@ -59,7 +59,7 @@ const Grid: React.FunctionComponent<Props> = (props: Props) => {
 
         return (
             props.rows.map(row =>
-                <div className="gridContentRow" onClick={() => handleEditClicked(row.id)}>
+                <div className="gridContentRow">
                     {generateRow(row.columnData, row.id)}
                 </div>));
     }
@@ -69,7 +69,7 @@ const Grid: React.FunctionComponent<Props> = (props: Props) => {
         Object.entries(columnData).map((column: any) => {
             if (props.columns.map(c => c.name).includes(column[0]) && column[0] !== "id") {
                 columns.push(
-                    <div className="gridContentColumn">
+                    <div className="gridContentColumn" onClick={() => handleEditClicked(rowId)}>
                         {generateContent(column)}
                     </div>);
             }

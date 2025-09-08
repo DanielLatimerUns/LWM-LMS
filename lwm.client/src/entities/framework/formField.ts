@@ -10,4 +10,6 @@ export type FormField = {
     validationPattern: string | undefined;
     selectOptions: JSX.Element[] | undefined;
     isInvalid?: boolean;
+    isReadOnly?: boolean;
+    isHidden?: boolean;
 }

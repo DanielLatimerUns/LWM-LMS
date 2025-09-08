@@ -19,6 +19,8 @@ namespace LWM.Api.DomainServices.Schedule
                 Group = await context.Groups.FirstAsync(x => x.Id == scheduleEntry.GroupId),
                 StartWeek = scheduleEntry.StartWeek,
                 Repeat = scheduleEntry.Repeat,
+                Title = scheduleEntry.Title,
+                Description = scheduleEntry.Description,
             };
 
             context.Schedules.Add(model);
@@ -41,7 +43,9 @@ namespace LWM.Api.DomainServices.Schedule
 
         public async Task UpdateAsync(ScheduleEntryModel scheduleEntry)
         {
-            var model = context.Schedules.FirstOrDefault(x => x.Id == scheduleEntry.Id);
+            var model = await context.Schedules
+                .Include(x => x.ScheduleInstances.Where(y => y.WeekNumber == scheduleEntry.InstanceWeekNumber))
+                .FirstOrDefaultAsync(x => x.Id == scheduleEntry.Id);
 
             Validate(model);
 
@@ -51,6 +55,24 @@ namespace LWM.Api.DomainServices.Schedule
             model.Group = await context.Groups.FirstAsync(x => x.Id == scheduleEntry.GroupId);
             model.Repeat = scheduleEntry.Repeat;
             model.StartWeek = scheduleEntry.StartWeek;
+            model.Title = scheduleEntry.Title;
+            model.Description = scheduleEntry.Description;
+
+            if (model.ScheduleInstances.Any())
+            {
+                var instance = model.ScheduleInstances.First();
+                instance.IsCancelled = scheduleEntry.IsCancelled;
+            }
+            else
+            {
+                var instance = new ScheduleInstance
+                {
+                    IsCancelled = scheduleEntry.IsCancelled,
+                    WeekNumber = scheduleEntry.InstanceWeekNumber,
+                    LessonId = null,
+                };
+                model.ScheduleInstances.Add(instance);
+            }
 
             await context.SaveChangesAsync();
         }

@@ -10,6 +10,7 @@
     display: grid;
     grid-template-columns:  80px repeat(7, 1fr);
     grid-template-rows: repeat(23, 60px);
+    border-top: solid 1px rgb(247 242 242 / 20%);
 }
 
 .scheduleWeekHeader {
@@ -51,13 +52,14 @@
 }
 
 .schedule {
-    border-radius: 5px;
+    border-radius: 1px;
     justify-items: center;
-    background: #646cff;
-    margin-right: 5px;
+    overflow: hidden;
 }
 
 .schedule:hover {
-    border: 2px solid black !important;
+    transform: scale(1.050);
+    border-radius: 4px;
     cursor: pointer;
+    z-index: 1000 !important;
 }

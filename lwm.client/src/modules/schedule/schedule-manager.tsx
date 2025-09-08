@@ -9,7 +9,6 @@ import recordIcon from '../../assets/record_icon.png';
 import ScheduleCalander from "./applets/schedule-calanader/schedule-calander";
 import {Group} from "../../entities/domainModels/group";
 import moment from "moment";
-import {ScheduleInstance} from "../../entities/app/scheduleInstance";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
@@ -20,11 +19,17 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
     const [error, setError] = useState<string | undefined>();
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
     const [isCalanaderViewActive, setIsCalanaderViewActive] = useState<boolean>(true);
+    const [currentWeekNumber, setCurrentWeekNumber] = useState<number>(moment().week());
     
     const groupsQuery = useQueryLwm<Group[]>('groups', 'group');
     const schedulesQuery = useQueryLwm<Schedule[]>('schedules', 'schedule');
+    const scheduleWeekQuery =
+        useQueryLwm<Schedule[]>(`weekSchedule_${currentWeekNumber}`, `schedule/${currentWeekNumber}`);
 
     function buildGridConfig() {
+        if(schedulesQuery.isPending || !schedulesQuery.data) {
+            return <div>Loading ...</div>
+        }
         const columns: GridColumn[] = [
             {lable: "Day", name: "scheduledDayOfWeek"},
             {lable: "Start Time", name: "scheduledStartTime"},
@@ -32,7 +37,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         ];
 
         const rows: GridRow[] =
-        schedulesQuery.data?.map(schedule => ({columnData: schedule, id: schedule.id}) as GridRow) ?? [];
+        schedulesQuery.data.map(schedule => ({columnData: schedule, id: schedule.id}) as GridRow) ?? [];
 
         return {
             columns: columns,
@@ -79,7 +84,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         setIsCalanaderViewActive(true);
     }
 
-    function handleAddNewSchedule(instance?: ScheduleInstance) {
+    function handleAddNewSchedule(instance?: Schedule) {
         const schedule: Schedule = {
             durationMinutes: 0,
             minuteStart: 0,
@@ -92,7 +97,10 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             scheduledDayOfWeek: -1,
             groupId: -1,
             repeat: 0,
-            startWeek: moment().week()
+            startWeek: moment().week(),
+            title: "",
+            description: "",
+            isCancelled: false,
         };
 
         if (instance) {
@@ -100,7 +108,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
 
             schedule.scheduledStartTime = moment().hour(instance.hourStart).format("hh:00");
             schedule.scheduledEndTime = moment().hour(instance.hourEnd).format("hh:00");
-            schedule.startWeek = instance.weekNumber;
+            schedule.startWeek = instance.startWeek;
             schedule.scheduledDayOfWeek = instance.scheduledDayOfWeek;
         }
 
@@ -135,6 +143,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             }
             
             await schedulesQuery.refetch();
+            await scheduleWeekQuery.refetch();
             setAppletActive(false);
             setError(undefined);
             return;
@@ -147,16 +156,17 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         }
         
         await schedulesQuery.refetch();
+        await scheduleWeekQuery.refetch();
         setAppletActive(false);
         setError(undefined);
     }
 
     const calanaderView =
         <ScheduleCalander
+            onWeekChanged={(weekNumber: number) => setCurrentWeekNumber(weekNumber)}
             handleScheduleClicked={handleEditSchedule}
             handleNewScheduleClicked={handleAddNewSchedule}
-            groups={groupsQuery.data ?? []}
-            schedules={schedulesQuery.data ?? []}/>;
+            groups={groupsQuery.data ?? []}/>;
 
     return (
         <Module
