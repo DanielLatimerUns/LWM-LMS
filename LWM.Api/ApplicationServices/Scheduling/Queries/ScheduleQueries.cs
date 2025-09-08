@@ -73,6 +73,55 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
             return schedules;
         }
 
+        public async Task<IEnumerable<ScheduleEntryModel>> GetScheduleEntriesForWeek(int week)
+        {
+            var query = context.Schedules
+                .Include(x => x.Group)
+                .Where(x => (x.StartWeek == week && x.Repeat > 0) || (x.StartWeek <= week && x.Repeat == 0));
+
+            var schedules = query.Select(x => new ScheduleEntryModel
+            {
+                Id = x.Id,
+                GroupId = x.Group.Id,
+                ScheduledDayOfWeek = x.ScheduledDayOfWeek,
+                ScheduledStartTime = x.ScheduledStartTime.ToString("HH:mm"),
+                ScheduledEndTime = x.ScheduledEndTime.ToString("HH:mm"),
+                HourStart = x.ScheduledStartTime.Hour,
+                HourEnd = x.ScheduledEndTime.Hour,
+                MinuteStart = x.ScheduledStartTime.Minute,
+                MinuteEnd = x.ScheduledEndTime.Minute,
+                DurationMinutes = (x.ScheduledEndTime - x.ScheduledStartTime).TotalMinutes,
+                ScheduledDayOfWeekName = ((DayOfWeek)x.ScheduledDayOfWeek).ToString(),
+                Repeat = x.Repeat,
+                StartWeek = x.StartWeek
+            }).ToList();
+
+            var timetable = await timeTableQueries.GetPublishedTimeTable();
+
+            if (timetable is null)
+            {
+                return schedules;
+            }
+            
+            schedules.AddRange(timetable.TimeTableEntries.Select(x => new ScheduleEntryModel
+            {
+                TimeTableEntryId = x.Id,
+                GroupId = x.GroupId,
+                ScheduledDayOfWeek = x.DayNumber,
+                ScheduledStartTime = x.StartTime.ToString("HH:mm"),
+                ScheduledEndTime = x.EndTime.ToString("HH:mm"),
+                HourStart = x.StartTime.Hour,
+                HourEnd = x.EndTime.Hour,
+                MinuteStart = x.StartTime.Minute,
+                MinuteEnd = x.EndTime.Minute,
+                StartWeek = timetable.PublishedFrom.YearWeek(),
+                DurationMinutes = (x.EndTime - x.StartTime).TotalMinutes,
+                ScheduledDayOfWeekName = ((DayOfWeek)x.DayNumber).ToString(),
+            }));
+            
+            return schedules;
+        }
+
         public LessonViewModel GetCurrentLessonForTeacher(UserViewModel userViewModel)
         {
             var currentDayOFWeekk = (int)DateTime.Now.DayOfWeek;
