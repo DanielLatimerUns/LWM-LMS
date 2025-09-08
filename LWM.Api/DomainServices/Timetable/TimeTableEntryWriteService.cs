@@ -51,6 +51,11 @@ public class TimeTableEntryWriteService(CoreContext context) : ITimeTableEntryWr
 
     public Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var entry = context.TimeTableEntries.FirstOrDefault(x => x.Id == id);
+        if (entry == null)
+            throw new BadRequestException("Timetable entry not found");
+        
+        context.TimeTableEntries.Remove(entry);
+        return context.SaveChangesAsync();
     }
 }

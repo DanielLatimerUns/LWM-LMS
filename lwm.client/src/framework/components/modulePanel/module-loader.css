@@ -1,8 +1,16 @@
 .moduleLoaderContainer {
    overflow: auto;
-    border-top: 5px solid rgb(247 242 242 / 10%);
     display: grid;
-    grid-template-rows: 10% 90%;
+    grid-template-rows: 70px 1fr;
+}
+
+.moduleLoaderHeaderContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.moduleLoaderHeaderAccount {
+    padding: 10px;
 }
 
 .moduleLoaderHeader {
@@ -11,7 +19,6 @@
     align-items: center;
     padding: 10px;
     padding-left: 20px;
-    border-bottom: 5px solid rgb(247 242 242 / 10%);
 }
 
 .moduleLoaderHeader img{

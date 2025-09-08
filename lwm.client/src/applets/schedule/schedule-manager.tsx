@@ -1,7 +1,7 @@
 import React, {JSX, useState} from "react";
 import RestService from "../../services/network/RestService";
 import LwmButton from "../../framework/components/button/lwm-button";
-import Module, { GridColumn, GridRow } from "../../framework/components/module/module";
+import Module, {GridColumn, GridRow} from "../../framework/components/module/module";
 import {Schedule} from "../../entities/domainModels/schedule";
 import ScheduleWizard from "./applets/schedule-wizard/schedule-wizard";
 import newIcon from '../../assets/new_icon.png';
@@ -17,7 +17,8 @@ export interface Props {}
 const ScheduleManager: React.FunctionComponent<Props> = () => {
     const [selectedSchedule, setSelectedSchedule] = useState<Schedule>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
-    const [error, setError] = useState<string | undefined>('All fields required');
+    const [error, setError] = useState<string | undefined>();
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
     const [isCalanaderViewActive, setIsCalanaderViewActive] = useState<boolean>(true);
     
     const groupsQuery = useQueryLwm<Group[]>('groups', 'group');
@@ -33,14 +34,12 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         const rows: GridRow[] =
         schedulesQuery.data?.map(schedule => ({columnData: schedule, id: schedule.id}) as GridRow) ?? [];
 
-        const gridConfig = {
-                columns: columns,
-                rows: rows,
-                handleEditClicked: handleEditSchedule,
-                handleDeleteClicked: handleDeleteSchedule,
-            };
-
-        return gridConfig;
+        return {
+            columns: columns,
+            rows: rows,
+            handleEditClicked: handleEditSchedule,
+            handleDeleteClicked: handleDeleteSchedule,
+        };
     }
 
     function buildActionOptions() {
@@ -123,30 +122,33 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         setAppletActive(false);
     }
 
-    function handleAppletSave() {
-        if (error) {
+    async function handleAppletSave() {
+        if (!isFormValid) {
             return;
         }
 
         if (selectedSchedule?.id === 0) {
-            RestService.Post('schedule', selectedSchedule).then(() => schedulesQuery.refetch()).catch(
-                error => {
-                    setError(error);
-                    return;
-                }
-            )
+            const result = await RestService.Post('schedule', selectedSchedule);
+            if (!result.ok) {
+                setError(await result.text());
+                return;
+            }
+            
+            await schedulesQuery.refetch();
             setAppletActive(false);
+            setError(undefined);
             return;
         }
 
-        RestService.Put('schedule', selectedSchedule).then(() => schedulesQuery.refetch()).catch(
-            error => {
-                setError(error);
-                return;
-            }
-        );
+        const result = await RestService.Put('schedule', selectedSchedule);
+        if (!result.ok) {
+            setError(await result.text());
+            return;
+        }
         
+        await schedulesQuery.refetch();
         setAppletActive(false);
+        setError(undefined);
     }
 
     const calanaderView =
@@ -171,7 +173,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             <ScheduleWizard
                     groups={groupsQuery.data ?? []}
                     onChange={(schedule: Schedule) => setSelectedSchedule(schedule)}
-                    onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
+                    onValidationChanged={(isValid: boolean) => setIsFormValid(isValid)}
                     schedule={selectedSchedule}>
             </ScheduleWizard>
         </Module>

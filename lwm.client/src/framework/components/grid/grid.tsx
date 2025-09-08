@@ -59,7 +59,7 @@ const Grid: React.FunctionComponent<Props> = (props: Props) => {
 
         return (
             props.rows.map(row =>
-                <div className="gridContentRow">
+                <div className="gridContentRow" onClick={() => handleEditClicked(row.id)}>
                     {generateRow(row.columnData, row.id)}
                 </div>));
     }
@@ -70,7 +70,7 @@ const Grid: React.FunctionComponent<Props> = (props: Props) => {
             if (props.columns.map(c => c.name).includes(column[0]) && column[0] !== "id") {
                 columns.push(
                     <div className="gridContentColumn">
-                        {generateContent(column, rowId)}
+                        {generateContent(column)}
                     </div>);
             }
         })
@@ -84,20 +84,20 @@ const Grid: React.FunctionComponent<Props> = (props: Props) => {
         return columns;
     }
 
-    function generateContent(content: any, rowId: number) {
+    function generateContent(content: any) {
         if (!content[1]) {
             return "-"
         }
-
-        return <LwmButton isSelected={false} onClick={handleEditClicked.bind(rowId)} name={content[1]}/>
+        
+        if (typeof content[1] === 'boolean') {
+            return content[1] ? "Yes" : "No";
+        }
+        
+        return content[1];
     }
 
     function generateGridButtons(rowId: number) {
         const buttons: JSX.Element[] = [];
-
-        if (props.editClicked) {
-            buttons.push(<LwmButton isSelected={false} onClick={() => handleEditClicked(rowId)} name="Edit"></LwmButton>)
-        }
 
         if (props.deleteClicked) {
             buttons.push(<LwmButton isSelected={false} onClick={() => handleDeleteClicked(rowId)}

@@ -1,4 +1,5 @@
-﻿using LWM.Data.Models.TimeTable;
+﻿using System.ComponentModel.DataAnnotations;
+using LWM.Data.Models.TimeTable;
 
 namespace LWM.Data.Models.Schedule
 {
@@ -16,5 +17,8 @@ namespace LWM.Data.Models.Schedule
         public bool IsCancelled { get; set; }
         
         public TimeTableEntry? TimeTableEntry { get; set; }
-        public int? TimeTableEntryId { get; set; }    }
+        public int? TimeTableEntryId { get; set; }
+        
+        public string? Notes { get; set; }
+    }
 }

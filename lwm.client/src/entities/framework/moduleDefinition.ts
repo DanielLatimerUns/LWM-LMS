@@ -1,7 +1,6 @@
 import LessonFeed from "../../applets/lesson-feed/lesson-feed.tsx";
 import {
     controlCenterIcon,
-    feedIcon,
     groupIcon,
     lessonIcon,
     peopleIcon,
@@ -17,7 +16,8 @@ import ControlCenter from "../../applets/controlCenter/control-center.tsx";
 
 export type ModuleDefinition = {
     name: string;
-    module: typeof LessonFeed | typeof LessonManager | typeof PersonManager | typeof GroupManager | typeof ScheduleManager | typeof TimeTableManager | typeof ControlCenter;
+    module: typeof LessonFeed | typeof LessonManager | typeof PersonManager | 
+        typeof GroupManager | typeof ScheduleManager | typeof TimeTableManager | typeof ControlCenter;
     active: boolean;
     icon: string;
     navLink: string;
@@ -28,19 +28,11 @@ export function GetModules() : ModuleDefinition[] {
     const _options: ModuleDefinition[] = [];
 
     _options.push({
-        name: 'Feed',
-        active: true,
-        icon: feedIcon,
-        module: LessonFeed,
-        navLink: '/lessonfeed'
-    });
-
-    _options.push({
-        name: 'Lessons',
+        name: 'Schedule',
         active: false,
-        icon: lessonIcon,
-        module: LessonManager,
-        navLink: '/lessons'
+        icon: scheduleIcon,
+        module: ScheduleManager,
+        navLink: 'scheduling'
     });
 
     _options.push({
@@ -48,7 +40,7 @@ export function GetModules() : ModuleDefinition[] {
         active: false,
         icon: peopleIcon,
         module: PersonManager,
-        navLink: '/people'
+        navLink: 'people'
     });
 
     _options.push({
@@ -56,15 +48,7 @@ export function GetModules() : ModuleDefinition[] {
         active: false,
         icon: groupIcon,
         module: GroupManager,
-        navLink: '/groups'
-    });
-
-    _options.push({
-        name: 'Schedules',
-        active: false,
-        icon: scheduleIcon,
-        module: ScheduleManager,
-        navLink: '/scheduling'
+        navLink: 'groups'
     });
 
     _options.push({
@@ -72,15 +56,24 @@ export function GetModules() : ModuleDefinition[] {
         active: false,
         icon: timetableIcon,
         module: TimeTableManager,
-        navLink: '/timetables'
+        navLink: 'timetables'
     })
+
+    _options.push({
+        name: 'Lessons',
+        active: false,
+        icon: lessonIcon,
+        module: LessonManager,
+        navLink: 'lessons'
+    });
+    
 
     _options.push({
         name: 'Control Center',
         active: false,
         icon: controlCenterIcon,
         module: ControlCenter,
-        navLink: '/controlcenter'
+        navLink: 'controlcenter'
     })
     
     return _options;

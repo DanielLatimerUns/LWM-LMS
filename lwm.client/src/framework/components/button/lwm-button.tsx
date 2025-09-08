@@ -7,6 +7,7 @@ interface Props {
     isSelected: boolean
     children?: JSX.Element
     icon?: string;
+    buttonType?: string;
 }
 
 const LwmButton: React.FunctionComponent<Props> = (props: Props) => {
@@ -18,9 +19,25 @@ const LwmButton: React.FunctionComponent<Props> = (props: Props) => {
         return "";
     }
     
+    const classes: string[] = [];
+   
+   classes.push("lwmButton");
+   
+    if (props.buttonType === "add") {
+        classes.push("lwmButtonAdd");
+    }
+    
+    if (props.buttonType === "delete") {
+        classes.push("lwmButtonDelete");
+    } 
+    
+    if (props.isSelected) {
+        classes.push("lwmButton-selected");
+    }
+    
     return (
             <div
-                className={props.isSelected ? "lwmButton-selected" : "lwmButton"}
+                className={classes.join(" ")}
                 onClick={props.onClick.bind(this)}>
                 {buildIcon()}
                 {props.name ?? props.children}

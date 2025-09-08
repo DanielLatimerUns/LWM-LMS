@@ -15,6 +15,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
     const [selectedPerson, setSelectedPerson] = useState<Person>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>('All fields required');
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>("");
     
     const personQuery = 
@@ -26,7 +27,6 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             {lable: "Surname", name: "surname"},
             {lable: "Email", name: "emailAddress1"},
             {lable: "Phone", name: "phoneNo"},
-            {lable: "Group", name: "group"},
         ];
         
         const rows: GridRow[] =
@@ -91,30 +91,37 @@ const PersonManager: React.FunctionComponent<Props> = () => {
 
     function handleAppletCancel() {
         setAppletActive(false);
+        setError(undefined);
     }
 
-    function handleAppletSave() {
-        if (error) {
+    async function handleAppletSave() {
+        if (isFormValid) {
             return;
         }
 
         if (selectedPerson?.id === 0) {
-            RestService.Post('person', selectedPerson).then(() => personQuery.refetch())
-                .catch( error => {
-                    setError(error)
-                    return;
-                }
-            )
+            const result = await RestService.Post('person', selectedPerson);
+            
+            if (!result.ok) {
+                setError(await result.text());
+                return;
+            }
+            
+            await personQuery.refetch();
+            setError(undefined);
             setAppletActive(false);
             return;
         }
 
-        RestService.Put('person', selectedPerson).then(() => personQuery.refetch()).catch( error => {
-                setError(error)
-                return;
-            }
-        )
+        const result = await RestService.Put('person', selectedPerson);
+        if (!result.ok) {
+            setError(await result.text());
+            return;
+        }
+        
+        await personQuery.refetch();
         setAppletActive(false);
+        setError(undefined);
     }
     
     return (
@@ -131,7 +138,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             isLoading={personQuery.isPending}>
                 <PeopleWizard
                     onChange={(person: Person) => setSelectedPerson(person)}
-                    onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
+                    onValidationChanged={(isValid: boolean) => setIsFormValid(isValid)}
                     person={selectedPerson}>
                 </PeopleWizard>
         </Module>

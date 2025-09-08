@@ -11,6 +11,7 @@ interface Props {}
  const App: React.FunctionComponent<Props> = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(AuthService.isLoggedIn());
     
+    
     addEventListener("app-logout", handleLogout, true);
     function onLoginComplete() {
         setIsAuthenticated(true);

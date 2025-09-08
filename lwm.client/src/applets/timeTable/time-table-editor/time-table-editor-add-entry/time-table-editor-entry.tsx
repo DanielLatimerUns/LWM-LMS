@@ -15,6 +15,7 @@ export interface Props {
     onValidationChanged: Function;
     onSave: Function;
     onClose: Function;
+    onDelete: Function;
 }
 
 const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
@@ -107,7 +108,8 @@ const TimeTableEditorEntry: React.FunctionComponent<Props> = (props: Props) => {
                   onFieldValidationChanged={props.onValidationChanged}
                   fields={buildForm()}/>
             <div className="timetableTableFormButtons">
-                <LwmButton onClick={props.onSave} isSelected={false} name={"Save changes"}/>
+                <LwmButton onClick={props.onDelete} isSelected={false} name={"Delete"} buttonType={"delete"}/>
+                <LwmButton onClick={props.onSave} isSelected={false} name={"Save changes"} buttonType={"add"}/>
                 <LwmButton onClick={props.onClose} isSelected={false} name={"Close"}/>
             </div>
         </div>

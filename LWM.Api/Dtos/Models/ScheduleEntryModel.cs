@@ -16,5 +16,7 @@
         public int MinuteEnd { get; set; }
         public int MinuteStart { get; set;}
         public int TimeTableEntryId { get; set; }
+        public bool IsCancelled { get; set; }
+        public string? Notes { get; set; }
     }
 }

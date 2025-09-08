@@ -6,9 +6,17 @@
     flex-direction: column;
     text-align: center;
     font-size: 15px;
-    border-radius: 5px;
-    gap: 5px;
     padding-top: 3px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgb(247 242 242 / 10%);
+}
+
+.lwmButtonAdd {
+    color: green;
+}
+
+.lwmButtonDelete {
+    color: red;
 }
 
 .lwmButton img,
@@ -17,9 +25,11 @@
 }
 
 .lwmButton-selected {
-    background:  rgb(153 207 148 / 10%);
+    border-bottom: 2px solid green;
+    color: green;
 }
 
 .lwmButton:hover {
-    color: rgb(153, 207, 148);
+    border-bottom: 2px solid green;
+    cursor: pointer;
 }

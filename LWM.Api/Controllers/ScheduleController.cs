@@ -21,9 +21,9 @@ namespace LWM.Api.Controllers
     {
 
         [HttpGet]
-        public IEnumerable<ScheduleEntryModel> Get()
+        public async Task<IEnumerable<ScheduleEntryModel>> Get()
         {
-            return scheduleQueries.GetScheduleEntries();
+            return await scheduleQueries.GetScheduleEntries();
         }
 
         [HttpGet("current")]

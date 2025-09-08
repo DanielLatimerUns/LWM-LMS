@@ -10,6 +10,7 @@ public interface ITimeTableQueries
 {
     Task<List<TimeTableModel>> GetTimeTablesAsync();
     Task<TimeTableModel> GetTimeTableByIdAsync(int id);
+    Task<Data.Models.TimeTable.TimeTable?> GetPublishedTimeTable();
 }
 
 public class TimeTableQueries(CoreContext context) : ITimeTableQueries
@@ -31,5 +32,14 @@ public class TimeTableQueries(CoreContext context) : ITimeTableQueries
             throw new BadRequestException("Timetable not found");
 
         return timetable.ToModel();
+    }
+    
+    public async Task<Data.Models.TimeTable.TimeTable?> GetPublishedTimeTable()
+    {
+        var timeTable = await context.TimeTables
+            .Include(x => x.TimeTableEntries)
+            .FirstOrDefaultAsync(x => x.IsPublished);
+
+        return timeTable ?? null;
     }
 }

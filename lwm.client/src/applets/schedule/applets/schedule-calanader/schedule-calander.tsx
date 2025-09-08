@@ -6,6 +6,8 @@ import { Group } from "../../../../entities/domainModels/group";
 import Moment from "moment";
 import schedulingService from '../../../../services/scheduling/schedulingHelpers';
 import { Week} from "../../../../entities/app/schedule.ts";
+import {ScheduleInstance} from "../../../../entities/app/scheduleInstance.ts";
+import moment from "moment/moment";
 
 interface Props {
     schedules: Schedule[];
@@ -72,9 +74,24 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
                     gridRow: i,
                     backgroundColor: ((isCurrentHour || isCurrentDay) && iSCurrentWeek) ? "rgb(247 242 242 / 10%)" : "none",
                 };
+
+                const schedule: Schedule = {
+                    durationMinutes: 0,
+                    minuteStart: 0,
+                    minuteEnd: 0,
+                    hourStart: i,
+                    hourEnd: i + 1,
+                    id: 0,
+                    scheduledStartTime: "",
+                    scheduledEndTime: "",
+                    scheduledDayOfWeek:j -1,
+                    groupId: -1,
+                    repeat: 0,
+                    startWeek: currentWeekInView.weekNumber,
+                };
                 
                 cells.push(
-                    <div className="cell" onClick={() => props.handleNewScheduleClicked()} style={cellStyle}>
+                    <div className="cell" onClick={() => props.handleNewScheduleClicked(schedule)} style={cellStyle}>
                     </div>)
             }
         }

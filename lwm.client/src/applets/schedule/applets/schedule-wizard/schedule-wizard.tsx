@@ -80,16 +80,6 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
                 selectOptions: undefined
             },
             {
-                label: "Start Week" ,
-                id: "startWeek",
-                value: props.schedule.startWeek,
-                onFieldChanged: props.onChange,
-                validationPattern: undefined,
-                required: true,
-                type: "text",
-                selectOptions: undefined
-            },
-            {
                 label: "Group",
                 id: "groupId",
                 value: props.schedule.groupId,

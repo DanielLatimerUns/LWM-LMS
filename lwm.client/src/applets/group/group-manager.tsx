@@ -17,6 +17,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
     const [error, setError] = useState<string | undefined>('All fields required');
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>("");
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
     
     const groupQuery = useQueryLwm<Group[]>(`groups_${searchString}`, `group/${searchString}`);
 
@@ -86,26 +87,32 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         setAppletActive(false);
     }
 
-    function handleAppletSave() {
-        if (error) {
+    async function handleAppletSave() {
+        if (isFormValid) {
             return;
         }
 
         if (selectedGroup?.id === 0) {
-            RestService.Post('group', selectedGroup).then(() => groupQuery.refetch()).catch( error => {
-                    setError(error);
-                    return;
-                }
-            )
+            const result = await RestService.Post('group', selectedGroup);
+            if (!result.ok) {
+                setError(await result.text());
+                return;
+            }
+            
+            await groupQuery.refetch();
+            setError(undefined);
             setAppletActive(false);
             return;
         }
 
-        RestService.Put('group', selectedGroup).then(() => groupQuery.refetch()).catch( error => {
-                setError(error);
-                return;
-            }
-        )
+        const result = await RestService.Put('group', selectedGroup);
+        if (!result.ok) {
+            setError(await result.text());
+            return;
+        }
+        
+        await groupQuery.refetch();
+        setError(undefined);
     }
     
     return (
@@ -122,7 +129,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
             appletActive={appletActive}>
              <GroupWizard
                 onChange={(group: Group) => setSelectedGroup(group)}
-                onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}
+                onValidationChanged={(isValid: boolean) => setIsFormValid(isValid)}
                 group={selectedGroup}>
             </GroupWizard>
         </Module>

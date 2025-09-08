@@ -63,6 +63,9 @@ export default class Module extends React.Component<Props, State> {
                         </div>
                     </div>
                 </div>
+                {!this.props.fullWidthApplet && 
+                    <div className="moduleActionSectionAppletBackground" onClick={this.props.handleCloseClicked?.bind(this)}>
+                    </div>}
             </div>)
     }
 

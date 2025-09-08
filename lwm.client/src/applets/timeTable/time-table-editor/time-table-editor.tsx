@@ -67,7 +67,8 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
                                   onValidationChanged={() => {}}
                                   onSave={handleEntrySave}
                                   onChange={handEntryChanged}
-                                  onClose={handleEntryClose}/>
+                                  onClose={handleEntryClose}
+                                  onDelete={handleEntryDelete}/>
         )
     }
     
@@ -97,7 +98,7 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
     function buildAddEntryButton(dayNumber: number) {
         return (
             <div className="timetableTableToolbar">
-                <LwmButton onClick={() => handleEntryClicked(dayNumber)} isSelected={false} name="Add new entry"></LwmButton>
+                <LwmButton onClick={() => handleEntryClicked(dayNumber)} buttonType={"add"} isSelected={false} name="Add new entry"></LwmButton>
             </div>
         )
     }
@@ -153,6 +154,19 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
         ).catch(error => console.error(error));
         
         setSelectedEntry(undefined);
+    }
+    
+    async function handleEntryDelete() {
+        if (!selectedEntry) {
+            return;
+        }
+        
+        const response = await RestService.Delete(`timetable/entry/${selectedEntry.id}`);
+        if (!response.ok) {
+            console.log(await response.text());
+        }
+            
+        await timetableQuery.refetch();
     }
     
     if (timetableQuery.isPending) {

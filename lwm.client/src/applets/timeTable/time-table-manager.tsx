@@ -15,6 +15,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     const [selectedTimeTable, setSelectedTimeTable] = useState<TimeTable>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>();
     const [timetableEditorEnabled, setTimetableEditorEnabled] = useState<boolean>(false);
     
@@ -32,7 +33,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         
         const timeTableEditorButton: ButtonConfig = {
             onClick: handleTimetableEditorClicked,
-            name: "Manage Timetable",
+            name: "Configure Timetable",
         };
         
         return {
@@ -91,7 +92,9 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             <TimeTableWizard
             onChanged={(timetable: TimeTable) => setSelectedTimeTable(timetable)}
             timeTable={selectedTimeTable}
-            onValidationChanged={(isValid: boolean) => setError(isValid ? undefined : "Required fields not set")}>
+            onValidationChanged={(isValid: boolean) => {
+              setIsFormValid(isValid)
+            }}>
         </TimeTableWizard>);
     }
 
@@ -110,7 +113,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         };
         
         setTimetableEditorEnabled(false);
-        setError("")
+        setIsFormValid(false);
         setSelectedTimeTable(timetable);
         setAppletActive(true);
     }
@@ -139,35 +142,38 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     }
 
     function handleAppletCancel() {
-        setError(undefined);
         setAppletActive(false);
+        setError(undefined);
     }
     
-    function handleAppletSave() {
-        if (error) {
+    async function handleAppletSave() {
+        if (!isFormValid) {
             return;
         }
 
         if (selectedTimeTable?.id === 0) {
-            RestService.Post('timetable', selectedTimeTable)
-                .then(() => timetableQuery.refetch())
-                .catch(error => {
-                        setError(error);
-                        return;
-                    }
-                )
+            const response = await RestService.Post('timetable', selectedTimeTable);
+            
+            if (!response.ok) {
+                setError(await response.text());
+                return;
+            }
+            
+            await timetableQuery.refetch();
             setAppletActive(false);
+            setError(undefined);
             return;
         }
 
-        RestService.Put('timetable', selectedTimeTable)
-            .then(() => timetableQuery.refetch())
-            .catch(error => {
-                    setError(error);
-                    return
-                }
-            )
+       const response = await RestService.Put('timetable', selectedTimeTable);
+        if (!response.ok) {
+            setError(await response.text());
+            return;
+        }
+        
+        await timetableQuery.refetch();
         setAppletActive(false);
+        setError(undefined)
     }
     
     return (

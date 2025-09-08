@@ -29,6 +29,11 @@ public class TimetableWriteService(CoreContext context) : ITimetableWriteService
     {
         var timetable = context.TimeTables
             .FirstOrDefault(x => x.Id == model.Id);
+
+        if (model.IsPublished && context.TimeTables.Any(x => x.IsPublished && x.Id != model.Id))
+        {
+            throw new BadRequestException("Only one timetable can be published at a time.");
+        }
         
         Validate(timetable);
         

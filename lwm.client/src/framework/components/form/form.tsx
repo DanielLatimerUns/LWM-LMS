@@ -48,7 +48,7 @@ interface Props {
     }
 
     function handleFormChange(e: any, field: FormField) {
-        field.value = field.type === 'checkbox' ? (e.target.value === "on") : e.target.value;
+        field.value = field.type === 'checkbox' ? e.target.checked : e.target.value;
 
         const isChangedFieldValid = validateField(field);
         props.onFieldValidationChanged(isChangedFieldValid);

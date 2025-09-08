@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
+using LWM.Api.ApplicationServices.TimeTable.Queries;
 using LWM.Api.Dtos.Models;
 using LWM.Api.Dtos.ViewModels;
 using LWM.Data.Contexts;
@@ -10,7 +11,7 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
 {
     public interface IScheduleQueries
     {
-        IEnumerable<ScheduleEntryModel> GetScheduleEntries(
+        Task<IEnumerable<ScheduleEntryModel>> GetScheduleEntries(
             Expression<Func<ScheduleItem, bool>> filter = null);
 
         LessonViewModel GetCurrentLessonForTeacher(UserViewModel userViewModel);
@@ -18,18 +19,13 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
     }
 
     public class ScheduleQueries(
-        CoreContext context) : IScheduleQueries
+        CoreContext context, ITimeTableQueries timeTableQueries) : IScheduleQueries
     {
-        public IEnumerable<ScheduleEntryModel> GetScheduleEntries(
+        public async Task<IEnumerable<ScheduleEntryModel>> GetScheduleEntries(
             Expression<Func<ScheduleItem, bool>> filter = null)
         {
             var query = context.Schedules
                 .Include(x => x.Group);
-
-            var timeTabledEntries =
-                context.TimeTables
-                    .Include(x => x.TimeTableEntries)
-                    .Where(x => x.IsPublished).SelectMany(x => x.TimeTableEntries).ToList();
 
             if (filter != null)
                 query.Where(filter);
@@ -50,8 +46,15 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                 Repeat = x.Repeat,
                 StartWeek = x.StartWeek
             }).ToList();
+
+            var timetable = await timeTableQueries.GetPublishedTimeTable();
+
+            if (timetable is null)
+            {
+                return schedules;
+            }
             
-            schedules.AddRange(timeTabledEntries.Select(x => new ScheduleEntryModel
+            schedules.AddRange(timetable.TimeTableEntries.Select(x => new ScheduleEntryModel
             {
                 TimeTableEntryId = x.Id,
                 GroupId = x.GroupId,
@@ -62,6 +65,7 @@ namespace LWM.Api.ApplicationServices.Scheduling.Queries
                 HourEnd = x.EndTime.Hour,
                 MinuteStart = x.StartTime.Minute,
                 MinuteEnd = x.EndTime.Minute,
+                StartWeek = timetable.PublishedFrom.YearWeek(),
                 DurationMinutes = (x.EndTime - x.StartTime).TotalMinutes,
                 ScheduledDayOfWeekName = ((DayOfWeek)x.DayNumber).ToString(),
             }));
