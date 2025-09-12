@@ -35,7 +35,7 @@ const TimeTableWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Published",
                 id: "isPublished",
-                value: props.timeTable.isPublished,
+                checkedValue: props.timeTable.isPublished,
                 onFieldChanged: props.onChanged,
                 type: "checkbox",
                 required: true,

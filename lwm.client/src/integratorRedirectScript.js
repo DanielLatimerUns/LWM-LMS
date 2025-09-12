@@ -1,6 +1,5 @@
 import moment from "moment";
 
-
 const azureAuthService = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const requestToken = urlParams.get('token')

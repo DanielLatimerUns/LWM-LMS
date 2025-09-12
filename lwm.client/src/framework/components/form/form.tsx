@@ -28,7 +28,7 @@ interface Props {
                 <input
                     type={field.type}
                     id={field.id}
-                    checked={field.value}
+                    checked={field.checkedValue}
                     onChange={(e: any) => handleFormChange(e, field)}
                     pattern={field.validationPattern}
                     className={!validateField(field) ?  "invalid-input" : ""}
@@ -51,7 +51,7 @@ interface Props {
     }
 
     function handleFormChange(e: any, field: FormField) {
-        field.value = field.type === 'checkbox' ? e.target.checked : e.target.value;
+        field.checkedValue = field.type === 'checkbox' ? e.target.checked : e.target.value;
 
         const isChangedFieldValid = validateField(field);
         props.onFieldValidationChanged(isChangedFieldValid);
@@ -61,7 +61,7 @@ interface Props {
         }
 
         const changedObject = Object.assign({}, props.formObject);
-        const targetField = field.value
+        const targetField = field.type === 'checkbox' ? e.target.checked : e.target.value;
 
         for (const key in changedObject) {
             if (key === e.target.id) {
@@ -88,13 +88,14 @@ interface Props {
     }
 
     function validateField(field: FormField): boolean {
+        const valueTopValidate = field.type === 'checkbox' ? field.checkedValue : field.value;
         if (field.required &&
-            (field.value === undefined ||
-                field.value === "" ||
-                field.value === "-1" ||
-                field.value === -1 ||
-                field.value === null ||
-                Number.isNaN(field.value))) {
+            (valueTopValidate === undefined ||
+                valueTopValidate === "" ||
+                valueTopValidate=== "-1" ||
+                valueTopValidate === -1 ||
+                valueTopValidate === null ||
+                Number.isNaN(valueTopValidate))) {
             return false;
         }
 
@@ -123,7 +124,7 @@ interface Props {
         </div>
      );
     
-    props.onFieldValidationChanged(validateAllFields());
+    setTimeout(props.onFieldValidationChanged(validateAllFields()));
     return form;
 }
 

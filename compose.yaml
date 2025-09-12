@@ -1,0 +1,30 @@
+﻿services:
+  lwm.server:
+    image: lwm.server
+    ports:
+      - "8081:8080"
+    build:
+      context: .
+      dockerfile: LWM.Server/Dockerfile
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_URLS=https://+:443;http://+:8080
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=728652
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
+    links:
+      - lwm.api:api
+        
+  lwm.api:
+    image: lwm.api
+    build:
+      context: .
+      dockerfile: LWM.Api/Dockerfile
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_URLS=https://+:443;http://+:80
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=728652
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+#    volumes:
+#      - ~/.aspnet/https:/https:ro

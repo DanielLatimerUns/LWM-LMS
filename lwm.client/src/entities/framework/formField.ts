@@ -5,7 +5,8 @@ export type FormField = {
     type: string,
     id: string,
     onFieldChanged: Function;
-    value: string | number | boolean | undefined;
+    value?: string | number;
+    checkedValue?: boolean;
     required: boolean;
     validationPattern: string | undefined;
     selectOptions: JSX.Element[] | undefined;

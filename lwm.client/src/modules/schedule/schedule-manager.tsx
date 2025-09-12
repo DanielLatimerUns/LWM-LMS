@@ -27,9 +27,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         useQueryLwm<Schedule[]>(`weekSchedule_${currentWeekNumber}`, `schedule/${currentWeekNumber}`);
 
     function buildGridConfig() {
-        if(schedulesQuery.isPending || !schedulesQuery.data) {
-            return <div>Loading ...</div>
-        }
+
         const columns: GridColumn[] = [
             {lable: "Day", name: "scheduledDayOfWeek"},
             {lable: "Start Time", name: "scheduledStartTime"},
@@ -37,14 +35,16 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         ];
 
         const rows: GridRow[] =
-        schedulesQuery.data.map(schedule => ({columnData: schedule, id: schedule.id}) as GridRow) ?? [];
+        schedulesQuery.data?.map(schedule => ({columnData: schedule, id: schedule.id}) as GridRow) ?? [];
 
-        return {
+        const gridConfig = {
             columns: columns,
             rows: rows,
             handleEditClicked: handleEditSchedule,
             handleDeleteClicked: handleDeleteSchedule,
         };
+        
+        return gridConfig;
     }
 
     function buildActionOptions() {

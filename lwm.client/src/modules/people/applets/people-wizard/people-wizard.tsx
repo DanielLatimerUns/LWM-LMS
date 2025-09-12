@@ -1,8 +1,7 @@
-import React, {Fragment, JSX, useEffect, useState} from "react";
+import React, {Fragment, JSX} from "react";
 import './people-wizard.css';
 import { Person } from "../../../../entities/domainModels/person";
 import { Group } from "../../../../entities/domainModels/group";
-import RestService from "../../../../services/network/RestService";
 import { Student } from "../../../../entities/domainModels/student";
 import Form, { FormField } from "../../../../framework/components/form/form";
 import personType from "../../../../entities/enums/personType";

@@ -37,7 +37,8 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
         props.groups.map(group => groups.push(
         <option value={group.id}>{group.name}</option>))
 
-        const isReadOnly: boolean = props.schedule?.timeTableEntryId ? props.schedule?.timeTableEntryId > 0 : false;
+        const isReadOnly: boolean = (props.schedule?.timeTableEntryId ? props.schedule?.timeTableEntryId > 0 : false) 
+            || props.schedule.isCancelled;
 
         const fields: FormField[] = [
             {
@@ -123,7 +124,7 @@ const ScheduleWizard: React.FunctionComponent<Props> = (props) => {
             {
                 label: "Cancelled",
                 id: "isCancelled",
-                value: props.schedule.isCancelled,
+                checkedValue: props.schedule.isCancelled,
                 onFieldChanged: props.onChange,
                 validationPattern: undefined,
                 required: false,

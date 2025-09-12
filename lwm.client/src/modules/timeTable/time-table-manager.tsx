@@ -16,7 +16,6 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
-    const [searchString, setSearchString] = useState<string>();
     const [timetableEditorEnabled, setTimetableEditorEnabled] = useState<boolean>(false);
     
     const timetableQuery = useQueryLwm<TimeTable[]>('timetables', 'timetable');
@@ -135,11 +134,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         RestService.Delete(`timetable/${timetable.id}`)
             .then(() => timetableQuery.refetch());
     }
-
-    const handleSearchChanged = (searchString: string) => {
-        setSearchString(searchString !== '' ? searchString : undefined);
-        timetableQuery.refetch();
-    }
+    
 
     function handleAppletCancel() {
         setAppletActive(false);
@@ -184,7 +179,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             isLoading={timetableQuery.isPending}
             options={buildActionOptions()}
             error={error}
-            onSearchChnaged={handleSearchChanged}
+            onSearchChnaged={() => {}}
             handleCloseClicked={handleAppletCancel}
             handleSaveCloseClicked={timetableEditorEnabled ? undefined : handleAppletSave}
             appletActive={appletActive}

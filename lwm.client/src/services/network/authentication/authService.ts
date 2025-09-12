@@ -1,4 +1,4 @@
-import LoginModel from '../../../entities/app/loginModel';
+import {LoginModel} from '../../../entities/app/loginModel';
 import LoginResponseModel from '../../../entities/app/loginResponseModel';
 import ResetService from '../RestService';
 
