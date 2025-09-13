@@ -9,11 +9,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.MapFallbackToFile("index.html");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -21,8 +21,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.MapFallbackToFile("index.html");
 
 if (app.Environment.IsProduction())
 {
