@@ -99,6 +99,7 @@ app.UseMiddleware<RequestStateInjectionHandler>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UsePathBase("/api");
 
 //app.UseHttpsRedirection();
 
