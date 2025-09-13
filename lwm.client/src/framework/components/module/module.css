@@ -17,6 +17,7 @@
 }
 
 .moduleActionSectionContainer {
+    position: relative;
     display: flex;
     height: 100%;
     overflow: auto;
@@ -56,8 +57,11 @@
 .moduleActionSectionApplet {
     display: flex;
     position: absolute;
-    width: -webkit-fill-available;
-    height: -webkit-fill-available;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     background: rgb(51 51 51 / 70%);
     backdrop-filter: blur(5px);
