@@ -6,13 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 
-let baseFolder =
-    process.env.APPDATA !== undefined && process.env.APPDATA !== ''
-        ? `${process.env.APPDATA}/ASP.NET/https`
-        : `${process.env.HOME}/.aspnet/https`;
+let baseFolder = '/https';
 
-if (process.env.PROD) {
-    baseFolder = '/https';
+
+if (process.env.NODE_ENV === "development") {
+    baseFolder =
+        process.env.APPDATA !== undefined && process.env.APPDATA !== ''
+            ? `${process.env.APPDATA}/ASP.NET/https`
+            : `${process.env.HOME}/.aspnet/https`;
 }
 
  const certificateArg = process.argv.map(arg => arg.match(/--name=(?<value>.+)/i)).filter(Boolean)[0];
