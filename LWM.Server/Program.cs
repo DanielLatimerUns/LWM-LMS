@@ -21,8 +21,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapReverseProxy();
 }
+
+app.MapReverseProxy();
 
 app.UseCors(cors => cors.AllowAnyOrigin().
                         AllowAnyHeader().
