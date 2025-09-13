@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 # add node
 RUN apt-get update -yq && apt-get upgrade -yq && apt-get install -yq curl git nano
 RUN curl -sL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -yq nodejs build-essential
+RUN mkdir "/.aspnet"
 RUN mkdir "/.aspnet/https"
 
 ARG BUILD_CONFIGURATION=Release
