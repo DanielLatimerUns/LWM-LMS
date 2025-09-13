@@ -23,7 +23,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapReverseProxy();
+if (app.Environment.IsProduction())
+{
+    app.MapReverseProxy();   
+}
 
 app.UseCors(cors => cors.AllowAnyOrigin().
                         AllowAnyHeader().
