@@ -22,10 +22,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapFallbackToFile("index.html");
+
 if (app.Environment.IsProduction())
 {
     app.MapReverseProxy();
-    app.MapFallbackToPage("/Index.html");
 }
 
 app.UseCors(cors => cors.AllowAnyOrigin().
