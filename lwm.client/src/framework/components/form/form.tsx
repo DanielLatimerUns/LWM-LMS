@@ -112,7 +112,7 @@ interface Props {
         return true;
     }
 
-    const form = (
+    return (
         <div className="formFieldContainer">
             {props.fields.map(field =>
                 <div className="formField" hidden={field.isHidden}>
@@ -123,9 +123,6 @@ interface Props {
                 </div>)}
         </div>
      );
-    
-    setTimeout(props.onFieldValidationChanged(validateAllFields()));
-    return form;
 }
 
 export default Form;
