@@ -14,7 +14,7 @@ export interface Props {}
 const GroupManager: React.FunctionComponent<Props> = () => {
     const [selectedGroup, setSelectedGroup] = useState<Group>();
     
-    const [error, setError] = useState<string | undefined>('All fields required');
+    const [error, setError] = useState<string | undefined>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>("");
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
@@ -88,7 +88,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
     }
 
     async function handleAppletSave() {
-        if (isFormValid) {
+        if (!isFormValid) {
             return;
         }
 

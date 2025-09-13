@@ -14,7 +14,7 @@ export interface Props {}
 const PersonManager: React.FunctionComponent<Props> = () => {
     const [selectedPerson, setSelectedPerson] = useState<Person>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
-    const [error, setError] = useState<string | undefined>('All fields required');
+    const [error, setError] = useState<string | undefined>();
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>("");
     
@@ -95,7 +95,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
     }
 
     async function handleAppletSave() {
-        if (isFormValid) {
+        if (!isFormValid) {
             return;
         }
 
