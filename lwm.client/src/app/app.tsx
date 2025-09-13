@@ -5,6 +5,7 @@ import AuthService from "../services/network/authentication/authService";
 import LoginSplash from "./authentication/login-spash/login-splash";
 import ModuleLoader from "./modulePanel/module-loader.tsx";
 import MenuBar from "./menuBar/menu-bar.tsx";
+import { ErrorBoundary } from "react-error-boundary";
 
 interface Props {}
 
@@ -27,10 +28,12 @@ interface Props {}
      if (isAuthenticated) {
          return (
              <QueryClientProvider client={queryClient}>
-                 <div className="appOuterContainer">
-                     <MenuBar/>
-                     <ModuleLoader/>
-                </div>
+                 <ErrorBoundary fallback={<div>Shits broken ask Dan to fix :(</div>}>
+                     <div className="appOuterContainer">
+                         <MenuBar/>
+                         <ModuleLoader/>
+                     </div>
+                 </ErrorBoundary>
              </QueryClientProvider>);
      }
 

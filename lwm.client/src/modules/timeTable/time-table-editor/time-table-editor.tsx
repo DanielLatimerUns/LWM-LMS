@@ -7,6 +7,7 @@ import RestService from "../../../services/network/RestService.ts";
 import {Group} from "../../../entities/domainModels/group.ts";
 import {Teacher} from "../../../entities/domainModels/teacher.ts";
 import {useQueryLwm} from "../../../services/network/queryLwm.ts";
+import Loading from "../../../framework/components/loading/loading.tsx";
 
 export interface Props {
     timetableId: number;
@@ -168,11 +169,7 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
             
         await timetableQuery.refetch();
     }
-    
-    if (timetableQuery.isPending) {
-        return ("Building timetable...");
-    }
-    
+
     return (
         <div className="timetableTableContainer">
             <div className="timetableTableEntrySection">
@@ -181,6 +178,7 @@ const TimeTableEditor: React.FunctionComponent<Props> = (props: Props) => {
             <div className="timetableTableSection">
                 {buildTable()}
             </div>
+            <Loading isVisible={timetableQuery.isPending}></Loading>
         </div>
     );
 }

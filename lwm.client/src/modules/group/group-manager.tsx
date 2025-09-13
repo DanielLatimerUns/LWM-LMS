@@ -119,7 +119,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         <Module
             gridConfig={buildGridConfig()}
             isLoading={groupQuery.isPending}
-            onSearchChnaged={() => setSearchString(searchString)}
+            onSearchChnaged={(searchString: string) => setSearchString(searchString)}
             moduleName="Group Center"
             moduleEntityName="Group"
             handleCloseClicked={handleAppletCancel}

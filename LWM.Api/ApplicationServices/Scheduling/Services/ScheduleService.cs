@@ -11,9 +11,8 @@ namespace LWM.Api.ApplicationServices.Scheduling.Services
         Task Update(ScheduleEntryModel scheduleEntry);
     }
 
-    public class ScheduleService(
-    IScheduleWriteService scheduleWriteService,
-    IClashDetectionService clashDetectionService) : IScheduleService
+    public class ScheduleService(IScheduleWriteService scheduleWriteService, 
+        IClashDetectionService clashDetectionService) : IScheduleService
     {
         public async Task<int> Create(ScheduleEntryModel scheduleEntry)
         {

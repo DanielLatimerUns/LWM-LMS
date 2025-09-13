@@ -6,11 +6,10 @@
     public interface IGroupQueries
     {
         Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsAsync();
-        Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsBySearchStringAsync(string seachString);
+        Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsBySearchStringAsync(string searchString);
     }
 
-    public class GroupQueries(
-        CoreContext coreContext) : IGroupQueries
+    public class GroupQueries(CoreContext coreContext) : IGroupQueries
     {
         public async Task<IEnumerable<Dtos.Models.GroupModel>> GetGroupsAsync()
         {

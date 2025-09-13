@@ -21,6 +21,10 @@ interface Props {
             deleteClicked={() => {return;}}>
         </Grid>)
     }
+    
+    if (props.students.length === 0) {
+        return "";
+    }
 
     return (
         <div className="groupWizardFormStudents">
