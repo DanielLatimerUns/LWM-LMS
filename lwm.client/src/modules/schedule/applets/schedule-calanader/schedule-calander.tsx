@@ -7,7 +7,6 @@ import Moment from "moment";
 import schedulingService from '../../../../services/scheduling/schedulingHelpers';
 import { Week} from "../../../../entities/app/schedule.ts";
 import {useQueryLwm} from "../../../../services/network/queryLwm.ts";
-import Spinner from "../../../../assets/loading_spinner.gif";
 import Loading from "../../../../framework/components/loading/loading.tsx";
 
 interface Props {
