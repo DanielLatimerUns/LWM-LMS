@@ -7,7 +7,7 @@
 .panelContentContainer {
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
+    padding-left: 2px;
 }
 
 .panelContentContainer > div {

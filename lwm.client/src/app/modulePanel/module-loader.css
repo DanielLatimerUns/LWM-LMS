@@ -24,3 +24,12 @@
 .moduleLoaderHeader img{
     height: 60px;
 }
+
+.usernameContainer {
+    display: flex;
+    justify-content: end;
+}
+
+.moduleLoaderHeaderAccount > .lwmButton {
+    padding: 0;
+}

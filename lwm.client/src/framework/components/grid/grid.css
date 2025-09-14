@@ -2,8 +2,9 @@
     color: black;
     display: flex;
     flex-direction: column;
-    gap: 1px;
     overflow: auto;
+    border-radius: 2px;
+    border: 2px solid rgba(247 242 242 / 20%);
 }
 
 .gridContentHeader {
@@ -11,30 +12,30 @@
     grid-auto-columns: 1fr;
     background: rgba(247 242 242 / 20%);
     border-radius: 2px;
-    padding-left: 10px;
 }
 
 .gridContentRow {
     color: white;
-    height: 50px;
     display: grid;
     grid-auto-columns: 1fr;
     border-bottom: 1px solid rgba(247 242 242 / 20%);
 }
 
 .gridContentRow:hover {
-    background: rgba(247 242 242 / 40%) !important;
+    background: rgba(247 242 242 / 10%) !important;
     cursor: pointer;
+    border-bottom: 1px solid green;
 }
 
 .gridHeaderColumn {
     grid-row: 2;
     display: flex;
-    gap: 10px;
+    padding-left: 10px;
     color: white;
     font-weight: 600;
     height: 40px;
     align-items: center;
+    border-right: 1px solid rgb(62 62 62 / 100%);
 }
 
 .gridHeaderColumn:last-child {
@@ -56,6 +57,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    border-right: 1px solid rgba(247 242 242 / 20%);
 }
 
 .gridLoading, .gridNoRecords {
