@@ -18,8 +18,6 @@
         
   lwm.api:
     image: lwm.api
-    ports:
-      - "8000:8080"
     build:
       context: .
       dockerfile: LWM.Api/Dockerfile

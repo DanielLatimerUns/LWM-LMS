@@ -1,9 +1,10 @@
-echo "************** Pulling from master ***************"
+echo "************** Pulling latest ***************"
 git checkout master || exit
 git pull || exit
+
 echo "************** Starting Build ***************"
 docker compose down || exit
 docker compose build || exit
-"************** Finished Build ***************"
+
+"************** Spinning up containers ***************"
 docker compose up -d
-"************** Docker started ***************"
