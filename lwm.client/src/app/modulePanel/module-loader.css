@@ -1,7 +1,7 @@
 .moduleLoaderContainer {
    overflow: auto;
     display: grid;
-    grid-template-rows: 70px 1fr;
+    grid-template-rows: 73px 1fr;
 }
 
 .moduleLoaderHeaderContainer {

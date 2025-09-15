@@ -41,7 +41,7 @@ export default class Module extends React.Component<Props, State> {
         return (
             <div className="moduleContainer">
 
-                {this.renderOptionsSection()}
+                
                 <div className="moduleActionSectionContainer">
                     {this.renderView()}
                     {this.renderApplet()}
@@ -84,6 +84,7 @@ export default class Module extends React.Component<Props, State> {
     private buildSearch() {
         if (this.props.onSearchChnaged) {
             return (<div className="moduleActionSectionSearchContainer">
+                {this.renderOptionsSection()}
                         <input type="text" placeholder="Search..." onChange={this.handleSearchChanged.bind(this)}/>
                     </div>)
         }

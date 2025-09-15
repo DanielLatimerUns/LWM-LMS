@@ -1,19 +1,21 @@
 .moduleContainer {
     display: grid;
-    grid-template-columns: 90px auto;
+    grid-template-columns:  auto;
     height: 100%;
     overflow: scroll;
 }
 
+.lwmButton img, .lwmButton-selected img {
+    padding-left: 2px;
+}
+
 .moduleActionSectionOptionContainer {
     display: flex;
-    flex-direction: column;
-    padding-left: 2px;
 }
 
 .moduleActionSectionOptionContainer > div {
     display: flex;
-    flex-direction: column;
+    min-width: 100px;
 }
 
 .moduleActionSectionContainer {
@@ -123,20 +125,25 @@
 .moduleActionSectionSearchContainer {
     display: flex;
     padding: 2px 0 2px 0;
-    justify-content: right;
+    justify-content: left;
+    gap: 5px;
 }
 
 .moduleActionSectionSearchContainer > input {
-    height: 30px;
     font-size: 15pt;
     border: none;
-    width: 100%;
-    border-radius: 2px;
     padding: 5px;
+    flex: 1;
+}
+
+.moduleActionSectionSearchContainer > input:hover {
+    outline: none;
+    border-bottom: 1px solid white;
 }
 
 .moduleActionSectionSearchContainer > input:focus {
     outline: none;
+    border-bottom: 1px solid green;
 }
 
 .moduleActionSectionAppletBackground {
