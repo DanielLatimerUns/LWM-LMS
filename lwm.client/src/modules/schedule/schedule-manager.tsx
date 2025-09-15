@@ -4,8 +4,6 @@ import LwmButton from "../../framework/components/button/lwm-button";
 import Module, {GridColumn, GridRow} from "../../framework/components/module/module";
 import {Schedule} from "../../entities/domainModels/schedule";
 import ScheduleWizard from "./applets/schedule-wizard/schedule-wizard";
-import newIcon from '../../assets/new_icon.png';
-import recordIcon from '../../assets/record_icon.png';
 import ScheduleCalander from "./applets/schedule-calanader/schedule-calander";
 import {Group} from "../../entities/domainModels/group";
 import moment from "moment";

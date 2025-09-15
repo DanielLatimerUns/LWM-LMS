@@ -5,10 +5,6 @@ import './lesson-manager.css';
 import LessonWizard from "./applets/lesson-wizard/lesson-wizard";
 import LwmButton from "../../framework/components/button/lwm-button";
 import Module, { GridRow, GridColumn } from "../../framework/components/module/module";
-import newIcon from '../../assets/new_icon.png';
-import recordIcon from '../../assets/record_icon.png';
-import spinner from '../../assets/loading_spinner.gif';
-import syncIcon from '../../assets/cloud-sync.png'
 import azureSyncService from "../../services/network/azure/azureSyncService";
 import azureAuthService from "../../services/network/azure/azureAuthService";
 import FileUpload from "../../framework/components/fileUpload/fileUpload";

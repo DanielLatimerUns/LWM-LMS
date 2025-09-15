@@ -4,7 +4,6 @@ import { TimeTable } from "../../entities/app/timeTable.ts";
 import RestService from "../../services/network/RestService.ts";
 import TimeTableWizard from "./time-table-wizard/time-table-wizard.tsx";
 import LwmButton from "../../framework/components/button/lwm-button.tsx";
-import {newRecordIcon} from "../../framework/icons.ts";
 import TimeTableEditor from "./time-table-editor/time-table-editor.tsx";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
 import {ButtonConfig} from "../../entities/framework/lwmButton.ts";
