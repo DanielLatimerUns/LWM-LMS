@@ -5,8 +5,6 @@ import LwmButton from "../../framework/components/button/lwm-button";
 import Module, { GridRow, GridColumn} from "../../framework/components/module/module";
 import { Group } from "../../entities/domainModels/group";
 import GroupWizard from "./applets/group-wizard/group-wizard";
-import newIcon from '../../assets/new_icon.png';
-import recordIcon from '../../assets/record_icon.png';
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
@@ -43,8 +41,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
                 <LwmButton
                     isSelected={!appletActive}
                     onClick={() => setAppletActive(false)}
-                    name="Records"
-                    icon={recordIcon}>
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -53,8 +50,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
                     onClick={handleAddNewGroup}
                     name={(!appletActive||
                         selectedGroup?.id === 0) ? "Add" :
-                        "Edit : " + selectedGroup?.name}
-                    icon={newIcon}>
+                        "Edit : " + selectedGroup?.name}>
                 </LwmButton>
             )
         ];
@@ -113,6 +109,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         
         await groupQuery.refetch();
         setError(undefined);
+        setAppletActive(false);
     }
     
     return (

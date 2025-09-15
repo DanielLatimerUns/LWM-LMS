@@ -48,8 +48,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
                 <LwmButton
                     isSelected={!appletActive}
                     onClick={() => handleActionOptionClicked('records')}
-                    name="Records"
-                    icon={recordIcon}>
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -58,8 +57,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
                     onClick={() => handleActionOptionClicked('add_edit')}
                     name={(!appletActive ||
                         selectedLesson?.id === 0) ? "Add" :
-                        selectedLesson?.name}
-                    icon={newIcon}>
+                        selectedLesson?.name}>
                 </LwmButton>
             ),
         ];
@@ -69,8 +67,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
                 <LwmButton
                     isSelected={false}
                     onClick={() => syncLessonsWithOneDrive()}
-                    name={isSyncInProgress ? "Sync in progress..." : "Sync With OneDrive"}
-                    icon={isSyncInProgress ? spinner : syncIcon}>
+                    name={isSyncInProgress ? "Sync in progress..." : "Sync With OneDrive"}>
                 </LwmButton>
             );
         }
@@ -81,8 +78,7 @@ const LessonManager: React.FunctionComponent<Props> = ({}) => {
                     <LwmButton
                         isSelected={isDocumentUploadActive ?? false}
                         onClick={() => handleActionOptionClicked('add_document')}
-                        name={'Add Document'}
-                        icon={newIcon}>
+                        name={'Add Document'}>
                     </LwmButton>
                 ),
             )

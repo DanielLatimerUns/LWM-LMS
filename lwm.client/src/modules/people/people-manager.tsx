@@ -5,8 +5,6 @@ import { Person } from "../../entities/domainModels/person";
 import LwmButton from "../../framework/components/button/lwm-button";
 import PeopleWizard from "./applets/people-wizard/people-wizard";
 import Module, {GridColumn, GridRow} from "../../framework/components/module/module";
-import newIcon from '../../assets/new_icon.png';
-import recordIcon from '../../assets/record_icon.png';
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
 
 export interface Props {}
@@ -48,8 +46,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
                 <LwmButton
                     isSelected={!appletActive}
                     onClick={() => setAppletActive(false)}
-                    name="Records"
-                    icon={recordIcon}>
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -58,8 +55,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
                     onClick={handleAddNewPerson}
                     name={(!appletActive ||
                         selectedPerson?.id === 0) ? "Add" :
-                        "Edit: " + selectedPerson?.forename}
-                    icon={newIcon}>
+                        "Edit: " + selectedPerson?.forename}>
                 </LwmButton>
             )
         ];

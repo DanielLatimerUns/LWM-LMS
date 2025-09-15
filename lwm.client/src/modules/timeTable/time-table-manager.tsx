@@ -52,8 +52,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
                     onClick={() => {
                         setAppletActive(false);
                     }}
-                    name="Timtables"
-                    icon={newRecordIcon}>
+                    name="Timtables">
                 </LwmButton>
             ),
             (
@@ -62,8 +61,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
                     onClick={handleAdd}
                     name={(!appletActive ||
                         selectedTimeTable?.id === 0) ? "Add" :
-                        "Edit: " + selectedTimeTable?.name}
-                    icon={newRecordIcon}>
+                        "Edit: " + selectedTimeTable?.name}>
                 </LwmButton>
             )
         ];

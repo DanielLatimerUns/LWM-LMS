@@ -28,7 +28,7 @@ interface Props {}
      if (isAuthenticated) {
          return (
              <QueryClientProvider client={queryClient}>
-                 <ErrorBoundary fallback={<div>Shits broken ask Dan to fix :(</div>}>
+                 <ErrorBoundary fallback={<div>Shits Broken ask Dan to fix :(</div>}>
                      <div className="appOuterContainer">
                          <MenuBar/>
                          <ModuleLoader/>

@@ -16,6 +16,9 @@
 .moduleActionSectionOptionContainer > div {
     display: flex;
     min-width: 100px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .moduleActionSectionContainer {
@@ -115,33 +118,62 @@
     width: 100%;
 }
 
+.moduleAppletView {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    background: rgb(62 62 62 / 100%);
+}
+
 .moduleAppletViewContainer {
     padding: 1px;
     display: flex;
     justify-content: flex-start;
+    overflow: scroll;
     width: 100%;
+    background: rgb(62 62 62 / 100%);
 }
 
 .moduleActionSectionSearchContainer {
     display: flex;
-    padding: 2px 0 2px 0;
-    justify-content: left;
     gap: 5px;
+    border-bottom: 1px solid rgba(247 242 242 / 10%);
+    height: 45px;
+    padding-bottom: 1px;
 }
 
-.moduleActionSectionSearchContainer > input {
+.moduleActionSectionSearchContainer > div{
+    display: flex;
+    position: relative;
+    align-items: flex-end;
+    border-bottom: 3px solid rgba(247 242 242 / 5%);
+}
+
+.moduleActionSectionSearchContainer > div > img {
+    position: absolute;
+    width: 25px;
+    bottom: 11px;
+}
+
+.moduleActionSectionSearchContainer > div > input {
     font-size: 15pt;
     border: none;
-    padding: 5px;
+    padding-left: 30px;
     flex: 1;
+    background: rgb(0,0,0,0%);
+    z-index: 10;
+    border-bottom: 1px solid rgba(247 242 242 / 0%);
+    height: 100%;
 }
 
-.moduleActionSectionSearchContainer > input:hover {
+.moduleActionSectionSearchContainer > div > input:hover {
     outline: none;
     border-bottom: 1px solid white;
 }
 
-.moduleActionSectionSearchContainer > input:focus {
+.moduleActionSectionSearchContainer > div > input:focus {
     outline: none;
     border-bottom: 1px solid green;
 }

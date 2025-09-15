@@ -40,8 +40,6 @@ export default class Module extends React.Component<Props, State> {
     render() {
         return (
             <div className="moduleContainer">
-
-                
                 <div className="moduleActionSectionContainer">
                     {this.renderView()}
                     {this.renderApplet()}
@@ -51,7 +49,6 @@ export default class Module extends React.Component<Props, State> {
 
     private renderApplet() {
         if (!this.props.children || !this.props.appletActive) { return;}
-
         return (
             <div className="moduleActionSectionApplet">
                 <div className={this.props.fullWidthApplet ? "moduleActionSectionAppletContentFullWidth" : "moduleActionSectionAppletContent"}>
@@ -77,17 +74,23 @@ export default class Module extends React.Component<Props, State> {
                 </div>
             )
         }
-
         return "";
     }
 
-    private buildSearch() {
+    private buildModuleActionSection() {
         if (this.props.onSearchChnaged) {
             return (<div className="moduleActionSectionSearchContainer">
-                {this.renderOptionsSection()}
-                        <input type="text" placeholder="Search..." onChange={this.handleSearchChanged.bind(this)}/>
+                        {this.renderOptionsSection()}
+                        <div>
+                            <img src="https://img.icons8.com/?size=100&id=2sWrwEXiaegS&format=png&color=000000"/>
+                            <input type="text" placeholder="Search..." onChange={this.handleSearchChanged.bind(this)}/>
+                        </div>
                     </div>)
         }
+
+        return (<div className="moduleActionSectionSearchContainer">
+                    {this.renderOptionsSection()}
+                </div>)
     }
 
     private renderOptionsSection() {
@@ -100,9 +103,14 @@ export default class Module extends React.Component<Props, State> {
 
     private renderView() {
         if (this.props.altView) {
-            return (<div className="moduleAppletViewContainer">
-            {this.props.altView}
-             </div>);
+            return (
+                <div className="moduleAppletView">
+                    {this.buildModuleActionSection()}
+                    <div className="moduleAppletViewContainer">
+                        {this.props.altView}
+                    </div>
+                </div>
+            );
         }
 
         if (this.props?.gridConfig.columns === undefined)
@@ -110,7 +118,7 @@ export default class Module extends React.Component<Props, State> {
 
         return (
         <div className="moduleGridContainer">
-            {this.buildSearch()}
+            {this.buildModuleActionSection()}
             <Grid
                 isDataLoading={this.props.isLoading}
                 editClicked={this.props.gridConfig.handleEditClicked}

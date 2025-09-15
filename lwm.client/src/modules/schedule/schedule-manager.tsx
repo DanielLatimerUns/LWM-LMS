@@ -53,16 +53,14 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
                 <LwmButton
                     isSelected={isCalanaderViewActive}
                     onClick={handleSwitchView}
-                    name="Week View"
-                    icon={recordIcon}>
+                    name="Week View">
                 </LwmButton>
             ),
             (
                 <LwmButton
                     isSelected={!appletActive && !isCalanaderViewActive}
                     onClick={() => {setAppletActive(false); setIsCalanaderViewActive(false);}}
-                    name="Records"
-                    icon={recordIcon}>
+                    name="Records">
                 </LwmButton>
             ),
             (
@@ -71,8 +69,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
                     onClick={() => handleAddNewSchedule(undefined)}
                     name={(!appletActive ||
                         selectedSchedule?.id === 0) ? "Add" :
-                        "Edit: " + selectedSchedule?.scheduledStartTime}
-                    icon={newIcon}>
+                        "Edit: " + selectedSchedule?.scheduledStartTime}>
                 </LwmButton>
             ),
         ];
