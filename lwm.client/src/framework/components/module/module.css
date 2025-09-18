@@ -68,7 +68,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgb(51 51 51 / 70%);
+    background: rgb(51 51 51 / 75%);
+    z-index: 999;
 }
 
 
@@ -126,6 +127,7 @@
 }
 
 .moduleAppletView {
+    display: flex;
     flex-direction: column;
     overflow: hidden;
     height: 100%;

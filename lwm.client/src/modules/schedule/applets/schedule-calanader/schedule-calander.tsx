@@ -168,7 +168,7 @@ const ScheduleCalander: React.FunctionComponent<Props> = (props) => {
                 gridColumn: schedule.scheduledDayOfWeek + 1,
                 gridRowStart: schedule.hourStart,
                 gridRowEnd: schedule.hourEnd + (halfHalfHour ? 1 : 0),
-                zIndex: isOverlapped ? 100 : 0,
+                zIndex: isOverlapped ? 50 : 0,
                 border: schedule.isCancelled ? "red 1px solid" : isOverlapped ? "2px solid yellow" : "1px solid white",
                 height: `${height}px`,
                 alignSelf: halfHalfHour ? "center" : (startsOnHour ? "start" : "end"),
