@@ -3,58 +3,52 @@ using LWM.Api.Dtos.Models;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 
-namespace LWM.Api.DomainServices.Person
+namespace LWM.Api.DomainServices.Person;
+
+public class PersonWriteService(CoreContext context) : IPersonWriteService
 {
-    public class PersonWriteService(CoreContext context) : IPersonWriteService
+    public async Task<int> CreateAsync(PersonModel personModel)
     {
-        public async Task<int> CreateAsync(PersonModel personModel)
+        var model = new Data.Models.Person.Person
         {
-            var model = new Data.Models.Person.Person
-            {
-                Forename = personModel.Forename,
-                Surname = personModel.Surname,
-                EmailAddress1 = personModel.EmailAddress1,
-                PhoneNo = personModel.PhoneNo,
-                PersonType = ((int)personModel.PersonType)
-            };
+            Forename = personModel.Forename ?? string.Empty,
+            Surname = personModel.Surname ?? string.Empty,
+            EmailAddress1 = personModel.EmailAddress1 ?? string.Empty,
+            PhoneNo = personModel.PhoneNo ?? string.Empty,
+            PersonType = (int)personModel.PersonType,
+            Notes = personModel.Notes,
+        };
 
-            context.Persons.Add(model);
+        context.Persons.Add(model);
 
-            await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
+        return model.Id;
+    }
 
-            return model.Id;
-        }
+    public async Task DeleteAsync(int personId)
+    {
+        var model = context.Persons.FirstOrDefault(x => x.Id == personId);
+        if (model is null)
+            throw new NotFoundException("No Person Found.");
 
-        public async Task DeleteAsync(int personId)
-        {
-            var model = context.Persons.FirstOrDefault(x => x.Id == personId);
+        context.Persons.Remove(model);
 
-            Validate(model);
+        await context.SaveChangesAsync();
+    }
 
-            context.Persons.Remove(model);
+    public async Task UpdateAsync(PersonModel personModel)
+    {
+        var model = context.Persons.FirstOrDefault(x => x.Id == personModel.Id);
+        if (model is null)
+            throw new NotFoundException("No Person Found.");
 
-            await context.SaveChangesAsync();
-        }
+        model.Forename = personModel.Forename ?? string.Empty;
+        model.Surname = personModel.Surname ?? string.Empty;
+        model.EmailAddress1 = personModel.EmailAddress1 ?? string.Empty;
+        model.PhoneNo = personModel.PhoneNo ?? string.Empty;
+        model.PersonType = (int)personModel.PersonType;
+        model.Notes = personModel.Notes;
 
-        public async Task UpdateAsync(PersonModel personModel)
-        {
-            var model = context.Persons.FirstOrDefault(x => x.Id == personModel.Id);
-
-            Validate(model);
-
-            model.Forename = personModel.Forename;
-            model.Surname = personModel.Surname;
-            model.EmailAddress1 = personModel.EmailAddress1;
-            model.PhoneNo = personModel.PhoneNo;
-            model.PersonType = ((int)personModel.PersonType);
-
-            await context.SaveChangesAsync();
-        }
-
-        private void Validate(Data.Models.Person.Person model)
-        {
-            if (model is null)
-                throw new NotFoundException("No Person Found.");
-        }
+        await context.SaveChangesAsync();
     }
 }

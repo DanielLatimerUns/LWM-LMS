@@ -10,4 +10,6 @@ export type Person = {
     personType: number | undefined;
     student?: Student;
     teacher?: Teacher;
+    notes?: string;
+    personTypeDisplay?: string;
 }

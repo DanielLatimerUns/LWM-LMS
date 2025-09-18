@@ -32,7 +32,7 @@ public static class ModelMaps
         {
             Id = model.Id,
             Name = model.Person != null ? $"{model.Person.Forename}, {model.Person.Surname}" : "No Person Record",
-            PersonId = model.Person != null ? model.Person.Id : null
+            PersonId = model.Person?.Id
         };
     }
     
@@ -42,8 +42,10 @@ public static class ModelMaps
         {
             Id = student.Id,
             Name = student.Person != null ? $"{student.Person.Forename}, {student.Person.Surname}" : "No Person Record",
-            PersonId = student.Person != null ? student.Person.Id : null,
-            GroupId = student.Group != null ? student.Group.Id : null
+            PersonId = student.Person?.Id,
+            GroupId = student.Group?.Id,
+            SessionPaymentAmount = student.SessionPaymentAmount,
+            PaymentMethod = student.PaymentMethod,
         };
     }
 }

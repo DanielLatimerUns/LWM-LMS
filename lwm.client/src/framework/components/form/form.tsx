@@ -36,6 +36,20 @@ interface Props {
                     disabled={field.isReadOnly}/>
             )
         }
+        
+        if (field.type === 'textarea') {
+            return (
+                <textarea
+                    id={field.id}
+                    value={field.value}
+                    onChange={(e: any) => handleFormChange(e, field)}
+                    className={!validateField(field) ?  "invalid-input" : ""}
+                    required={field.required}
+                    disabled={field.isReadOnly}
+                    rows={5}
+                />
+            ) 
+        }
 
         return(
             <input

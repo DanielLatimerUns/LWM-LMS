@@ -42,30 +42,24 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 id: "forename",
                 value: props.person?.forename,
                 onFieldChanged: handleFormChange,
-                validationPattern: undefined,
                 required: true,
                 type: "text",
-                selectOptions: undefined
             },
             {
                 label: "Surname" ,
                 id: "surname",
                 value: props.person?.surname,
                 onFieldChanged: handleFormChange,
-                validationPattern: undefined,
                 required: true,
                 type: "text",
-                selectOptions: undefined
             },
             {
                 label: "Email" ,
                 id: "emailAddress1",
                 value: props.person?.emailAddress1,
                 onFieldChanged: handleFormChange,
-                validationPattern: undefined,
                 required: true,
                 type: "text",
-                selectOptions: undefined
             },
             {
                 label: "Phone" ,
@@ -75,8 +69,15 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 validationPattern: "[0-9]+",
                 required: false,
                 type: "text",
-                selectOptions: undefined
-            }
+            },
+            {
+                label: "Notes",
+                id: "notes",
+                value: props.person?.notes,
+                onFieldChanged: handleFormChange,
+                required: false,
+                type: "textarea",
+            },
         ];
 
         if (props.person?.personType !== personType.Student) {
@@ -103,11 +104,26 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
                 id: "groupId",
                 value: props.person.student?.groupId,
                 onFieldChanged: handleStudentFormChange,
-                validationPattern: undefined,
                 required: false,
                 type: "select",
                 selectOptions: builtGroups
-            }
+            },
+            {
+                label: "Session Payment Method" ,
+                id: "paymentMethod",
+                value: props.person.student?.paymentMethod,
+                onFieldChanged: handleStudentFormChange,
+                required: false,
+                type: "text",
+            },
+            {
+                label: "Session Payment Amount" ,
+                id: "sessionPaymentAmount",
+                value: props.person.student?.sessionPaymentAmount,
+                onFieldChanged: handleStudentFormChange,
+                required: false,
+                type: "text",
+            },
         ]
 
         return (
@@ -123,23 +139,18 @@ const PeopleWizard: React.FunctionComponent<Props> = (props) => {
     function handleFormChange(changedPerson: Person) {
         changedPerson.personType = Number.parseInt((changedPerson.personType as any));
 
-        if (changedPerson.student) {
-            changedPerson.student = Object.assign({}, changedPerson.student);
-            changedPerson.student.groupId = Number.parseInt((changedPerson.student.groupId as any));
-        }
-
         props.onChange(changedPerson);
     }
 
     function handleStudentFormChange(changedStudent: Student) {
-
         const updatedPerson = Object.assign({}, props.person);
         const updatedStudent = Object.assign({}, updatedPerson.student);
         updatedPerson.student = updatedStudent;
         
         updatedStudent.groupId = Number.parseInt((changedStudent.groupId as any));
+        updatedStudent.paymentMethod = changedStudent.paymentMethod as string;
+        updatedStudent.sessionPaymentAmount = Number.parseInt((changedStudent.sessionPaymentAmount as any));
         
-
         props.onChange(updatedPerson);
     }
 

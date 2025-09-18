@@ -8,9 +8,10 @@ export type FormField = {
     value?: string | number;
     checkedValue?: boolean;
     required: boolean;
-    validationPattern: string | undefined;
-    selectOptions: JSX.Element[] | undefined;
+    validationPattern?: string;
+    selectOptions?: JSX.Element[];
     isInvalid?: boolean;
     isReadOnly?: boolean;
     isHidden?: boolean;
+    isMultiLine?: boolean;
 }

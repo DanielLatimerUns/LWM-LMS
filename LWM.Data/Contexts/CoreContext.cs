@@ -37,6 +37,7 @@ namespace LWM.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             base.OnModelCreating(modelBuilder);
         }
     }

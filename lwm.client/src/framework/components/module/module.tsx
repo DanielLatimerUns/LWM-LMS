@@ -50,19 +50,18 @@ export default class Module extends React.Component<Props, State> {
     private renderApplet() {
         if (!this.props.children || !this.props.appletActive) { return;}
         return (
-            <div className="moduleActionSectionApplet">
-                <div className={this.props.fullWidthApplet ? "moduleActionSectionAppletContentFullWidth" : "moduleActionSectionAppletContent"}>
-                    {this.props.children}
-                    <div className="moduleActionSectionAppletFooter">
-                        {this.buildError()}
-                        <div className="moduleActionSectionAppletFooterButtons">
-                            {this.renderSaveClose()}
+            <div className="moduleActionSectionAppletBackground">
+                <div className="moduleActionSectionApplet">
+                    <div className={this.props.fullWidthApplet ? "moduleActionSectionAppletContentFullWidth" : "moduleActionSectionAppletContent"}>
+                        {this.props.children}
+                        <div className="moduleActionSectionAppletFooter">
+                            {this.buildError()}
+                            <div className="moduleActionSectionAppletFooterButtons">
+                                {this.renderSaveClose()}
+                            </div>
                         </div>
                     </div>
                 </div>
-                {!this.props.fullWidthApplet && 
-                    <div className="moduleActionSectionAppletBackground" onClick={this.props.handleCloseClicked?.bind(this)}>
-                    </div>}
             </div>)
     }
 

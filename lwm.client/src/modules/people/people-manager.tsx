@@ -25,6 +25,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             {lable: "Surname", name: "surname"},
             {lable: "Email", name: "emailAddress1"},
             {lable: "Phone", name: "phoneNo"},
+            {lable: "Type", name: "personTypeDisplay"},
         ];
         
         const rows: GridRow[] =

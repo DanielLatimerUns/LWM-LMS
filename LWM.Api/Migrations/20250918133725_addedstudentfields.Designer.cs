@@ -3,6 +3,7 @@ using System;
 using LWM.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LWM.Api.Migrations
 {
     [DbContext(typeof(CoreContext))]
-    partial class CoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250918133725_addedstudentfields")]
+    partial class addedstudentfields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,9 +233,6 @@ namespace LWM.Api.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PersonId1")
-                        .HasColumnType("integer");
-
                     b.Property<decimal?>("SessionPaymentAmount")
                         .HasColumnType("numeric");
 
@@ -240,10 +240,7 @@ namespace LWM.Api.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("PersonId")
-                        .IsUnique();
-
-                    b.HasIndex("PersonId1");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Students");
                 });
@@ -259,15 +256,9 @@ namespace LWM.Api.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PersonId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId")
-                        .IsUnique();
-
-                    b.HasIndex("PersonId1");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Teachers");
                 });
@@ -469,13 +460,9 @@ namespace LWM.Api.Migrations
                         .WithMany("Students")
                         .HasForeignKey("GroupId");
 
-                    b.HasOne("LWM.Data.Models.Person.Person", null)
-                        .WithOne("Student")
-                        .HasForeignKey("LWM.Data.Models.Person.Student", "PersonId");
-
                     b.HasOne("LWM.Data.Models.Person.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId1");
+                        .HasForeignKey("PersonId");
 
                     b.Navigation("Group");
 
@@ -484,13 +471,9 @@ namespace LWM.Api.Migrations
 
             modelBuilder.Entity("LWM.Data.Models.Person.Teacher", b =>
                 {
-                    b.HasOne("LWM.Data.Models.Person.Person", null)
-                        .WithOne("Teacher")
-                        .HasForeignKey("LWM.Data.Models.Person.Teacher", "PersonId");
-
                     b.HasOne("LWM.Data.Models.Person.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId1");
+                        .HasForeignKey("PersonId");
 
                     b.Navigation("Person");
                 });
@@ -563,13 +546,6 @@ namespace LWM.Api.Migrations
             modelBuilder.Entity("LWM.Data.Models.Lesson.Lesson", b =>
                 {
                     b.Navigation("Documents");
-                });
-
-            modelBuilder.Entity("LWM.Data.Models.Person.Person", b =>
-                {
-                    b.Navigation("Student");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("LWM.Data.Models.Schedule.ScheduleItem", b =>

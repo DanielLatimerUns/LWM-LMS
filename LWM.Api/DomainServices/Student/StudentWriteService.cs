@@ -3,57 +3,49 @@ using LWM.Api.Dtos.Models;
 using LWM.Api.Framework.Exceptions;
 using LWM.Data.Contexts;
 
-namespace LWM.Api.DomainServices.Student
+namespace LWM.Api.DomainServices.Student;
+
+public class StudentWriteService(CoreContext context) : IStudentWriteService
 {
-    public class StudentWriteService : IStudentWriteService
+    private CoreContext Context { get; set; } = context;
+
+    public async Task<Data.Models.Person.Student> CreateAsync(StudentModel student)
     {
-        private CoreContext _context { get; set; }
-
-        public StudentWriteService(CoreContext context)
+        var model = new Data.Models.Person.Student
         {
-            _context = context;
-        }
+            Person = Context.Persons.FirstOrDefault(x => x.Id == student.PersonId),
+            Group = Context.Groups.FirstOrDefault(x => x.Id == student.GroupId),
+            SessionPaymentAmount = student.SessionPaymentAmount,
+            PaymentMethod = student.PaymentMethod
+        };
 
-        public async Task<Data.Models.Person.Student> CreateAsync(StudentModel student)
-        {
-            var model = new Data.Models.Person.Student
-            {
-                Person = _context.Persons.FirstOrDefault(x => x.Id == student.PersonId),
-                Group = _context.Groups.FirstOrDefault(x => x.Id == student.GroupId)
-            };
+        Context.Students.Add(model);
 
-            _context.Students.Add(model);
+        await Context.SaveChangesAsync();
+        return model;
+    }
 
-            await _context.SaveChangesAsync();
+    public async Task UpdateeAsync(StudentModel student)
+    {
+        var model = Context.Students.FirstOrDefault(s => s.Id == student.Id);
+        if (model is null)
+            throw new NotFoundException("No Group Found.");
 
-            return model;
-        }
+        model.Group = Context.Groups.FirstOrDefault(x => x.Id == student.GroupId);
+        model.SessionPaymentAmount = student.SessionPaymentAmount;
+        model.PaymentMethod = student.PaymentMethod;
 
-        public async Task UpdateeAsync(StudentModel student)
-        {
-            var model = _context.Students.FirstOrDefault(s => s.Id == student.Id);
-            Validate(model);
+        await Context.SaveChangesAsync();
+    }
 
-            model.Group = _context.Groups.FirstOrDefault(x => x.Id == student.GroupId);
+    public async Task DeleteAsync(int studentId)
+    {
+        var model = Context.Students.FirstOrDefault(x => x.Id == studentId);
+        if (model is null)
+            throw new NotFoundException("No Group Found.");
 
-            await _context.SaveChangesAsync();
-        }
+        Context.Students.Remove(model);
 
-        public async Task DeleteAsync(int studentId)
-        {
-            var model = _context.Students.FirstOrDefault(x => x.Id == studentId);
-
-            Validate(model);
-
-            _context.Students.Remove(model);
-
-            await _context.SaveChangesAsync();
-        }
-
-        private void Validate(Data.Models.Person.Student model)
-        {
-            if (model is null)
-                throw new NotFoundException("No Group Found.");
-        }
+        await Context.SaveChangesAsync();
     }
 }

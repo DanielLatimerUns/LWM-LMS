@@ -33,7 +33,6 @@
 .moduleActionSectionApplet,
 .moduleGridContainer {
     overflow: auto;
-    width: 500px;
 }
 
 .moduleActionSectionOption > div {
@@ -60,17 +59,22 @@
     overflow: auto;
 }
 
-.moduleActionSectionApplet {
+.moduleActionSectionAppletBackground {
     display: flex;
+    justify-content: center;
     position: absolute;
     width: 100%;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
     background: rgb(51 51 51 / 70%);
-    backdrop-filter: blur(5px);
+}
+
+
+.moduleActionSectionApplet {
+    z-index: 9999;
+    position: relative;
 }
 
 .moduleActionSectionAppletContent,
@@ -78,13 +82,16 @@
 {
     background: rgb(62 62 62 / 100%);
     padding: 0 10px 0 10px;
-    border-radius: 4px;
-    display: grid;
-    grid-template-rows: auto 100px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid white;
 }
 
 .moduleActionSectionAppletContentFullWidth {
-    width: 100%;   
+    border-radius: 0;
+    border: none;
+    height: 100%;
 }
 
 .moduleActionSectionAppletFooter {
@@ -119,7 +126,6 @@
 }
 
 .moduleAppletView {
-    display: flex;
     flex-direction: column;
     overflow: hidden;
     height: 100%;
@@ -176,9 +182,4 @@
 .moduleActionSectionSearchContainer > div > input:focus {
     outline: none;
     border-bottom: 1px solid green;
-}
-
-.moduleActionSectionAppletBackground {
-    display: flex;
-    width: 100%;
 }
