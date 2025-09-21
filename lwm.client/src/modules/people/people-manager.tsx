@@ -6,6 +6,7 @@ import LwmButton from "../../framework/components/button/lwm-button";
 import PeopleWizard from "./applets/people-wizard/people-wizard";
 import Module, {GridColumn, GridRow} from "../../framework/components/module/module";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
+import { toast } from 'react-toastify';
 
 export interface Props {}
 
@@ -13,7 +14,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
     const [selectedPerson, setSelectedPerson] = useState<Person>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const [isFormValid, setIsFormValid] = useState<boolean>(true);
     const [searchString, setSearchString] = useState<string>("");
     
     const personQuery = 
@@ -107,6 +108,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
             await personQuery.refetch();
             setError(undefined);
             setAppletActive(false);
+            toast.success('Person added successfully.');
             return;
         }
 
@@ -119,6 +121,7 @@ const PersonManager: React.FunctionComponent<Props> = () => {
         await personQuery.refetch();
         setAppletActive(false);
         setError(undefined);
+        toast.success('Person updated successfully.');
     }
     
     return (

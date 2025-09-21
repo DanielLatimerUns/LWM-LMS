@@ -6,6 +6,7 @@ import Module, { GridRow, GridColumn} from "../../framework/components/module/mo
 import { Group } from "../../entities/domainModels/group";
 import GroupWizard from "./applets/group-wizard/group-wizard";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
+import {toast} from "react-toastify";
 
 export interface Props {}
 
@@ -15,7 +16,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
     const [error, setError] = useState<string | undefined>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [searchString, setSearchString] = useState<string>("");
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const [isFormValid, setIsFormValid] = useState<boolean>(true);
     
     const groupQuery = useQueryLwm<Group[]>(`groups_${searchString}`, `group/${searchString}`);
 
@@ -98,6 +99,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
             await groupQuery.refetch();
             setError(undefined);
             setAppletActive(false);
+            toast.success('Group added successfully.');
             return;
         }
 
@@ -110,6 +112,7 @@ const GroupManager: React.FunctionComponent<Props> = () => {
         await groupQuery.refetch();
         setError(undefined);
         setAppletActive(false);
+        toast.success('Group updated successfully.');
     }
     
     return (

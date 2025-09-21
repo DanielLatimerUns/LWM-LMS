@@ -8,6 +8,7 @@ import ScheduleCalander from "./applets/schedule-calanader/schedule-calander";
 import {Group} from "../../entities/domainModels/group";
 import moment from "moment";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
+import {toast} from "react-toastify";
 
 export interface Props {}
 
@@ -15,7 +16,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
     const [selectedSchedule, setSelectedSchedule] = useState<Schedule>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const [isFormValid, setIsFormValid] = useState<boolean>(true);
     const [isCalanaderViewActive, setIsCalanaderViewActive] = useState<boolean>(true);
     const [currentWeekNumber, setCurrentWeekNumber] = useState<number>(moment().week());
     
@@ -141,6 +142,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
             await scheduleWeekQuery.refetch();
             setAppletActive(false);
             setError(undefined);
+            toast.success('schedule added successfully.');
             return;
         }
 
@@ -154,6 +156,7 @@ const ScheduleManager: React.FunctionComponent<Props> = () => {
         await scheduleWeekQuery.refetch();
         setAppletActive(false);
         setError(undefined);
+        toast.success('Schedule updated successfully.');
     }
 
     const calanaderView =

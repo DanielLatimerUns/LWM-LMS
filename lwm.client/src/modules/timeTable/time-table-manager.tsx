@@ -7,6 +7,7 @@ import LwmButton from "../../framework/components/button/lwm-button.tsx";
 import TimeTableEditor from "./time-table-editor/time-table-editor.tsx";
 import {useQueryLwm} from "../../services/network/queryLwm.ts";
 import {ButtonConfig} from "../../entities/framework/lwmButton.ts";
+import {toast} from "react-toastify";
 
 export interface Props {}
 
@@ -14,7 +15,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
     const [selectedTimeTable, setSelectedTimeTable] = useState<TimeTable>();
     const [appletActive, setAppletActive] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
-    const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const [isFormValid, setIsFormValid] = useState<boolean>(true);
     const [timetableEditorEnabled, setTimetableEditorEnabled] = useState<boolean>(false);
     
     const timetableQuery = useQueryLwm<TimeTable[]>('timetables', 'timetable');
@@ -154,6 +155,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
             await timetableQuery.refetch();
             setAppletActive(false);
             setError(undefined);
+            toast.success('Timetable added successfully.');
             return;
         }
 
@@ -166,6 +168,7 @@ const TimeTableManager: React.FunctionComponent<Props> = () => {
         await timetableQuery.refetch();
         setAppletActive(false);
         setError(undefined)
+        toast.success('Timetable updated successfully.');
     }
     
     return (

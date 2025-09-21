@@ -5,6 +5,7 @@ import {ModuleDefinition} from "../../entities/framework/moduleDefinition.ts";
 import {getActiveModule} from "../../services/network/modules/moduleService.ts";
 import AuthService from "../../services/network/authentication/authService.ts";
 import LwmButton from "../../framework/components/button/lwm-button.tsx";
+import {Bounce, ToastContainer} from 'react-toastify';
 
 interface Props {}
 
@@ -47,6 +48,19 @@ const ModuleLoader: React.FunctionComponent<Props> = () => {
                 {renderAccountSection()}
             </div>
                 <Outlet/>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+            />
         </div>
     );
 }
